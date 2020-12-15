@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Files are on OSF here: https://osf.io/xter6/
 
-```{r read_data, echo=FALSE, messgae = FALSE}
+```{r read_data, echo=FALSE, message = FALSE}
 # read data in
 
 
@@ -91,14 +91,17 @@ Participants self-reported language history using the LEAP-Q questionnaire. Part
 The mean rating for proficiency in speaking was `r round(mean_speak_L2, 2)` (SD = `r round(sd_speak_L2, 2)`), reading was `r round(mean_read_L2, 2)` (SD = `r round(sd_read_L2, 2)`) and understanding was `r round(mean_und_L2,2)` (SD = `r round(sd_und_L2, 2)`). The mean age of initial acquisition of English was 7.56, and mean age in which self-reported fluent proficiency was acquired was 12.08.  
 
 ```{r normality_tests, echo=FALSE, messgae = FALSE}
-# Here we will use the Shapiro Wilks normality test to see if the LI values for L1 and L2 are normally distributed
+# Here we will use the Shapiro Wilk normality test to see if the LI values for L1 and L2 are normally distributed
 L1_normality <- shapiro.test(L1_data$L1.mean_LI)
 L1_normality_round <-  round (L1_normality$p.value, 2)
+d1<-density(L1_data$L1.mean_LI)
+plot(d1)
 
 # Repeat for L2
 L2_normality <- shapiro.test(L2_data$L2.mean_LI)
 L2_normality_round <- round(L2_normality$p.value, 2)
-
+d2<-density(L2_data$L2.mean_LI)
+plot(d2)
 ```
 
 
@@ -122,7 +125,7 @@ L2_bilateral <- nrow(L2_data[L2_data$L2.mean_laterality == 'bilat',])
 
 
 ## Laterality Indices
-Normality was assessed using Shaprio-Wilk test. Laterality indices for L1 were found to be normally distributed (p > .05), whereas LIs for L2 were not (p = `r round(L2_normality$p.value, 2)`). 
+Normality was assessed using Shapiro-Wilk test. Laterality indices for L1 were found to be normally distributed (p > .05), whereas LIs for L2 were not (p = `r round(L2_normality$p.value, 2)`). 
 
 The total mean laterality indices for L1 (French or German) were `r round(L1_mean_LI_total, 2)` (SE =  `r round(SEM_L1, 2)`)  and total mean laterality indices for L2 (English) were `r round(L2_mean_LI_total, 2)` (SE = `r round(SEM_L2, 2)`). Participants were categorised as left-lateralised if the mean asymmetry index was positive and significantly different to zero, right-lateralised if the mean asymmetry index was negative and significantly different to zero, and bilateral if the 95% confidence interval spanned zero. The mean number of trials was `r mean_trials_L2`, (max = `r max_trials_L1`, min = `r min_trials_L1`).
 
@@ -130,6 +133,15 @@ When calculating mean LIs, `r L1_left` participants were left lateralised for L1
 
 When calculating the peak LIs, `r nrow(L1_data[L1_data$L1.peak_laterality == 'L',]) ` participants were left lateralised for L1 and `r nrow(L1_data[L1_data$L1.peak_laterality == 'bilat',])` participant was bilaterally lateralised for L1. `r nrow(L2_data[L2_data$L2.peak_laterality == 'L',])` participants were left lateralised for L2 and `r nrow(L2_data[L2_data$L2.peak_laterality == 'bilat',])` were bilaterally lateralised for L2.
 
+```{r DB_handcategory}
+background_data$handcat<-3 #default is strong R hander with EHI 80+
+w<-which(background_data$EHI<80)
+background_data$handcat[w]<-2 #category 2 is mild R hander
+w<-which(background_data$EHI<0)
+background_data$handcat[w]<-1 #category 1 is L hander
+
+
+```
 
 ```{r scatter_plot, echo=FALSE, message=FALSE, fig.cap = 'Scatterplot of mean asymmetry indicies of L1 and L2. Error bars indicate standard error mean. L1, first language (French/ German); L2, second language (English).'}
 # For the scatter plot, we will plot the LI for L1 vs the LI for L2
@@ -144,10 +156,12 @@ require(ggplot2)
 require(tidyverse)
 plotdata <- inner_join(x = L1_data,
                         y = L2_data)
+plotdata$Handedness<-as.factor(background_data$handcat) #add handedness category
+levels(plotdata$Handedness) <- c('Left','Moderate R','Strong R')
 ymin = L1_data$LI.mean_LI - L1_data$LI.mean_se
 ymax = L1_data$LI.mean_LI + L1_data$LI.mean_se
 
-ggplot(data = plotdata, aes(x = L1.mean_LI, y = L2.mean_LI)) + 
+ggplot(data = plotdata, aes(x = L1.mean_LI, y = L2.mean_LI,colour=Handedness)) + 
   geom_point()+
   xlab("Mean LI for L1") +  
   ylab("Mean LI for L2") + 
