@@ -1,0 +1,329 @@
+---
+title: "Bilingualism Results"
+author: "Sophie Harte"
+date: "02/11/2020"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Files are on OSF here: https://osf.io/xter6/
+
+```{r read_data, echo=FALSE, messgae = FALSE}
+# read data in
+
+
+L1_data <- read.csv('Results_L1.csv')
+L2_data <- read.csv('Results_L2.csv')
+background_data_total <- read.csv('background_data.csv', stringsAsFactors = FALSE)
+
+# First we need to check which participants have to be excluded, following analysis2.
+# We'll look at the L1.exclusions and L2.exclusions variables.
+# If a subject has data excluded in EITHER language, we'll have to exclude them.
+exclude <- L1_data$L1.exclusions + L2_data$L2.exclusions
+
+# We will include the rows in L1_data and L2_data for any participants where exclude = 0
+L1_data <- L1_data[which(exclude==0), ]
+L2_data <- L2_data[which(exclude==0), ]
+
+# number of participants
+nsubj <- dim(L1_data)[1]
+```
+
+
+```{r demographics, echo=FALSE, messgae = FALSE}
+# need to remove participant 14 from background data file who is excluded
+
+background_data <- background_data_total[which(exclude==0), ]
+
+colnames(background_data)[1] <- 'ID'
+
+mean_age <- mean(background_data$Age)
+sd_age <- sd(background_data$Age)
+
+n_german <- nrow(background_data[background_data$L1 == 1,])
+n_french <- nrow(background_data[background_data$L1 == 2,])
+n_female <- nrow(background_data[background_data$Gender == 0,])
+n_male <- nrow(background_data[background_data$Gender == 1,])
+
+# The mean, min and max number of trials for L1 and L2
+mean_trials_L1 <- mean(L1_data$L1.N)
+min_trials_L1 <- min(L1_data$L1.N)
+max_trials_L1 <- max(L1_data$L1.N)
+
+mean_trials_L2 <- mean(L2_data$L2.N)
+min_trials_L2 <- min(L2_data$L2.N)
+max_trials_L2 <- max(L2_data$L2.N)
+
+```
+
+```{r LEAP-Q beahvioural , echo=FALSE, messgae = FALSE}
+# LEAP-Q
+# Self-reported proficiency 0 = no proficiency, 10 = perfect proficiency. 
+
+# proficiency (reading) /10 - self-report
+mean_read_L2 <- mean(background_data$L2_prof_Reading)
+sd_read_L2 <- sd(background_data$L2_prof_Reading)
+# proficiency (understanding) /10 - self-report
+mean_und_L2 <- mean(background_data$L2_prof_Understanding)
+sd_und_L2 <- sd(background_data$L2_prof_Understanding)
+# proficiency (speaking) /10 - self-report
+mean_speak_L2 <- mean(background_data$L2_prof_Speaking)
+sd_speak_L2 <- sd(background_data$L2_prof_Speaking)
+
+# AOA
+aoa_L2 <- mean(background_data$L2_Acquisition) # mean age they started learnind English 
+aoa_fluent_L2 <- mean(background_data$L2_Fluent) # mean age they became fluent in English 
+
+
+```
+
+## Sample
+The final sample consisted of `r nsubj` participants (`r n_female` female), with a mean age of `r round(mean_age, 1)` (SD = `r round(sd_age, 2)`). There were `r n_german` native German speakers and `r n_french` native French speakers. 
+
+Participants self-reported language history using the LEAP-Q questionnaire. Participants rated themselves out of 10 on proficiency in English (0 = no proficiency, 10 = perfect proficiency). 
+
+The mean rating for proficiency in speaking was `r round(mean_speak_L2, 2)` (SD = `r round(sd_speak_L2, 2)`), reading was `r round(mean_read_L2, 2)` (SD = `r round(sd_read_L2, 2)`) and understanding was `r round(mean_und_L2,2)` (SD = `r round(sd_und_L2, 2)`). The mean age of initial acquisition of English was 7.56, and mean age in which self-reported fluent proficiency was acquired was 12.08.  
+
+```{r normality_tests, echo=FALSE, messgae = FALSE}
+# Here we will use the Shapiro Wilks normality test to see if the LI values for L1 and L2 are normally distributed
+L1_normality <- shapiro.test(L1_data$L1.mean_LI)
+L1_normality_round <-  round (L1_normality$p.value, 2)
+
+# Repeat for L2
+L2_normality <- shapiro.test(L2_data$L2.mean_LI)
+L2_normality_round <- round(L2_normality$p.value, 2)
+
+```
+
+
+```{r descriptive_statistics, echo=FALSE, messgae = FALSE}
+# The mean and SEM LI value for L1 and L2
+
+L1_mean_LI_total <- mean(L1_data$L1.mean_LI)
+L2_mean_LI_total <- mean(L2_data$L2.mean_LI)
+
+SEM_L1 <- sd(L1_data$L1.mean_LI)/sqrt(nsubj)
+SEM_L2 <- sd(L2_data$L2.mean_LI)/sqrt(nsubj)
+
+# Number of Ps left/ bilaterally lateralised (mean LI)
+L1_left <- nrow(L1_data[L1_data$L1.mean_laterality == 'L',])
+L1_bilateral <- nrow(L1_data[L1_data$L1.mean_laterality == 'bilat',])
+L2_left <- nrow(L2_data[L2_data$L2.mean_laterality == 'L',])
+L2_bilateral <- nrow(L2_data[L2_data$L2.mean_laterality == 'bilat',])
+
+
+```
+
+
+## Laterality Indices
+Normality was assessed using Shaprio-Wilk test. Laterality indices for L1 were found to be normally distributed (p > .05), whereas LIs for L2 were not (p = `r round(L2_normality$p.value, 2)`). 
+
+The total mean laterality indices for L1 (French or German) were `r round(L1_mean_LI_total, 2)` (SE =  `r round(SEM_L1, 2)`)  and total mean laterality indices for L2 (English) were `r round(L2_mean_LI_total, 2)` (SE = `r round(SEM_L2, 2)`). Participants were categorised as left-lateralised if the mean asymmetry index was positive and significantly different to zero, right-lateralised if the mean asymmetry index was negative and significantly different to zero, and bilateral if the 95% confidence interval spanned zero. The mean number of trials was `r mean_trials_L2`, (max = `r max_trials_L1`, min = `r min_trials_L1`).
+
+When calculating mean LIs, `r L1_left` participants were left lateralised for L1 and `r L1_bilateral` participants were bilaterally lateralised for L1. `r L2_left` participants were left lateralised for L2 and `r L2_bilateral` were bilaterally lateralised for L2.
+
+When calculating the peak LIs, `r nrow(L1_data[L1_data$L1.peak_laterality == 'L',]) ` participants were left lateralised for L1 and `r nrow(L1_data[L1_data$L1.peak_laterality == 'bilat',])` participant was bilaterally lateralised for L1. `r nrow(L2_data[L2_data$L2.peak_laterality == 'L',])` participants were left lateralised for L2 and `r nrow(L2_data[L2_data$L2.peak_laterality == 'bilat',])` were bilaterally lateralised for L2.
+
+
+```{r scatter_plot, echo=FALSE, message=FALSE, fig.cap = 'Scatterplot of mean asymmetry indicies of L1 and L2. Error bars indicate standard error mean. L1, first language (French/ German); L2, second language (English).'}
+# For the scatter plot, we will plot the LI for L1 vs the LI for L2
+# Here's a basic one:
+
+# plot(L1_data$L1.mean_LI, L2_data$L2.mean_LI,
+    # xlab = "L1 LI mean",
+    #  ylab = "L2 LI mean")
+
+
+require(ggplot2)
+require(tidyverse)
+plotdata <- inner_join(x = L1_data,
+                        y = L2_data)
+ymin = L1_data$LI.mean_LI - L1_data$LI.mean_se
+ymax = L1_data$LI.mean_LI + L1_data$LI.mean_se
+
+ggplot(data = plotdata, aes(x = L1.mean_LI, y = L2.mean_LI)) + 
+  geom_point()+
+  xlab("Mean LI for L1") +  
+  ylab("Mean LI for L2") + 
+  xlim(0,9) + ylim (0,9) + 
+  geom_errorbar(aes(ymin = L2.mean_LI - L2.mean_se, ymax = L2.mean_LI + L1.mean_se),linetype = "dotted") + 
+  geom_errorbarh(aes(xmin = L1.mean_LI - L1.mean_se, xmax = L1.mean_LI + L1.mean_se), linetype = "dotted")
+  # theme_classic() # printing out all information into knit document? 
+
+ 
+# geom_errorbar(aes(ymin = L1.mean_LI - L1.mean_se, ymax = L1.mean_LI + L1.mean_se )) + 
+  # geom_errorbarh(aes(xmin = L2.mean_LI - L2.mean_se, xmax = L2.mean_LI + L1.mean_se)) + 
+```
+
+```{r LI correlations, echo=FALSE, messgae = FALSE }
+
+# CORREALTION BETWEEN L1 AND L2
+L1_L2_corr <- cor.test (plotdata$L1.mean_LI, plotdata$L2.mean_LI, 
+                        method = "spearman")
+
+# spearman correlation test on odds and evens - means 
+OEcorr_mean_L1 <- cor.test(L1_data$L1.mean_odd, L1_data$L1.mean_even, 
+                      method = "spearman")
+OEcorr_mean_L2 <- cor.test(L2_data$L2.mean_odd, L2_data$L2.mean_even, 
+                      method = "spearman")  
+  
+OEcorr_peak_L1 <- cor.test (L1_data$L1.peak_odd, L1_data$L1.peak_even, 
+                      method = "spearman",
+                      exact = FALSE)
+OEcorr_peak_L2 <- cor.test (L2_data$L2.peak_odd, L2_data$L2.peak_even, 
+                      method = "spearman") 
+
+
+```
+
+## Reliability 
+
+Reliability of tests were assessed using split half reliability. A Spearman’s rank split-half correlation was calculated comparing scores on odd and even trails. The split-half correlation was significant for L1 (rs(23) = `r round(OEcorr_mean_L1$estimate, 2)`, p = `r round(OEcorr_mean_L1$p.value, 3)`) and L2 (rs(23) = `r round (OEcorr_mean_L2$estimate, 2)`, p < .001).
+
+```{r Handedness , echo=FALSE, messgae = FALSE }
+
+# Descriptive Statistics for EHI 
+mean_EHI <- mean(background_data$EHI)
+sd_EHI <- sd(background_data$EHI) 
+min_EHI <- min(background_data$EHI)
+max_EHI <- max (background_data$EHI)
+
+# hist(background_data$EHI) # check if normally distributed
+EHI_normality <- shapiro.test(background_data$EHI)
+EHI_LI_L1_cor <- cor.test (background_data$EHI, L1_data$L1.mean_LI, 
+                        method = "spearman", 
+                        exact = FALSE)
+EHI_LI_L2_cor <- cor.test (background_data$EHI, L2_data$L2.mean_LI, 
+                        method = "spearman", 
+                        exact = FALSE)
+
+# plot(background_data$EHI, L1_data$L1.mean_LI, type='p')
+
+```
+
+## Handedness 
+
+Handedness scores on the Edinburgh Handedness Inventory ranged from `r round(min_EHI, 2)` to `r round(max_EHI, 2)` (mean = `r round(mean_EHI, 2)`, SD = `r round(sd_EHI, 2)`). 
+Spearman’s correlation founds scores on EHI were not correlated to mean LI for L1 (rs(23) = `r round(EHI_LI_L1_cor$ estimate, 2)`, p = `r round(EHI_LI_L1_cor$p.value, 3)`) or L2 (rs(23) = `r round(EHI_LI_L2_cor$ estimate, 2)`, p = `r round(EHI_LI_L2_cor$p.value, 3)`). 
+
+
+```{r testing order, echo=FALSE, messgae = FALSE}
+
+require(dplyr)
+
+total_info <- inner_join(x = plotdata, # combine all data together to one table 
+                            y = background_data,
+                            by = c("ID")) 
+# 0 = L2 tested first 
+# 1 = L1 tested first
+
+
+nL1_testedfirst <- nrow(background_data[background_data$Tested == 1,]) #how many tested with L1 first 
+nL1_testedsecond <- nrow(background_data[background_data$Tested == 0,]) # how many tested with L2 first
+
+testing_0 <- filter(total_info, Tested == "0")
+testing_1 <- filter(total_info, Tested == "1")
+
+meanLI_L1_test0 <- mean(testing_0$L1.mean_LI)
+meanL1_L2_test0 <- mean(testing_0$L2.mean_LI)
+meanLI_L1_test1 <- mean(testing_1$L1.mean_LI)
+meanLI_L2_test2 <- mean(testing_1$L2.mean_LI)
+
+testing_ttest_L1 <- t.test(testing_0$L1.mean_LI, testing_1$L1.mean_LI) # testing if there is a sig. diff between laterality scoes of L1 in those tested in their native language first or second. 
+testing_ttest_L2 <- t.test(testing_0$L2.mean_LI, testing_1$L2.mean_LI) # testing if there is a sig. diff between laterality scoes of L2 in those tested in their native language first or second.
+
+# Can pull out information from t test if you want
+#testing_ttest_L2$statistic (for t value)
+#testing_ttest_L2$p.value (for p value)
+#testing_ttest_L2$parameter (for degrees of freedom)
+
+
+```
+
+## Testing Order
+
+2 Independent samples t tests were run to compare laterality scores of those who were tested in their native language first and those who were tested in their second language first. They found no significant difference in the LIs of L1 (t(`r round(testing_ttest_L1$parameter, 1)`) =  `r round (testing_ttest_L1$statistic, 2)`, p = `r round(testing_ttest_L1$p.value, 3)`) or L2 (t(`r round(testing_ttest_L2$parameter, 1)`) =  `r round (testing_ttest_L2$statistic, 2)`, p = `r round(testing_ttest_L2$p.value, 3)`) related to testing order. 
+
+```{r LEAP-Q, echo=FALSE, messgae = FALSE}
+# normality tests
+norm_prof <- shapiro.test(background_data$L2_prof_Reading)
+norm_und <- shapiro.test(background_data$L2_prof_Understanding) 
+norm_speak <- shapiro.test(background_data$L2_prof_Speaking)
+norm_aoa <- shapiro.test(background_data$L2_Acquisition)
+norm_aoa_fluent <- shapiro.test(background_data$L2_Fluent) # normally distirbuted
+
+
+# correlations between LEAP-Q and LIs
+# L1
+corr_prof_reading_L1 <- cor.test(total_info$L2_prof_Reading, total_info$L1.mean_LI, 
+                              method = "spearman",
+                              exact = FALSE)
+corr_prof_under_L1 <- cor.test(total_info$L2_prof_Understanding, total_info$L1.mean_LI, 
+                              method = "spearman",
+                              exact = FALSE)
+corr_prof_speak_L1 <- cor.test(total_info$L2_prof_Speaking, total_info$L1.mean_LI, 
+                              method = "spearman",
+                              exact = FALSE)
+#L2 
+corr_prof_reading_L2 <- cor.test(total_info$L2_prof_Reading, total_info$L2.mean_LI, 
+                              method = "spearman",
+                              exact = FALSE)
+corr_prof_under_L2 <- cor.test(total_info$L2_prof_Understanding, total_info$L2.mean_LI, 
+                              method = "spearman",
+                              exact = FALSE)
+corr_prof_speak_L2 <- cor.test(total_info$L2_prof_Speaking, total_info$L2.mean_LI, 
+                              method = "spearman",
+                              exact = FALSE)
+# COrrelation between AOA and LIs
+# age started learning English 
+corr_aoaL2_L1 <- cor.test(total_info$L2_Acquisition, total_info$L1.mean_LI, 
+                              method = "spearman",
+                              exact = FALSE)
+corr_aoaL2_L2 <- cor.test(total_info$L2_Acquisition, total_info$L2.mean_LI, 
+                              method = "spearman",
+                              exact = FALSE)
+# Age became fluent in English 
+corr_fluentL2_L1 <- cor.test(total_info$L2_Fluent, total_info$L1.mean_LI, 
+                              method = "spearman",
+                              exact = FALSE)
+corr_fluentL2_L2 <- cor.test(total_info$L2_Fluent, total_info$L2.mean_LI, 
+                              method = "spearman",
+                              exact = FALSE)
+
+```
+## Language History and mean LIs 
+
+Correlations between self-reported proficiency ratings, age of acquisition and age of acquired fluency and mean LIs for L1 and L2 did not reach significance. 
+
+```{r L1_ANOVA, echo=FALSE, messgae = FALSE}
+# First, we'll select the data we need. We'll have ID, L1 (French or German), LI for L1 and LI for L2
+anova_data <- data.frame(
+  'ID' = L1_data$ID, # as.factor, because these are ID labels, not a numerical scale
+  'NativeLanguage' = as.factor(background_data$L1), # as.factor, because this is a categorical variable
+  'L1' = L1_data$L1.mean_LI,
+  'L2' = L2_data$L2.mean_LI)
+# Convert to long format
+anova_data_long <- pivot_longer(anova_data, cols = c(3,4), names_to = 'LanguageTested', values_to = 'LI')
+anova_data_long$ID <- as.factor(anova_data_long$ID)
+anova_data_long$LanguageTested <- as.factor(anova_data_long$LanguageTested)
+# Run the anova
+my_anova <- aov(data=anova_data_long, LI ~ LanguageTested * NativeLanguage + Error(ID))
+
+anova_summary <- summary(my_anova) 
+native_language_F <- anova_summary$`Error: ID`[[1]]$`F value`[1]
+native_language_p <- anova_summary$`Error: ID`[[1]]$`Pr(>F)`[1]
+language_tested_F <- anova_summary$`Error: Within`[[1]]$`F value`[1]
+language_tested_P <- anova_summary$`Error: Within`[[1]]$`Pr(>F)`[1]
+interaction_F <- anova_summary$`Error: Within`[[1]]$`F value`[2]
+interaction_P <- anova_summary$`Error: Within`[[1]]$`Pr(>F)`[2]
+```
+
+## Native Language and LIs
+
+A 2x2 mixed ANOVA was conducted to investigate the influence of native language and mean LI. There were no significant main effects for native language on L1 (F (1,23) = `r round (native_language_F,3)`, p = `r round (native_language_p,2)`) or L2 (F (1,23) = `r round (language_tested_F,3)` , p = `r round (language_tested_P,2)`). The interaction between these factors was also not significant (F (1,23) = `r round(interaction_F, 3)`, p = `r round(interaction_P,3)`). 
