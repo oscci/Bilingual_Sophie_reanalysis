@@ -12,8 +12,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Bilingual Re-analysis 
-
 Files are on OSF here: https://osf.io/xter6/
 
 ```{r read_data, echo=FALSE, message = FALSE}
