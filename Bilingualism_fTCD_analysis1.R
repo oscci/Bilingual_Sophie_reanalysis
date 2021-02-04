@@ -106,7 +106,7 @@ for (mysub in 26
   mysubname <- all_subjects[mysub]
   cat(mysubname, "\n\n")
   
-  for (language in 1:2){
+  for (language in 1:2){ # L1 = French/German, L2 = English
     
     ########################################################
     # Loop through tasks
@@ -121,9 +121,9 @@ for (mysub in 26
     mycomment <- NA
     
     # Read exp data
-    if (language == 1){
-      dataloc <- paste0("data/CG_", mysubname,"E.exp")}
     if (language == 2){
+      dataloc <- paste0("data/CG_", mysubname,"E.exp")}
+    if (language == 1){
       if(file.exists (paste0('data/CG_', mysubname, "F.exp"))){
         dataloc <- paste0('data/CG_', mysubname, "F.exp")}
       else{
