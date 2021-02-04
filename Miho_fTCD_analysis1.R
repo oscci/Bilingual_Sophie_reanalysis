@@ -3,6 +3,7 @@
 ########################################
 #################################################
 # This script reads in data from two languages (L1 and L2)  and calcuates LI values
+# for phonological and semantic word generation tasks
 
 ########################################################
 # Install packages. If you get an error here you may need to install the required packages first
@@ -27,9 +28,9 @@ if(!file.exists(rawmeansdir)){dir.create(rawmeansdir)}
 
 checkmarkers=1; #set to 1 to see a sample of the file to check markers are there
 initialdatacheck=1; #set to 1 toview raw data for each epoch
-initialdatacheck1=1; # set to 1 to view epochs after normalisation
-initialdatacheck2=1; #set to 1 to view epochs after heartbeat Correction
-initialdatacheck3=1; # set to 1 to visualise after baseline correction
+initialdatacheck1=0; # set to 1 to view epochs after normalisation
+initialdatacheck2=0; #set to 1 to view epochs after heartbeat Correction
+initialdatacheck3=0; # set to 1 to visualise after baseline correction
 initialdatacheck4=1; # set to 1 to plot AND SAVE average for each subject
 
 # Timings in secs
@@ -66,11 +67,14 @@ trialsperrun=20
 # Can edit this line to download the data from OSF once the project is public
 # osf_retrieve_file("https://osf.io/pvb57") %>%  osf_download(conflicts = "skip") # Edit the file location
 trialloc<-"Miho_filelist_L1_L2.xlsx" # File lists all subjects and trial inclusions/exclusions
-triallist1 <- read_excel(trialloc, sheet=1)
-triallist2 <- read_excel(trialloc, sheet=2)
+
+triallist_L1_Phon <- read_excel(trialloc, sheet=1)
+triallist_L2_Phon <- read_excel(trialloc, sheet=2)
+triallist_L1_Sem <- read_excel(trialloc, sheet=3)
+triallist_L2_Sem <- read_excel(trialloc, sheet=4)
 
 # List all of the subjects here. 
-all_subjects <- triallist1$ID
+all_subjects <- triallist_L1_Phon$ID
 nsubj <- length(all_subjects)
 
 # Create matrices for results
@@ -78,10 +82,10 @@ resultsloc1 <- "Miho_Results_L1.csv" # File name for Results from session 1
 resultsloc2 <- "Miho_Results_L2.csv" # File name for Results from session 1
 # Can edit this line to download list of column names for results file directly from OSF
 # osf_retrieve_file("https://osf.io/zuj6x") %>% osf_download(conflicts = "skip") # Edit file location
-mycolumns<- read.csv("col_names.txt", header=FALSE)
-results2 <- results1 <- as.data.frame(matrix(data=NA, nrow=nsubj, ncol=17))
-colnames(results1) <- mycolumns[1:17, ]
-colnames(results2) <- mycolumns[c(1,18:33), ]
+mycolumns<- read.csv("Miho_col_names.txt", header=FALSE)
+results2 <- results1 <- as.data.frame(matrix(data=NA, nrow=nsubj, ncol=35))
+colnames(results1) <- mycolumns[c(1:18,36:52), ]
+colnames(results2) <- mycolumns[c(1,19:35,53:69), ]
 
 results2$ID <- results1$ID <- all_subjects
 
@@ -93,50 +97,73 @@ if (file.exists(resultsloc2)){
   results2 <- read.csv(resultsloc2)
 }
 
-results1$L1.Comment <- as.character(results1$L1.Comment)
-results2$L2.Comment <- as.character(results2$L2.Comment)
-results1$L1.peak_laterality <- as.character(results1$L1.peak_laterality)
-results1$L1.mean_laterality <- as.character(results1$L1.mean_laterality)
-results2$L2.peak_laterality <- as.character(results2$L2.peak_laterality)
-results2$L2.mean_laterality <- as.character(results2$L2.mean_laterality)
+# Sorry, this is ugly coding...
+results1$L1_Phon.Comment <- as.character(results1$L1_Phon.Comment)
+results2$L2_Phon.Comment <- as.character(results2$L2_Phon.Comment)
+results1$L1_Phon.peak_laterality <- as.character(results1$L1_Phon.peak_laterality)
+results1$L1_Phon.mean_laterality <- as.character(results1$L1_Phon.mean_laterality)
+results2$L2_Phon.peak_laterality <- as.character(results2$L2_Phon.peak_laterality)
+results2$L2_Phon.mean_laterality <- as.character(results2$L2_Phon.mean_laterality)
+results1$L1_Sem.Comment <- as.character(results1$L1_Sem.Comment)
+results2$L2_Sem.Comment <- as.character(results2$L2_Sem.Comment)
+results1$L1_Sem.peak_laterality <- as.character(results1$L1_Sem.peak_laterality)
+results1$L1_Sem.mean_laterality <- as.character(results1$L1_Sem.mean_laterality)
+results2$L2_Sem.peak_laterality <- as.character(results2$L2_Sem.peak_laterality)
+results2$L2_Sem.mean_laterality <- as.character(results2$L2_Sem.mean_laterality)
 
-for (mysub in 1
-    ){ # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
+for (mysub in 2){ # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
   
   mysubname <- all_subjects[mysub]
-  cat(mysubname, "\n\n")
+  cat(paste0("BL",mysubname), "\n\n")
+  
+  # Read exp data
+  dataloc <- paste0("Miho_data/BL", mysubname,".exp")
+  
+  dat<-read.table(dataloc, skip = 6,  header =FALSE, sep ="\t")
+  # downsample to 25 Hz by taking every 4th point
+  shortdat = filter(dat, row_number() %% 4 == 0) # downsample to 25 Hz by taking every 4th point
+  allpts = nrow(shortdat) # total N points in long file
+  shortdat[,1] = (seq(from=1,to=allpts*4,by=4)-1)/100 #create 1st column which is time in seconds from start
   
   # Loop through languages: L1=Japanese, L2=English
   for (language in 1:2){
     
     ########################################################
-    # Loop through tasks
-    #mydir <- paste(dir, "/", mysubname, "/", language, "/", sep = "")
+    # Loop through tasks: 1 = Phon, 2 = Sem
+    tasks <- c('Phon', 'Sem')
     
-    # Read relevant sheet from triallist
-    triallist <- triallist1
-    if (language == 2){triallist <- triallist2}
+    for (task in 1:2){
+      # Select relevant triallist
+      if (language == 1){
+        triallist <- triallist_L1_Phon
+        if (task == 2){
+          triallist <- triallist_L1_Sem
+        }
+      }
+      if (language == 2){
+        triallist <- triallist_L2_Phon
+        if (task == 2){
+          triallist <- triallist_L2_Sem
+        }
+      }
     triallist$ID<-as.character(triallist$ID) # unfactor this column to avoid later difficulties
     
     # Initiate a comment - this will be added to the results file at the end of the analysis
     mycomment <- NA
     
-    # Read exp data
-    dataloc <- paste0("Miho_data/BL", mysubname,".exp")
-
-    dat<-read.table(dataloc, skip = 6,  header =FALSE, sep ="\t")
-    # downsample to 25 Hz by taking every 4th point
-    shortdat = filter(dat, row_number() %% 4 == 0) # downsample to 25 Hz by taking every 4th point
-    allpts = nrow(shortdat) # total N points in long file
-    shortdat[,1] = (seq(from=1,to=allpts*4,by=4)-1)/100 #create 1st column which is time in seconds from start
-    
-    # select the columns we need for the analysis
-    if (language==1){ # L1 = Japanese, with markers in column 13
-      wantcols = c(1,3,4,13) #sec, L, R,marker #select columns of interest to put in shortdat
-    }
-    if (language==2){ # L2 = English, with markers in column 11
-      wantcols = c(1,3,4,11) #sec, L, R,marker #select columns of interest to put in shortdat
-    }
+    # select the columns we need for the analysis. Columns are for sec, L, R, marker
+    if (language==1){ 
+      wantcols = c(1,3,4,13) # L1_Phon = markers in column 13
+      if (task==2){
+        wantcols = c(1,3,4,14) # L1_Sem = markers in column 14
+        }
+      }
+    if (language==2){ 
+      wantcols = c(1,3,4,11) # L2_Phon = markers in column 11
+      if (task==2){
+        wantcols = c(1,3,4,12) # L2_Sem = markers in column 12
+        }
+      }
     
     rawdata = data.frame(shortdat[,wantcols])
     colnames(rawdata) = c ("sec","L","R","marker")
@@ -609,13 +636,13 @@ for (mysub in 1
     abline(v = basestart, lty = 2)
     abline(v = baseend, lty = 2)
     text(-4,110,"blue=R\n red=L\n black=(L-R) +100",cex=.75)
-    mytitle=paste(mysubname,paste("Language ", language, sep = ""))
+    mytitle=paste("BL",mysubname," L", language, "_", tasks[task], sep = "")
     title(mytitle)
 
     cat ("Press [enter] to continue")
     line <- readline()
     
-    png(filename=paste0("LI_Plot_",mysubname,"_",language,".png"))
+    png(filename=paste0("LI_Plot_","BL",mysubname,"_L", language, "_", tasks[task],".png"))
 
     plot(timelinelong,Lmean, type="n",ylab="mean blood flow",xlab="time(s)",ylim=c(90,120)) #set up plot - doesn"t actually plot anything
     lines(timelinelong,Lmean,col="red")
@@ -626,7 +653,7 @@ for (mysub in 1
     abline(v = basestart, lty = 2)
     abline(v = baseend, lty = 2)
     text(-4,105,"blue=R\n red=L\n black=(L-R) +100",cex=.75)
-    mytitle=paste(mysubname,paste("Language ", language, sep = ""))
+    mytitle=paste("BL",mysubname," L", language, "_", tasks[task], sep = "")
     title(mytitle)
 
     dev.off()
@@ -641,14 +668,28 @@ for (mysub in 1
                   mean_LI, mean_se, mean_laterality, mean_odd, mean_even)
     
     if (language == 1){
-      results1[mysub,2]      <- mycomment
-      results1[mysub,3:17]   <-  savedata
-      triallist1[mysub,2:(trialsperrun+1)] <- triallist[mysub,2:(trialsperrun+1)]
+      if (task == 1){
+        results1[mysub,2]      <- mycomment
+        results1[mysub,3:17]   <-  savedata
+        triallist_L1_Phon[mysub,2:(trialsperrun+1)] <- triallist[mysub,2:(trialsperrun+1)]
+      }
+      if (task ==2){
+        results1[mysub,19]      <- mycomment
+        results1[mysub,20:34]   <-  savedata
+        triallist_L1_Sem[mysub,2:(trialsperrun+1)] <- triallist[mysub,2:(trialsperrun+1)]
+      }
     }
     if (language == 2){
-      results2[mysub,2]      <- mycomment
-      results2[mysub,3:17] <-  savedata
-      triallist2[mysub,2:(trialsperrun+1)] <- triallist[mysub,2:(trialsperrun+1)]
+      if (task == 1){
+        results2[mysub,2]      <- mycomment
+        results2[mysub,3:17]   <-  savedata
+        triallist_L2_Phon[mysub,2:(trialsperrun+1)] <- triallist[mysub,2:(trialsperrun+1)]
+      }
+      if (task ==2){
+        results2[mysub,19]      <- mycomment
+        results2[mysub,20:34]   <-  savedata
+        triallist_L2_Sem[mysub,2:(trialsperrun+1)] <- triallist[mysub,2:(trialsperrun+1)]
+      }
     }
     
     # Print averaged epoch data to file
@@ -664,12 +705,11 @@ for (mysub in 1
       mymeanLR[,4]<-Rmean
       mymeanLR[,5]<-Lmean-Rmean
       colnames(mymeanLR)<-c("ID", "time", "Lmean", "Rmean", "meanDiff")
-      if (language ==1){
-        csvFile2<-paste(rawmeansdir, "/BL",mysubname,"_L1.csv",sep="")}
-      if (language ==2){
-        csvFile2<-paste(rawmeansdir, "/BL", mysubname,"_L2.csv",sep="")}
+
+      csvFile2<-paste(rawmeansdir, "/BL",mysubname,"_L", language, "_", tasks[task], ".csv",sep="")
       write.csv(mymeanLR, csvFile2, row.names=F)
     }
+    } # End loop through tasks (Phon and Sem)
 
   } # End loop through L1 and L2
 } # End loop through subjects
@@ -679,6 +719,7 @@ write.csv(results1, file = resultsloc1, row.names=F)
 write.csv(results2, file = resultsloc2, row.names=F)
 
 # Print triallist files
-sheets <- list('L1' = triallist1, 'L2' = triallist2)
+sheets <- list('L1_Phon' = triallist_L1_Phon, 'L2_Phon' = triallist_L2_Phon, 
+               'L1_Sem' = triallist_L1_Sem, 'L2_Sem' = triallist_L2_Sem)
 write_xlsx(sheets, 'filelist_L1_L2.xlsx')
   
