@@ -111,7 +111,7 @@ results1$L1_Sem.mean_laterality <- as.character(results1$L1_Sem.mean_laterality)
 results2$L2_Sem.peak_laterality <- as.character(results2$L2_Sem.peak_laterality)
 results2$L2_Sem.mean_laterality <- as.character(results2$L2_Sem.mean_laterality)
 
-for (mysub in 2){ # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
+for (mysub in 1){ # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
   
   mysubname <- all_subjects[mysub]
   cat(paste0("BL",mysubname), "\n\n")
@@ -721,5 +721,5 @@ write.csv(results2, file = resultsloc2, row.names=F)
 # Print triallist files
 sheets <- list('L1_Phon' = triallist_L1_Phon, 'L2_Phon' = triallist_L2_Phon, 
                'L1_Sem' = triallist_L1_Sem, 'L2_Sem' = triallist_L2_Sem)
-write_xlsx(sheets, 'filelist_L1_L2.xlsx')
+write_xlsx(sheets, 'Miho_filelist_L1_L2.xlsx')
   
