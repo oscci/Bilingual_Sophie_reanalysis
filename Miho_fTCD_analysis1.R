@@ -111,7 +111,7 @@ results1$L1_Sem.mean_laterality <- as.character(results1$L1_Sem.mean_laterality)
 results2$L2_Sem.peak_laterality <- as.character(results2$L2_Sem.peak_laterality)
 results2$L2_Sem.mean_laterality <- as.character(results2$L2_Sem.mean_laterality)
 
-for (mysub in 1){ # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
+for (mysub in 8){ # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
   
   mysubname <- all_subjects[mysub]
   cat(paste0("BL",mysubname), "\n\n")
@@ -186,7 +186,8 @@ for (mysub in 1){ # If you want to analyse ALL subjects you can change this to (
     markerchan = c(rawdata$marker,0); 
     markersub = markerchan - markerplus; # start of marker indicated by large difference between consecutive data points
     meanmarker <- mean(rawdata$marker) # We will identify big changes in marker value that are > 5 sds
-    markersize <- meanmarker+4*sd(rawdata$marker)
+    markersize <- meanmarker+3*sd(rawdata$marker)
+    
     origmarkerlist = which(markersub>markersize)
     norigmarkers = length(origmarkerlist)
     
