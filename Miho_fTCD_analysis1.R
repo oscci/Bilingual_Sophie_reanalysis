@@ -111,7 +111,7 @@ results1$L1_Sem.mean_laterality <- as.character(results1$L1_Sem.mean_laterality)
 results2$L2_Sem.peak_laterality <- as.character(results2$L2_Sem.peak_laterality)
 results2$L2_Sem.mean_laterality <- as.character(results2$L2_Sem.mean_laterality)
 
-for (mysub in 8){ # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
+for (mysub in 19){ # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
   
   mysubname <- all_subjects[mysub]
   cat(paste0("BL",mysubname), "\n\n")
@@ -192,6 +192,7 @@ for (mysub in 8){ # If you want to analyse ALL subjects you can change this to (
     norigmarkers = length(origmarkerlist)
     
     if (origmarkerlist[1] == 1){ # Sometimes the trigger channel may have been 'up' at the start of the experiment. 
+      
       # In this case, recalculate the time for trigger 1
       myaddcomment<-paste("Trigger channel started in 'up' position.")
       mycomment<-paste(mycomment,myaddcomment)
@@ -199,6 +200,12 @@ for (mysub in 8){ # If you want to analyse ALL subjects you can change this to (
       markeroff = which(markersub < -markersize)
       # Triggers last 0.25 seconds
       origmarkerlist[1] <- markeroff[1] - (floor(0.25 * samplingrate))
+      
+      # BUT if there are more than 20 markers, this first one should be ignored
+      if (norigmarkers > trialsperrun){
+        origmarkerlist <- origmarkerlist[-1]
+        norigmarkers <- length(origmarkerlist)
+      }
     }
     
     if (origmarkerlist[norigmarkers] > (mylen-postpoints))
