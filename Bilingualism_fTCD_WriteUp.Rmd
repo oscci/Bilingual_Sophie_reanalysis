@@ -29,6 +29,8 @@ colnames(background_data_total)[1] <-  colnames(background_data_total)[1] <- 'ID
 Miho_L1_data <- read.csv('Miho_Results_L1.csv')
 Miho_L2_data <- read.csv('Miho_Results_L2.csv')
 Miho_background_data_total <- read.csv('Miho_background_data.csv', stringsAsFactors = FALSE)
+colnames(Miho_background_data_total)[1] <-  colnames(Miho_background_data_total)[1] <- 'ID'
+Miho_background_data_total$ID <- as.numeric(gsub("BL", replacement = "", Miho_background_data_total$subject))
 
 ```
 
@@ -282,7 +284,19 @@ Sem_nsubj <- dim(L1_Sem_data)[1]
 Miho_background_data <- Miho_background_data_total[which(exclude==0), ]
 
 # Calculate demographics summary statistics
-##### To be completed! #####
+#NEED TO CHECK 0 IS DEFINITLEY FEMALE!!
+
+miho_demo_summary <- Miho_background_data %>%
+  summarise(N_total = n(), N_female_j = length(which(Gender == "0")), N_male_j = length(which(Gender== "1")),
+            mean_age_j = mean(Age, na.rm = TRUE), sd_age = sd(Age, na.rm = TRUE), 
+            mean_aoa_L2_j = mean(aoa_L2, na.rm = TRUE), sd_aoa_L2_j = sd(aoa_L2, na.rm = TRUE),
+            mean_eng_score_j = mean(Eng_score, na.rm = TRUE), sd_eng_score_j = sd(Eng_score, na.rm = TRUE),
+            mean_eng_use_month_j = mean(length_useEng_months, na.rm = TRUE), sd_eng_use_month_j = sd(length_useEng_months, na.rm = TRUE),
+            mean_eng_speak_j = mean(Eng_Speak, na.rm = TRUE), sd_eng_speak_j = sd(Eng_Speak, na.rm = TRUE),
+            mean_eng_listen_j = mean(Eng_Listen, na.rm = TRUE), sd_eng_listen_j = sd(Eng_Listen, na.rm = TRUE),
+            mean_eng_read_j = mean(Eng_Read, na.rm = TRUE), sd_eng_read_j = sd(Eng_Read, na.rm = TRUE), 
+            mean_eng_write_j = mean(Eng_Write, na.rm = TRUE), sd_eng_write_j = sd(Eng_Write, na.rm = TRUE),
+            )
 
 ```
 
@@ -350,10 +364,10 @@ summary_stats[which(is.na(summary_stats[,8])), 8] <- 0
 summary_stats <- as.data.frame(summary_stats)
 
 # Plot Miho Phon L1 and L2 data
-plotdata <- inner_join(x = L1_Phon_data, L2_Phon_data)
-L1_L2_Phon_corr <- cor.test (plotdata$L1_Phon.mean_LI, plotdata$L2_Phon.mean_LI, method = "spearman")
+plotdata_j <- inner_join(x = L1_Phon_data, L2_Phon_data)
+L1_L2_Phon_corr <- cor.test (plotdata_j$L1_Phon.mean_LI, plotdata_j$L2_Phon.mean_LI, method = "spearman")
 
-Fig3 <- ggplot(data = plotdata, aes(x = L1_Phon.mean_LI, y = L2_Phon.mean_LI)) + 
+Fig3 <- ggplot(data = plotdata_j, aes(x = L1_Phon.mean_LI, y = L2_Phon.mean_LI)) + 
   geom_point()+
   theme_bw()+
   xlab("LI for L1 (Japanese), Phonological Fluency") +  
@@ -365,10 +379,10 @@ Fig3 <- ggplot(data = plotdata, aes(x = L1_Phon.mean_LI, y = L2_Phon.mean_LI)) +
   ggtitle('Figure 3')
 
 # Plot Miho Sem L1 and L2 data
-plotdata <- inner_join(x = L1_Sem_data, y = L2_Sem_data)
-L1_L2_corr <- cor.test (plotdata$L1_Sem.mean_LI, plotdata$L2_Sem.mean_LI, method = "spearman")
+plotdata_j <- inner_join(x = L1_Sem_data, y = L2_Sem_data)
+L1_L2_corr <- cor.test (plotdata_j$L1_Sem.mean_LI, plotdata_j$L2_Sem.mean_LI, method = "spearman")
 
-Fig4 <- ggplot(data = plotdata, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
+Fig4 <- ggplot(data = plotdata_j, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
   geom_point()+
   theme_bw()+
   xlab("LI for L1 (Japanese), Semantic Fluency") +
@@ -379,7 +393,7 @@ Fig4 <- ggplot(data = plotdata, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
   geom_text(x = 1, y = 7, label = paste('r = ', round(L1_L2_corr$estimate, 3)), colour = 'red') +
   ggtitle('Figure 4')
 
-# Check correlations with EHI 
+# Check correlations with EHI
 #TO COMPLETE
 # EHI_LI_L1_Phon_cor <- cor.test (background_data$EHI, L1_data$L1_Phon.mean_LI, method = "spearman")
 # EHI_LI_L2_Phon_cor <- cor.test (background_data$EHI, L2_data$L2_Phon.mean_LI, method = "spearman")
@@ -388,7 +402,7 @@ Fig4 <- ggplot(data = plotdata, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
 
 # Check for effect of testing order (0 = L2 tested first, 1 = L1 tested first)
 # TO COMPLETE
-# total_info <- inner_join(x = plotdata, y = background_data, by = c("ID"))
+# total_info <- inner_join(x = plotdata_j, y = background_data, by = c("ID"))
 # nL1_testedfirst <- nrow(background_data[background_data$Tested == 1,]) #how many tested with L1 first
 # nL1_testedsecond <- nrow(background_data[background_data$Tested == 0,]) # how many tested with L2 first
 # testing_0 <- filter(total_info, Tested == "0")
@@ -401,7 +415,31 @@ Fig4 <- ggplot(data = plotdata, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
 
 ```{r table3, echo=FALSE, warning=FALSE, message=FALSE}
 
-#### To be completed ####
+#### demographics table ####
+# Update names of rows when we get more info on background demographics. 
+
+############
+
+demo_table_j <- matrix(data=NA, nrow=8, ncol=2)
+colnames(demo_table_j) <- c('Characteristic', 'Mean (sd)')
+Miho_background_data_total$ID <- gsub("BL", replacement = "", Miho_background_data_total$ID)
+
+demo_table_j[,1] <- c('Age, years', 'Age of English Acquisition, years', 'mean English score', 'Use of English, months', 'English speaking', 'English listening', 'English Reading', 'English Writing')
+
+demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_age_j, 2), ' (', round(miho_demo_summary$sd_age, 2), ')')
+demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_aoa_L2_j, 2), ' (', round(miho_demo_summary$sd_aoa_L2_j, 2), ')')
+demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_score_j, 2), ' (', round(miho_demo_summary$sd_eng_score_j, 2), ')')
+demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_use_month_j, 2), ' (', round(miho_demo_summary$sd_eng_use_month_j, 2), ')')
+demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_speak_j, 2), ' (', round(miho_demo_summary$sd_eng_speak_j, 2), ')')
+demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_listen_j, 2), ' (', round(miho_demo_summary$sd_eng_listen_j, 2), ')')
+demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_read_j, 2), ' (', round(miho_demo_summary$sd_eng_read_j, 2), ')')
+demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_write_j, 2), ' (', round(miho_demo_summary$sd_eng_write_j, 2), ')')
+demo_table_j <- as.data.frame(demo_table_j)
+
+table101 <- flextable(demo_table_j) %>% set_caption('table101', caption=paste0('Table 101. Demographics for the Study 2 participants, N=', miho_demo_summary$N_total, ' (', miho_demo_summary$N_female_j, ' female)')) 
+table101 <- autofit(table101)
+table101
+
 ```
 
 ### Language History
@@ -447,7 +485,16 @@ print(Fig4)
 
 ```{r study2_aoa, echo=FALSE, warning=FALSE, message=FALSE}
 
+# Correlation between AOA and LIs
+# aoa_L2_corr <- cor.test(total_info$L2_Acquisition, total_info$L2.mean_LI, method = "spearman")
+# aoF_L2_corr <- cor.test(total_info$L2_Fluent, total_info$L2.mean_LI, method = "spearman")
+# prof_L2_corr <- cor.test(total_info$L2_prof, total_info$L2.mean_LI, method="spearman")
+
+total_info_j <- inner_join(x = plotdata_j, y = Miho_background_data_total, by = c("ID"))
 # TO BE COMPLETED
+#total_info_j <- 
+#aoa_L2_corr_j <- cor.test(Miho_background_data_total$aoa_L2, plotdata_j$L1_Sem.mean_LI, method = "spearman")
+
 ```
 
 ## Discussion
