@@ -30,7 +30,7 @@ Miho_L1_data <- read.csv('Miho_Results_L1.csv')
 Miho_L2_data <- read.csv('Miho_Results_L2.csv')
 Miho_background_data_total <- read.csv('Miho_background_data.csv', stringsAsFactors = FALSE)
 colnames(Miho_background_data_total)[1] <-  colnames(Miho_background_data_total)[1] <- 'ID'
-Miho_background_data_total$ID <- as.numeric(gsub("BL", replacement = "", Miho_background_data_total$subject))
+Miho_background_data_total$ID_num <- as.numeric(gsub("BL", replacement = "", Miho_background_data_total$ID))
 
 ```
 
@@ -417,6 +417,7 @@ Fig4 <- ggplot(data = plotdata_j, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
 
 #### demographics table ####
 # Update names of rows when we get more info on background demographics. 
+# Make a demographics table
 
 ############
 
@@ -427,13 +428,13 @@ Miho_background_data_total$ID <- gsub("BL", replacement = "", Miho_background_da
 demo_table_j[,1] <- c('Age, years', 'Age of English Acquisition, years', 'mean English score', 'Use of English, months', 'English speaking', 'English listening', 'English Reading', 'English Writing')
 
 demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_age_j, 2), ' (', round(miho_demo_summary$sd_age, 2), ')')
-demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_aoa_L2_j, 2), ' (', round(miho_demo_summary$sd_aoa_L2_j, 2), ')')
-demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_score_j, 2), ' (', round(miho_demo_summary$sd_eng_score_j, 2), ')')
-demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_use_month_j, 2), ' (', round(miho_demo_summary$sd_eng_use_month_j, 2), ')')
-demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_speak_j, 2), ' (', round(miho_demo_summary$sd_eng_speak_j, 2), ')')
-demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_listen_j, 2), ' (', round(miho_demo_summary$sd_eng_listen_j, 2), ')')
-demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_read_j, 2), ' (', round(miho_demo_summary$sd_eng_read_j, 2), ')')
-demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_eng_write_j, 2), ' (', round(miho_demo_summary$sd_eng_write_j, 2), ')')
+demo_table_j[2,2] <- paste0(round(miho_demo_summary$mean_aoa_L2_j, 2), ' (', round(miho_demo_summary$sd_aoa_L2_j, 2), ')')
+demo_table_j[3,2] <- paste0(round(miho_demo_summary$mean_eng_score_j, 2), ' (', round(miho_demo_summary$sd_eng_score_j, 2), ')')
+demo_table_j[4,2] <- paste0(round(miho_demo_summary$mean_eng_use_month_j, 2), ' (', round(miho_demo_summary$sd_eng_use_month_j, 2), ')')
+demo_table_j[5,2] <- paste0(round(miho_demo_summary$mean_eng_speak_j, 2), ' (', round(miho_demo_summary$sd_eng_speak_j, 2), ')')
+demo_table_j[6,2] <- paste0(round(miho_demo_summary$mean_eng_listen_j, 2), ' (', round(miho_demo_summary$sd_eng_listen_j, 2), ')')
+demo_table_j[7,2] <- paste0(round(miho_demo_summary$mean_eng_read_j, 2), ' (', round(miho_demo_summary$sd_eng_read_j, 2), ')')
+demo_table_j[8,2] <- paste0(round(miho_demo_summary$mean_eng_write_j, 2), ' (', round(miho_demo_summary$sd_eng_write_j, 2), ')')
 demo_table_j <- as.data.frame(demo_table_j)
 
 table101 <- flextable(demo_table_j) %>% set_caption('table101', caption=paste0('Table 101. Demographics for the Study 2 participants, N=', miho_demo_summary$N_total, ' (', miho_demo_summary$N_female_j, ' female)')) 
@@ -486,11 +487,11 @@ print(Fig4)
 ```{r study2_aoa, echo=FALSE, warning=FALSE, message=FALSE}
 
 # Correlation between AOA and LIs
-# aoa_L2_corr <- cor.test(total_info$L2_Acquisition, total_info$L2.mean_LI, method = "spearman")
-# aoF_L2_corr <- cor.test(total_info$L2_Fluent, total_info$L2.mean_LI, method = "spearman")
-# prof_L2_corr <- cor.test(total_info$L2_prof, total_info$L2.mean_LI, method="spearman")
 
+Miho_background_data_total$ID <- as.numeric("ID")
 total_info_j <- inner_join(x = plotdata_j, y = Miho_background_data_total, by = c("ID"))
+
+
 # TO BE COMPLETED
 #total_info_j <- 
 #aoa_L2_corr_j <- cor.test(Miho_background_data_total$aoa_L2, plotdata_j$L1_Sem.mean_LI, method = "spearman")
