@@ -30,7 +30,7 @@ Miho_L1_data <- read.csv('Miho_Results_L1.csv')
 Miho_L2_data <- read.csv('Miho_Results_L2.csv')
 Miho_background_data_total <- read.csv('Miho_background_data.csv', stringsAsFactors = FALSE)
 colnames(Miho_background_data_total)[1] <-  colnames(Miho_background_data_total)[1] <- 'ID'
-Miho_background_data_total$ID_num <- as.numeric(gsub("BL", replacement = "", Miho_background_data_total$ID))
+Miho_background_data_total$ID <- as.numeric(gsub("BL", replacement = "", Miho_background_data_total$ID))
 
 ```
 
@@ -270,18 +270,19 @@ Miho_nsubj_all <- dim(Miho_L1_data)[1]
 # Phonological and Semantic fluency tasks will be treated separately
 Phon_exclude <- Miho_L1_data$L1_Phon.exclusions + Miho_L2_data$L2_Phon.exclusions
 Sem_exclude <- Miho_L1_data$L1_Sem.exclusions + Miho_L2_data$L2_Sem.exclusions 
+Miho_exclude <- Phon_exclude + Sem_exclude
 
 # We will include the rows in L1_data and L2_data for any participants where exclude = 0
-L1_Phon_data <- Miho_L1_data[which(Phon_exclude==0), ]
-L2_Phon_data <- Miho_L2_data[which(Phon_exclude==0), ]
-L1_Sem_data <- Miho_L1_data[which(Sem_exclude==0), ]
-L2_Sem_data <- Miho_L2_data[which(Sem_exclude==0), ]
+L1_Phon_data <- Miho_L1_data[which(Miho_exclude==0), ]
+L2_Phon_data <- Miho_L2_data[which(Miho_exclude==0), ]
+L1_Sem_data <- Miho_L1_data[which(Miho_exclude==0), ]
+L2_Sem_data <- Miho_L2_data[which(Miho_exclude==0), ]
 
 # How many subjects were included for each task?
 Phon_nsubj <- dim(L1_Phon_data)[1]
 Sem_nsubj <- dim(L1_Sem_data)[1]
 # Remove excluded participants from backgound data too
-Miho_background_data <- Miho_background_data_total[which(exclude==0), ]
+Miho_background_data <- Miho_background_data_total[which(Miho_exclude==0), ]
 
 # Calculate demographics summary statistics
 #NEED TO CHECK 0 IS DEFINITLEY FEMALE!!
@@ -423,7 +424,6 @@ Fig4 <- ggplot(data = plotdata_j, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
 
 demo_table_j <- matrix(data=NA, nrow=8, ncol=2)
 colnames(demo_table_j) <- c('Characteristic', 'Mean (sd)')
-Miho_background_data_total$ID <- gsub("BL", replacement = "", Miho_background_data_total$ID)
 
 demo_table_j[,1] <- c('Age, years', 'Age of English Acquisition, years', 'mean English score', 'Use of English, months', 'English speaking', 'English listening', 'English Reading', 'English Writing')
 
@@ -488,8 +488,8 @@ print(Fig4)
 
 # Correlation between AOA and LIs
 
-Miho_background_data_total$ID <- as.numeric("ID")
-total_info_j <- inner_join(x = plotdata_j, y = Miho_background_data_total, by = c("ID"))
+# Miho_background_data_total$ID <- as.numeric("ID")
+total_info_j <- inner_join(x = plotdata_j, y = Miho_background_data, by = c("ID"))
 
 
 # TO BE COMPLETED
