@@ -493,10 +493,10 @@ L2_Phon_normality <- shapiro.test(L2_Phon_data$L2_Phon.mean_LI)
 L2_Sem_normality <- shapiro.test(L2_Sem_data$L2_Sem.mean_LI)
 
 # spearman correlation test on odds and evens - means
-L1_Phon_splithalf <- cor.test(L1_Phon_data$L1_Phon.mean_odd, L1_Phon_data$L1_Phon.mean_even, method = "spearman")
-L2_Phon_splithalf <- cor.test(L2_Phon_data$L2_Phon.mean_odd, L2_Phon_data$L2_Phon.mean_even, method = "spearman")
-L1_Sem_splithalf <- cor.test(L1_Sem_data$L1_Sem.mean_odd, L1_Sem_data$L1_Sem.mean_even, method = "spearman")
-L2_Sem_splithalf <- cor.test(L2_Sem_data$L2_Sem.mean_odd, L2_Sem_data$L2_Sem.mean_even, method = "spearman")
+L1_Phon_splithalf <- cor.test(L1_Phon_data$L1_Phon.mean_odd, L1_Phon_data$L1_Phon.mean_even, method = "pearson")
+L2_Phon_splithalf <- cor.test(L2_Phon_data$L2_Phon.mean_odd, L2_Phon_data$L2_Phon.mean_even, method = "pearson")
+L1_Sem_splithalf <- cor.test(L1_Sem_data$L1_Sem.mean_odd, L1_Sem_data$L1_Sem.mean_even, method = "pearson")
+L2_Sem_splithalf <- cor.test(L2_Sem_data$L2_Sem.mean_odd, L2_Sem_data$L2_Sem.mean_even, method = "pearson")
 
 ```
 
