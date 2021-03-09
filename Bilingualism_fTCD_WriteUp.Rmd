@@ -86,13 +86,12 @@ The Language Experience and Proficiency Questionnaire (LEAP-Q; Marian et al., 20
 Of relevance for our analyses were the numbers of languages spoken; age of acquisition of English; age of acheiving fluency in English; self-reported strength of foreign accent when speaking English (on a scale from 0 [none] to 10 [pervasive]); and self-reported proficiency ratings in speaking, reading and understanding English (on a scale from 0 [none] to 10 [perfect]). An overall proficiency rating was calculated by taking the mean ratings for proficiency in speaking, reading and understanding English.
 
 ### fTCD Apparatus
-A commercially available transcranial Doppler ultrasonography device (DWL, Multidop T2; manufacturer, DWL Elektronische Systeme, Singen, Germany) was used for continuous measurements of the changes in CBFV through the left and right MCA. The MCA was insonated at ~5 cm (40–60 mm). Activity in frontal and medial cortical areas, supplied by the anterior cerebral artery, and inferior temporal cortex, supplied by the posterior cerebral artery, do not contribute to the measurements made in the MCA. Two 2-MHz transducer probes, which are relatively insensitive to participant motion, were mounted on a screw-top headset and positioned bilaterally over the temporal skull window (Deppe et al., 2004).
+A commercially available transcranial Doppler ultrasonography device (DWL, Multidop T2; manufacturer, DWL Elektronische Systeme, Singen, Germany) was used for continuous measurements of the changes in cerebral blood flow velocity (CBFV) through the left and right MCA. The MCA was insonated at ~5 cm (40–60 mm). Activity in frontal and medial cortical areas, supplied by the anterior cerebral artery, and inferior temporal cortex, supplied by the posterior cerebral artery, do not contribute to the measurements made in the MCA. Two 2-MHz transducer probes, which are relatively insensitive to participant motion, were mounted on a screw-top headset and positioned bilaterally over the temporal skull window (Deppe et al., 2004).
 
 ### Word Generation Task
 Tasks were programmed using Presentation® software (version 17.2; www.neurobs.com). All instructions were presented centrally in white Arial font on a black background. Each participant was tested in English (L2) and their native language (L1; French or German) in a single session using two tasks, each consisting of 23 trials.
 
-!! The following paragraph is copied from the original paper, but we only have data for one task (word generation) !!
-The order of the two language tasks was counterbalanced across participants and the entire testing session lasted between 75 and 90 minutes. The experimenter spoke English at all times. So that they were focussed on their native language, participants were asked to describe the Cookie Theft picture of the Boston Diagnostic Aphasia Examination in their native language prior to being tested in that language (Goodglass & Kaplan, 1983).
+The order of the two languages was counterbalanced across participants and the entire testing session lasted between 75 and 90 minutes. The experimenter spoke English at all times. So that they were focussed on their native language, participants were asked to describe the Cookie Theft picture of the Boston Diagnostic Aphasia Examination in their native language prior to being tested in that language (Goodglass & Kaplan, 1983).
 
 The cued word generation paradigms were based on Knecht and colleagues’ 1998 paradigm (Knecht et al., 1998b). For each trial, the participant is shown a letter and is asked to silently generate words starting with that letter. Each task comprised 23 trials and lasted for around 20 minutes. We excluded the three letters with the lowest first letter word frequency: Q, X and Y in English; Q, X and Z in German; and W, X and Y in French. Task instructions for the German and French word generation tasks were translated into German and French by the experimenter.
 
@@ -100,7 +99,40 @@ Each trial started with an auditory tone and the written instruction “Clear Mi
 
 ### fTCD Analysis
 
-TO BE COMPLETED
+The CBFV data were analysed using custom scripts in R Studio (R Studio Team, 2015), which are available on Open Science Framework (link). The data preprocessing followed conventional methods (Deppe, Ringelstein & Knecht, 2004), and included the following steps:
+
+-	Downsampling from 100Hz to 25Hz
+
+-	Epoching from -11s to 21s relative to the onset of the ‘Clear Mind’ cue
+
+-	Manual exclusion of trials with obvious spiking or dropout artefacts
+
+-	Automated detection of data points with signal intensity beyond 0.0001-0.999 quantiles. If a trial contained one of these extreme data points, it was replaced by the mean for that epoch; if it contained more than one, the trial was excluded from further analysis
+
+-	Normalisation of signal intensity by dividing CBFV values by the mean for all included trials and multiplying by 100
+
+-	Heart cycle integration by averaging the signal intensity from peak to peak of the heart beat
+
+-	Baseline correction by subtracting the mean CBFV across the baseline period (-10s to 0s relative to the ‘Clear Mind’ cue) from all values in the trial
+
+-	Automated detection and rejection of trials containing normalized values below 60 or 140.
+
+Participants with less than 15 useable trials for either language were excluded from all further analyses. For each participant that was included in the analysis, a grand mean was calculated over all of their included trials. A laterality index (LI) was calculated by taking the mean of the difference between left and right CBFVs (L-R) within a period of interest (POI) that started 8s after the ‘Clear Mind’ cue (i.e. 3s after the word generation task had begun) and ended at 20s (i.e. when the covert generation task ended). The start time of the POI was chosen to allow time for the blood flow to respond to the task; and the end time was chosen to prevent capturing the response to the overt speech generation phase.
+
+This method of calculating LI using the mean L-R difference across the whole of the POI (the ‘mean’ method) deviates from the conventional method of using the mean of a narrow time window around the peak difference within the POI (the ‘peak’ method). It has been shown that it is unusual for the peak method to result in an LI of zero, which distorts the measurement of laterality and results in less normally distributed LI values (Woodhead et al., 2020). Nonetheless, peak LI values are available in the online data repository if readers wish to see them.
+
+Finally, we identified and excluded datasets with unusually high trial-by-trial variability using the Hoaglin and Iglewicz (1987) outlier detection method. For this analysis, LI was calculated for each trial, rather than just for the grand average. The standard error of the LI values was then calculated. Outliers were  defined as datasets where the standard error was above an upper threshold, calculated as:
+
+Upper threshold = Q3 + 2.2 * (Q3 – Q1)
+
+whereby Q1 is the first quantile of the standard errors among all participants, and Q3 is the third quartile. Participants who had standard error above the upper threshold for either L1 or L2 were excluded from all further analyses.
+
+
+### Statistical Analysis
+To test our main hypothesis, the association between strength of lateralization (LI values) for L1 and L2 was tested using Spearman’s correlation and visualized using a scatterplot. For our second hypothesis, we tested whether there was a correlation between LI value for L2 and age of acquisition of L2. 
+
+In addition, we tested the correlation between LI values and strength of handedness (EHI quotient). The impact of testing order (L1 then L2, or L2 then L1) was assessed using two independent samples t-tests: (1) comparing LI values for L1 in participants tested with it first, versus those tested with it second; and (2) the same comparison, but for LI values for L2.
+
 
 ```{r study1_descriptive_statistics, echo=FALSE, message=FALSE, warning=FALSE}
 # Calculate mean and SEM LI value for L1 and L2
@@ -216,7 +248,7 @@ L2_splithalf <- cor.test(L2_data$L2.mean_odd, L2_data$L2.mean_even, method = "sp
   
   As mentioned in the Methods, `r length(which(exclude!=0))` participants were excluded from the analysis due to poor data quality or an insufficient number of trials. For the remaining participants, `r excluded_trials_L1`% of trials were excluded for L1, and `r excluded_trials_L2`% for L2.
   
-  Normality of the LI values was assessed using Shaprio-Wilk tests. For L1 the data significantly deviated from normality (W = `r round(L1_normality$statistic, 2)`, p = `r round(L1_normality$p.value, 3)`), but for L2 it did not (W = `r round(L2_normality$statistic, 2)`, p = `r round(L2_normality$p.value, 3)`).
+  Normality of the LI values was assessed using Shapiro-Wilk tests. For L1 the data significantly deviated from normality (W = `r round(L1_normality$statistic, 2)`, p = `r round(L1_normality$p.value, 3)`), but for L2 it did not (W = `r round(L2_normality$statistic, 2)`, p = `r round(L2_normality$p.value, 3)`).
 
   Split-half reliability was assessed by correlating the LI values from odd and even trials. The spearman's correlation for the L1 data was `r round(L1_splithalf$estimate, 2)`, and for the L2 data it was `r round(L2_splithalf$estimate, 2)`, indicating medium to good reliability.
   
@@ -487,14 +519,11 @@ print(Fig4)
 ```{r study2_aoa, echo=FALSE, warning=FALSE, message=FALSE}
 
 # Correlation between AOA and LIs
+# normally distributed (lines 490-493)
 
-# Miho_background_data_total$ID <- as.numeric("ID")
 total_info_j <- inner_join(x = plotdata_j, y = Miho_background_data, by = c("ID"))
-
-
-# TO BE COMPLETED
-#total_info_j <- 
-#aoa_L2_corr_j <- cor.test(Miho_background_data_total$aoa_L2, plotdata_j$L1_Sem.mean_LI, method = "spearman")
+aoa_l2_corr_phon_j <- cor.test(total_info_j$aoa_L2, total_info_j$L2_Phon.mean_LI, method = "pearson")
+aoa_l2_corr_sem_j <- cor.test(total_info_j$aoa_L2, total_info_j$L2_Sem.mean_LI, method = "pearson")
 
 ```
 
