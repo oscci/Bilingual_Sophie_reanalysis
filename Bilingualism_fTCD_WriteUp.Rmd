@@ -173,12 +173,12 @@ Fig2 <- ggplot(data = plotdata, aes(x = L1.mean_LI, y = L2.mean_LI)) +
   theme_bw()+
   xlab("LI for L1 (French / German)") +  
   ylab("LI for L2 (English)") + 
-  xlim(-3,9) + ylim (-3,9) + 
+  xlim(-2, 9) + ylim(-2, 9) +
   geom_errorbar(aes(ymin = L2.mean_LI - L2.mean_se, ymax = L2.mean_LI + L1.mean_se),linetype = "dotted") + 
   geom_errorbarh(aes(xmin = L1.mean_LI - L1.mean_se, xmax = L1.mean_LI + L1.mean_se), linetype = "dotted") +
   geom_text(x = 2, y = 7, label = paste('r = ', round(L1_L2_corr$estimate, 3)), colour = 'red') +
-  geom_hline(yintercept = 0, linetype="dashed", alpha = 0.2) + 
-  geom_vline(xintercept = 0, linetype= "dashed", alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
+  geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8)  + 
   ggtitle('Figure 2')
 
 # Check correlations with EHI
@@ -206,9 +206,9 @@ Summary statistics for the EHI handedness measure can be seen in Table 1. All pa
 demo_table <- matrix(data=NA, nrow=10, ncol=2)
 colnames(demo_table) <- c('Characteristic', 'Mean (sd)')
 demo_table[,1] <- c('Age, years', 'EHI, /100', 'Languages spoken',
-                          'Age of acquisition, years', 'Age of fluency, years', 'Accent, /10',
-                          'Proficiency: speaking, /10', 'Proficiency: reading, /10', 
-                          'Proficiency: understanding, /10', 'Proficiency: total, /10')
+                    'Age of English acquisition, years', 'Age of English fluency, years', 
+                    'English accent, /10', 'English overall score, /10',
+                    'English speaking, /10', 'English listening, /10', 'English reading, /10')
 #demo_table[1,2] <- paste0(demo_summary$N_total, ' (', demo_summary$N_male, ':', demo_summary$N_female, ')')
 demo_table[1,2] <- paste0(round(demo_summary$mean_age, 2), ' (', round(demo_summary$sd_age, 2), ')')
 demo_table[2,2] <- paste0(round(demo_summary$mean_EHI, 2), ' (', round(demo_summary$sd_EHI, 2), ')')
@@ -216,10 +216,12 @@ demo_table[3,2] <- paste0(round(demo_summary$languages, 2), ' (', round(demo_sum
 demo_table[4,2] <- paste0(round(demo_summary$mean_aoa, 2), ' (', round(demo_summary$sd_aoa, 2), ')')
 demo_table[5,2] <- paste0(round(demo_summary$mean_aoF, 2), ' (', round(demo_summary$sd_aoF, 2), ')')
 demo_table[6,2] <- paste0(round(demo_summary$mean_accent, 2), ' (', round(demo_summary$sd_accent, 2), ')')
-demo_table[7,2] <- paste0(round(demo_summary$mean_speak, 2), ' (', round(demo_summary$sd_speak, 2), ')')
-demo_table[8,2] <- paste0(round(demo_summary$mean_read, 2), ' (', round(demo_summary$sd_read, 2), ')')
+demo_table[7,2] <- paste0(round(demo_summary$mean_prof, 2), ' (', round(demo_summary$sd_prof, 2), ')')
+demo_table[8,2] <- paste0(round(demo_summary$mean_speak, 2), ' (', round(demo_summary$sd_speak, 2), ')')
 demo_table[9,2] <- paste0(round(demo_summary$mean_und, 2), ' (', round(demo_summary$sd_und, 2), ')')
-demo_table[10,2] <- paste0(round(demo_summary$mean_prof, 2), ' (', round(demo_summary$sd_prof, 2), ')')
+demo_table[10,2] <- paste0(round(demo_summary$mean_read, 2), ' (', round(demo_summary$sd_read, 2), ')')
+
+
 demo_table <- as.data.frame(demo_table)
 
 table1 <- flextable(demo_table) %>% set_caption(table1, caption=paste0('Table 1. Demographics for the Study 1 participants, N=',nsubj, ' (', demo_summary$N_female, ' female)')) 
@@ -252,7 +254,7 @@ L2_splithalf <- cor.test(L2_data$L2.mean_odd, L2_data$L2.mean_even, method = "sp
   
   Normality of the LI values was assessed using Shapiro-Wilk tests. For L1 the data significantly deviated from normality (W = `r round(L1_normality$statistic, 2)`, p = `r round(L1_normality$p.value, 3)`), but for L2 it did not (W = `r round(L2_normality$statistic, 2)`, p = `r round(L2_normality$p.value, 3)`).
 
-  Split-half reliability was assessed by correlating the LI values from odd and even trials. The spearman's correlation for the L1 data was `r round(L1_splithalf$estimate, 2)`, and for the L2 data it was `r round(L2_splithalf$estimate, 2)`, indicating medium to good reliability.
+  Split-half reliability was assessed by correlating the LI values from odd and even trials. The Spearman's correlation for the L1 data was `r round(L1_splithalf$estimate, 2)`, and for the L2 data it was `r round(L2_splithalf$estimate, 2)`, indicating medium to good reliability.
   
 
 ### LI Values
@@ -335,11 +337,11 @@ miho_demo_summary <- Miho_background_data %>%
 
 ```
 
-There was a total of `r Phon_nsubj` included in the final analysis. `r length(which(Miho_exclude!=0))` participant was excluded due to poor quality data or insufficient trial numbers. 
+There was a total of `r Phon_nsubj` participants included in the final analysis. `r length(which(Miho_exclude!=0))` participant was excluded due to poor quality data or insufficient trial numbers. 
 
-All further analyses are based on the final sample of `r miho_demo_summary$N_total` participants ( mean age = `r round(miho_demo_summary$mean_age, 2)` years, sd = `r round(miho_demo_summary$sd_age, 2)` years).
+All further analyses are based on the final sample of `r miho_demo_summary$N_total` participants (mean age = `r round(miho_demo_summary$mean_age, 2)` years, sd = `r round(miho_demo_summary$sd_age, 2)` years).
 
-Gender data was availble for 15 participants of and of those 15 `r miho_demo_summary$N_female` were female. 
+Gender data was availble for 15 participants of and of those 15, `r miho_demo_summary$N_female` were female. 
 
 All participants self-reported as being right handed. 
 
@@ -350,26 +352,27 @@ All participants self-reported as being right handed.
 ### Language History
 All participants were native Japanese speakers. 
 
-English language was assessused using the Quick Placement Test which assessed English reading, listening, and grammar (UCLES, 2001). Data was available for 24 of the 15 participants. The mean score on this test was `r round(miho_demo_summary$mean_eng_score_j, 2)` out of 60.   
+English language was assessused using the Quick Placement Test which assessed English reading, listening, and grammar (UCLES, 2001). Data was available for 15 of the 24 participants. The mean score on this test was `r round(miho_demo_summary$mean_eng_score_j, 2)` out of 60.   
 
 ### fTCD Apparatus
 
 !! NEED DOPPLER INFO!! 
 
 ### Word Generation Task
-Participants complete both phonological and semantic word generation tasks in English and Japanese. For each trial participants saw "clear mind" presented on the screen for 3 seconds. The stimuli was then presented and particiapnts had 17 seconds to overtly generate as many words as possible. participants were then instructed to relax for 16 seconds to restore baseline activity. Each trial lasted a total of trail lasted 36 seconds.  
+Participants completed both phonological and semantic word generation tasks in English and Japanese. For each trial participants saw "Clear Mind" presented on the screen for 3 seconds. The cue stimulus was then presented and participants had 17 seconds to overtly generate as many words as possible - note that this differs from Study 1, where covert generation was used. Participants were then instructed to relax for 16 seconds to restore baseline activity. Each trial lasted a total of 36 seconds.  
 
-#### Phonological Fluency Stimuli - Japanese 
-Participants were presented with a cue in Kana, a Japanese phonological script. Following the Japanese mora frequency analysis conducted by Dan et al. (2012) based on the familiarity ratings in Amano & Kondo (1999), 10 of the most frequent 12 moras that are positioned at the beginning of words among 48773 words (see the table below) were selected. Those two moras omitted were は/ha/ and じ/ji/; は/ha/ was omitted because it would be pronounced /wa/ when it was the subject-marker and じ/ji/ was omitted because it was the voiced sound of し /shi/ that was included in the stimuli. Each kana was presented twice, and the 20 trials  were presnted in a pseudo-randomised order to ensure all 10 cues had been presented once before a cue was repeated. 
+### Stimuli
+#### Phonological Word Generation - Japanese
+Participants were presented with a cue in Kana, a Japanese phonological script. Following the Japanese mora frequency analysis conducted by Dan et al. (2012) based on the familiarity ratings in Amano & Kondo (1999), 10 of the 12 most frequent moras that are positioned at the beginning of words were selected (see Table XXX below). The two moras omitted were は (/ha/) and じ (/ji/). は was omitted because it would be pronounced /wa/ when it was the subject-marker and じ was omitted because it was the voiced sound of し (/shi/) that was included in the stimuli. Each kana was presented twice, and the 20 trials  were presented in a pseudo-randomised order to ensure all 10 cues had been presented once before a cue was repeated. 
 
-#### Phonological Fluency Stimuli - English 
+#### Phonological Word Generation - English 
 Participants were presented with 10 alphabetic letters (A, B, C, F, H, M, O, S, T, W). The task consisted of 20 trials which were presented in a pseudo-randomised order to ensure all 10 cues had been presented once before a cue was repeated.
 
-#### Semantic Fluency Stimuli - Japanese 
-10 semantic categories were presented: Farm Animals, Zoo Animals, Vegetables, Fruits, Drinks, Colours, Sports, Pets, Tools and Transport. Each category was repeated twice in the semantic fluency blocks. Categories were  presented in a pseudo randomised order. 
+#### Semantic Word Generation - Japanese 
+10 Japanese words representing semantic categories were presented: farm animals, zoo animals, vegetables, fruits, drinks, colours, sports, pets, tools and transport. Each category was repeated twice in the semantic fluency blocks. Categories were  presented in a pseudo randomised order. 
 
-#### Semantic Fluency Stimuli - English 
-The same semantic categories were presented in English.Each category was repeated twice in the semantic fluency blocks. Categories were  presented in a pseudo randomised order.  
+#### Semantic Word Generation - English 
+The same semantic categories were presented in English. Each category was repeated twice in the semantic fluency blocks. Categories were  presented in a pseudo-randomised order.  
 
 ### fTCD Analysis
 
@@ -435,12 +438,12 @@ Fig3 <- ggplot(data = plotdata_j, aes(x = L1_Phon.mean_LI, y = L2_Phon.mean_LI))
   theme_bw()+
   xlab("LI for L1 (Japanese), Phonological Fluency") +  
   ylab("LI for L2 (English), Phonological Fluency") + 
-  xlim(-3,9) + ylim (-3,9) + 
+  xlim(-2,9) + ylim (-2,9) + 
   geom_errorbar(aes(ymin = L2_Phon.mean_LI - L2_Phon.mean_se, ymax = L2_Phon.mean_LI + L1_Phon.mean_se),linetype = "dotted") + 
   geom_errorbarh(aes(xmin = L1_Phon.mean_LI - L1_Phon.mean_se, xmax = L1_Phon.mean_LI + L1_Phon.mean_se), linetype = "dotted")+
   geom_text(x = 2, y = 7, label = paste('r = ', round(L1_L2_corr$estimate, 3)), colour = 'red') +
-  geom_hline(yintercept = 0, linetype="dashed", alpha = 0.2) + 
-  geom_vline(xintercept = 0, linetype= "dashed", alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
+  geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8) +
   ggtitle('Figure 3')
 
 # Plot Miho Sem L1 and L2 data
@@ -452,12 +455,12 @@ Fig4 <- ggplot(data = plotdata_j, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
   theme_bw()+
   xlab("LI for L1 (Japanese), Semantic Fluency") +
   ylab("LI for L2 (English), Semantic Fluency") +
-  xlim(0-3,9) + ylim (-3,9) +
+  xlim(-2,9) + ylim (-2,9) +
   geom_errorbar(aes(ymin = L2_Sem.mean_LI - L2_Sem.mean_se, ymax = L2_Sem.mean_LI + L1_Sem.mean_se),linetype = "dotted") +
   geom_errorbarh(aes(xmin = L1_Sem.mean_LI - L1_Sem.mean_se, xmax = L1_Sem.mean_LI + L1_Sem.mean_se), linetype = "dotted")+
   geom_text(x = 2, y = 7, label = paste('r = ', round(L1_L2_corr$estimate, 3)), colour = 'red') +
-  geom_hline(yintercept = 0, linetype="dashed", alpha = 0.2) + 
-  geom_vline(xintercept = 0, linetype= "dashed", alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
+  geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8) +
   ggtitle('Figure 4')
 
 # Check correlations with EHI
@@ -479,6 +482,7 @@ Fig4 <- ggplot(data = plotdata_j, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
 
 
 # descriptive statistics for words produced in task
+total_info_j <- inner_join(x = plotdata_j, y = Miho_background_data, by = c("ID"))
 mean_jwords_phon <- mean(total_info_j$JPhon_words, na.rm = TRUE)
 mean_jwords_sem <- mean(total_info_j$JSem_words, na.rm = TRUE)
 mean_ewords_phon <- mean(total_info_j$EPhon_words, na.rm = TRUE)
@@ -488,7 +492,7 @@ words_produced_phon <- t.test(total_info_j$JPhon_words, total_info_j$EPhon_words
 words_produced_sem <- t.test(total_info_j$JSem_words, total_info_j$ESem_words, na.rm = TRUE)
 ```
 
-The same fTCD analysis method was used as in Study 1. The epochs were changed to match time points for Study 2. The period of interest (POI) started at 6s after ‘clear mind’ (3s after word generation task had begun) and ended at 20s. 
+The same fTCD analysis method was used as in Study 1. The epoch lengths were changed to match timings for Study 2. The POI started at 6s after the onset of the ‘Clear Mind’ stimulus (i.e., 3s after the word generation task had begun) and ended at 20s (i.e., at the end of the word generation task). 
 
 ## Results
 
@@ -503,12 +507,12 @@ The same fTCD analysis method was used as in Study 1. The epochs were changed to
 demo_table_j <- matrix(data=NA, nrow=8, ncol=2)
 colnames(demo_table_j) <- c('Characteristic', 'Mean (sd)')
 
-demo_table_j[,1] <- c('Age, years', 'Age of English Acquisition, years', 'mean English score /60', 'Use of English, months', 'English speaking /100', 'English listening /100', 'English Reading /100', 'English Writing /100')
+demo_table_j[,1] <- c('Age, years', 'Age of English acquisition, years', 'Time using English, years', 'English overall score, /60', 'English speaking, /100', 'English listening, /100', 'English reading, /100', 'English writing, /100')
 
 demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_age_j, 2), ' (', round(miho_demo_summary$sd_age, 2), ')')
 demo_table_j[2,2] <- paste0(round(miho_demo_summary$mean_aoa_L2_j, 2), ' (', round(miho_demo_summary$sd_aoa_L2_j, 2), ')')
-demo_table_j[3,2] <- paste0(round(miho_demo_summary$mean_eng_score_j, 2), ' (', round(miho_demo_summary$sd_eng_score_j, 2), ')')
-demo_table_j[4,2] <- paste0(round(miho_demo_summary$mean_eng_use_month_j, 2), ' (', round(miho_demo_summary$sd_eng_use_month_j, 2), ')')
+demo_table_j[3,2] <- paste0(round(miho_demo_summary$mean_eng_use_month_j/12, 2), ' (', round(miho_demo_summary$sd_eng_use_month_j/12, 2), ')')
+demo_table_j[4,2] <- paste0(round(miho_demo_summary$mean_eng_score_j, 2), ' (', round(miho_demo_summary$sd_eng_score_j, 2), ')')
 demo_table_j[5,2] <- paste0(round(miho_demo_summary$mean_eng_speak_j, 2), ' (', round(miho_demo_summary$sd_eng_speak_j, 2), ')')
 demo_table_j[6,2] <- paste0(round(miho_demo_summary$mean_eng_listen_j, 2), ' (', round(miho_demo_summary$sd_eng_listen_j, 2), ')')
 demo_table_j[7,2] <- paste0(round(miho_demo_summary$mean_eng_read_j, 2), ' (', round(miho_demo_summary$sd_eng_read_j, 2), ')')
@@ -527,7 +531,7 @@ Summary statistics of language history can be seen in Table 101. Age of English 
 
 !NOT SURE WHAT THE PARTICIPANTS WERE ASKED TO SELF-REPORT! 
 
-The mean nummber of words produced per trial in the phonological conditions was `r round(mean_jwords_phon, 2)` for Japanese and `r round(mean_ewords_phon, 2)` for English. The mean nummber of words produced per trial in the semantic condition was  `r round(mean_jwords_sem, 2)` for Japanese and `r round(mean_ewords_sem, 2)`for English. There was no signitifacnt difference between the mean number of words produced per trail for L1 and L2 in the phonological condition (p = `r round(words_produced_phon$p.value, 3)`) or the semantic condition (p = `r round(words_produced_sem$p.value, 3)`). 
+The mean number of words produced per trial in the phonological conditions was `r round(mean_jwords_phon, 2)` for Japanese and `r round(mean_ewords_phon, 2)` for English. The mean number of words produced per trial in the semantic condition was  `r round(mean_jwords_sem, 2)` for Japanese and `r round(mean_ewords_sem, 2)` for English. There was no significant difference between the mean number of words produced per trial for L1 and L2 in the phonological condition (p = `r round(words_produced_phon$p.value, 3)`) or the semantic condition (p = `r round(words_produced_sem$p.value, 3)`). 
 
 
 ### fTCD Data Quality and Reliability
@@ -554,11 +558,18 @@ L2_Sem_splithalf <- cor.test(L2_Sem_data$L2_Sem.mean_odd, L2_Sem_data$L2_Sem.mea
 ```
 
 
-Normality of LI values was assessed using Shapiro-Wilk tests. For phonological tasks, data was normally distributed for L1 (W = `r round(L1_Phon_normality$statistic, 2)`, p = `r round(L1_Phon_normality$p.value, 3)` ) and L2 (W = `r round(L2_Phon_normality$statistic, 2)`, p = `r round(L2_Phon_normality$p.value, 3)` ). Data was also normally distributed for semantic tasks for L1 (W = `r round(L1_Sem_normality$statistic, 2)`, p = `r round(L1_Sem_normality$p.value, 3)` ) and L2 (W = `r round(L2_Sem_normality$statistic, 2)`, p = `r round(L2_Sem_normality$p.value, 3)` ). 
+Normality of LI values was assessed using Shapiro-Wilk tests. For phonological tasks, data was normally distributed for L1 (W = `r round(L1_Phon_normality$statistic, 2)`, p = `r round(L1_Phon_normality$p.value, 3)` ) and L2 (W = `r round(L2_Phon_normality$statistic, 2)`, p = `r round(L2_Phon_normality$p.value, 3)` ). Data was also normally distributed for semantic tasks for L1 (W = `r round(L1_Sem_normality$statistic, 2)`, p = `r round(L1_Sem_normality$p.value, 3)` ) and L2 (W = `r round(L2_Sem_normality$statistic, 2)`, p = `r round(L2_Sem_normality$p.value, 3)`). 
 
-Split half relibaility was assessed by correlating the LI values from odd and even trials. For phonological tasks, spearmans correlations was `r round(L1_Phon_splithalf$estimate, 2)` for L1 and `r round (L2_Phon_splithalf$estimate, 2)` for L2. For semantic tasks, spearmans correaltions was `r round(L1_Sem_splithalf$estimate, 2)` for L1 and `r round (L2_Sem_splithalf$estimate, 2)`. This indicated good to medium reliability for all tasks. 
+Split-half reliability was assessed by correlating the LI values from odd and even trials, using Spearman's correlations for consistency with Study 1. For phonological word generation, the split-half correlation was `r round(L1_Phon_splithalf$estimate, 2)` for L1 and `r round (L2_Phon_splithalf$estimate, 2)` for L2. For semantic tasks, the correlation was `r round(L1_Sem_splithalf$estimate, 2)` for L1 and `r round (L2_Sem_splithalf$estimate, 2)` for L2. This indicated good to medium reliability for all tasks. 
 
 ### LI Values
+
+Table 4 shows summary statistics for L1 and L2 in both phonological and semantic word generation tasks. For the phonological task around 24% were bilaterally lateralised and for the semantic task this was around 30%. 4% of particiapants were right lateralised for L2 in the phonological and semantic tasks but not for L1. 
+
+!TESTING ORDER - NOT SURE!
+
+Laterality indicies for L1 and L2 were strongly correlated in both the phonological task (Spearman's R = `r round(L1_L2_Phon_corr$estimate, 3)`) and the semantic task (Spearman's R = `r round(L1_L2_Sem_corr$estimate, 3)`), closely replicating the results of Study 1. This is shown in the scatterplots in Figures 3 and 4. 
+
 ```{r table4, echo=FALSE, warning=FALSE, message=FALSE}
 table4 <- flextable(summary_stats) 
 table4 <- autofit(table4)
@@ -572,11 +583,6 @@ print(Fig4)
 
 ```
 
-Table 4 shows summary statistics for L1 and L2 in both phonological and semantic tasks. All participants were right handed. For the phonological task around 24% were bilaterally lateralised and for the semnatic task this was around 30%. 4% of particiapants were right lateralised for L2 in the phonological and semantic tasks but not for L1. 
-
-!TESTING ORDER - NOT SURE!
-
-Laterality indicies were strongly correlated for L1 and L2 in phonological tasks (Spearman's R = `r round(L1_L2_Phon_corr$estimate, 3)`) and semantic tasks (Spearman's R = `r round(L1_L2_Sem_corr$estimate, 3)`). This is shown in the scatterplot in Figures 3 and 4. 
 
 
 ###  Correlations Between LI and Age of Acquisition
@@ -586,7 +592,6 @@ Laterality indicies were strongly correlated for L1 and L2 in phonological tasks
 # Correlation between AOA and LIs
 # normally distributed (lines 490-493)
 
-total_info_j <- inner_join(x = plotdata_j, y = Miho_background_data, by = c("ID"))
 aoa_l2_corr_phon_j <- cor.test(total_info_j$aoa_L2, total_info_j$L2_Phon.mean_LI, method = "spearman")
 aoa_l2_corr_sem_j <- cor.test(total_info_j$aoa_L2, total_info_j$L2_Sem.mean_LI, method = "spearman")
 
@@ -595,17 +600,17 @@ aoa_l2_corr_sem_j <- cor.test(total_info_j$aoa_L2, total_info_j$L2_Sem.mean_LI, 
 ```
 
 
-```{r scatterplot AOA and LI, echo=FALSE, warning=FALSE, message=FALSE}
+```{r scatterplot_AOA_LI, echo=FALSE, warning=FALSE, message=FALSE}
 
 Fig5 <- ggplot (data = total_info_j, aes(x = aoa_L2, y = L2_Phon.mean_LI )) + 
   geom_point() + 
   theme_bw() + 
   xlab("Age of English Acquisition (years)") + 
   ylab("LI for L2 (Phonology)") + 
-  xlim (2.5,13.5) + ylim (-1,6) + 
+  scale_x_continuous(breaks = seq(0, 14, by=2)) + ylim (-1,6) + 
   geom_errorbar(aes(ymin = L2_Phon.mean_LI - L2_Phon.mean_se, ymax = L2_Phon.mean_LI + L2_Phon.mean_se),linetype = "dotted") +
-  geom_hline(yintercept = 0, linetype="dashed", alpha = 0.2) + 
-  geom_vline(xintercept = 0, linetype= "dashed", alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
+  geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8) +
   ggtitle('Figure 5')
   
 Fig6 <- ggplot (data = total_info_j, aes(x = aoa_L2, y = L2_Sem.mean_LI )) + 
@@ -613,20 +618,28 @@ Fig6 <- ggplot (data = total_info_j, aes(x = aoa_L2, y = L2_Sem.mean_LI )) +
   theme_bw() + 
   xlab("Age of English Acquisition (years)") + 
   ylab("LI for L2 (Semantics)") +
-  xlim (2.5,13.5) + ylim (-1,6) +
+  scale_x_continuous(breaks = seq(0, 14, by=2)) + ylim (-1,6) +
   geom_errorbar(aes(ymin = L2_Sem.mean_LI - L2_Sem.mean_se, ymax = L2_Sem.mean_LI + L2_Sem.mean_se),linetype = "dotted") +
-  geom_hline(yintercept = 0, linetype="dashed", alpha = 0.2) + 
-  geom_vline(xintercept = 0, linetype= "dashed", alpha = 0.2) +
+  geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
+  geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8) +
   ggtitle('Figure 6')
 
-
 ```
+
 
 We explored whether age of acqusition for English was related to strength of laterality in L2. 
 
 This was found not to be significant for LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`) or the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`)
 
 It is worth noting that AOA was only collected for 15 of the 25 subjects. 
+
+```{r fig5_6, echo=FALSE, warning=FALSE, message=FALSE}
+print(Fig5)
+print(Fig6)
+
+```
+
+
 
 ## Discussion
 TO BE COMPLETED 
