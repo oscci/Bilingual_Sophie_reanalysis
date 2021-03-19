@@ -285,8 +285,27 @@ aoa_L2_corr <- cor.test(total_info$L2_Acquisition, total_info$L2.mean_LI, method
 aoF_L2_corr <- cor.test(total_info$L2_Fluent, total_info$L2.mean_LI, method = "spearman")
 prof_L2_corr <- cor.test(total_info$L2_prof, total_info$L2.mean_LI, method="spearman")
 
+Fig7 <- ggplot(data = total_info, aes(x = L2_Acquisition, y = L2.mean_LI)) + 
+  geom_point() + 
+  theme_bw() + 
+  xlab("Age of English Acquisition (years)") + 
+  ylab("Mean LI for L2") +
+  scale_x_continuous(breaks = seq(0, 16, by=2)) + ylim (-1,7) + 
+  geom_errorbar(aes(ymin = L2.mean_LI - L2.mean_se, ymax = L2.mean_LI + L2.mean_se ),linetype = "dotted") +
+  geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
+  geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8) +
+  ggtitle('Figure 7')
+
+
+print(Fig7)
+
+
 ```
-To test whether strength of laterality is affected by the age of acquisition, we computed Spearman's correlations between the LI values for L2 (English) and the age of acquisition of English. This was not significant (r = `r round(aoa_L2_corr$estimate, 2)`, p = `r round(aoa_L2_corr$p.value, 3)`). Similarly, there were no significant correlations between LI values for L2 and the age of acheiving fluency in English (r = `r round(aoF_L2_corr$estimate, 2)`, p = `r round(aoF_L2_corr$p.value, 3)`) or overall proficiency in English (r = `r round(prof_L2_corr$estimate, 2)`, p = `r round(prof_L2_corr$p.value, 3)`).
+
+
+To test whether strength of laterality is affected by the age of acquisition, we computed Spearman's correlations between the LI values for L2 (English) and the age of acquisition of English. This was not significant (r = `r round(aoa_L2_corr$estimate, 2)`, p = `r round(aoa_L2_corr$p.value, 3)`). Similarly, there were no significant correlations between LI values for L2 and the age of acheiving fluency in English (r = `r round(aoF_L2_corr$estimate, 2)`, p = `r round(aoF_L2_corr$p.value, 3)`) or overall proficiency in English (r = `r round(prof_L2_corr$estimate, 2)`, p = `r round(prof_L2_corr$p.value, 3)`). This is displayed in figure 7. 
+
+
 
 ## Discussion
 
@@ -350,9 +369,12 @@ All participants self-reported as being right handed.
 !! NEED ETHICS INFO !!   
 
 ### Language History
-All participants were native Japanese speakers. 
 
-English language was assessused using the Quick Placement Test which assessed English reading, listening, and grammar (UCLES, 2001). Data was available for 15 of the 24 participants. The mean score on this test was `r round(miho_demo_summary$mean_eng_score_j, 2)` out of 60.   
+All participants were native Japanese speakers.
+
+English language was assessused using the Quick Placement Test which assessed English reading, listening, and grammar. The test is scored out of 60. Those who score above 40 are classed as having intermediate level proficiency and those who score above 48 are classed as having advanced level proficiency (UCLES, 2001). 
+
+Data was available for 24 of the 25 participants. The mean score on this test was `r round(miho_demo_summary$mean_eng_score_j, 2)` out of 60.  
 
 ### fTCD Apparatus
 
@@ -484,9 +506,13 @@ Fig4 <- ggplot(data = plotdata_j, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
 # descriptive statistics for words produced in task
 total_info_j <- inner_join(x = plotdata_j, y = Miho_background_data, by = c("ID"))
 mean_jwords_phon <- mean(total_info_j$JPhon_words, na.rm = TRUE)
+sd_jwords_phon <- sd(total_info_j$JPhon_words, na.rm = TRUE)
 mean_jwords_sem <- mean(total_info_j$JSem_words, na.rm = TRUE)
+sd_jwords_sem <- sd(total_info_j$JSem_words, na.rm = TRUE)
 mean_ewords_phon <- mean(total_info_j$EPhon_words, na.rm = TRUE)
+sd_ewords_phon <- sd(total_info_j$EPhon_words, na.rm = TRUE)
 mean_ewords_sem <- mean(total_info_j$ESem_words, na.rm = TRUE)
+sd_ewords_sem <- sd(total_info_j$ESem_words, na.rm = TRUE)
 
 words_produced_phon <- t.test(total_info_j$JPhon_words, total_info_j$EPhon_words, na.rm = TRUE)
 words_produced_sem <- t.test(total_info_j$JSem_words, total_info_j$ESem_words, na.rm = TRUE)
@@ -523,7 +549,6 @@ table101 <- flextable(demo_table_j) %>% set_caption('table101', caption=paste0('
 table101 <- autofit(table101)
 table101
 
-
 ```
 
 ### Language History
@@ -531,7 +556,7 @@ Summary statistics of language history can be seen in Table 101. Age of English 
 
 !NOT SURE WHAT THE PARTICIPANTS WERE ASKED TO SELF-REPORT! 
 
-The mean number of words produced per trial in the phonological conditions was `r round(mean_jwords_phon, 2)` for Japanese and `r round(mean_ewords_phon, 2)` for English. The mean number of words produced per trial in the semantic condition was  `r round(mean_jwords_sem, 2)` for Japanese and `r round(mean_ewords_sem, 2)` for English. There was no significant difference between the mean number of words produced per trial for L1 and L2 in the phonological condition (p = `r round(words_produced_phon$p.value, 3)`) or the semantic condition (p = `r round(words_produced_sem$p.value, 3)`). 
+The mean number of words produced per trial in the phonological conditions was `r round(mean_jwords_phon, 2)` (sd = `r round(sd_jwords_phon, 2)`) for Japanese and `r round(mean_ewords_phon, 2)` (sd = `r round(sd_ewords_phon, 2)`) for English. The mean number of words produced per trial in the semantic condition was `r round(mean_jwords_sem, 2)` (sd = `r round(sd_jwords_sem, 2)`) for Japanese and `r round(mean_ewords_sem, 2)` (sd = (`r round(sd_ewords_sem, 2)`) for English. There was no significant difference between the mean number of words produced per trial for L1 and L2 in the phonological condition (t(`r round(words_produced_phon$parameter, 1)`) = `r round(words_produced_phon$statistic, 2)`, p = `r round(words_produced_phon$p.value, 3)`) or the semantic condition (t(`r round(words_produced_sem$parameter, 1)`) = `r round(words_produced_sem$statistic, 2)`, p = `r round(words_produced_sem$p.value, 3)`). 
 
 
 ### fTCD Data Quality and Reliability
