@@ -380,7 +380,7 @@ All participants self-reported as being right handed.
 
 All participants were native Japanese speakers.
 
-English language was assessused using the Quick Placement Test which assessed English reading, listening, and grammar. The test is scored out of 60. Those who score above 40 are classed as having intermediate level proficiency and those who score above 48 are classed as having advanced level proficiency (UCLES, 2001). 
+English language was assessused using the Quick Placement Test which assessed English reading, listening, and grammar. The test is scored out of 60. Those who scored under 40 were classed as having basic level proficiency (A1/A2); between 40 and 48 were classed as having intermediate level proficiency (B1/B2); and above 48 were classed as having advanced level proficiency (C1/C2) (UCLES, 2001). 
 
 Data was available for 24 of the 25 participants. The mean score on this test was `r round(miho_demo_summary$mean_eng_score_j, 2)` out of 60.  
 
