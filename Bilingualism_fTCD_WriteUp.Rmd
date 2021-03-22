@@ -168,7 +168,7 @@ L1_L2_corr <- cor.test (plotdata$L1.mean_LI, plotdata$L2.mean_LI,
                         method = "spearman", 
                         exact = FALSE)
 
-Fig2 <- ggplot(data = plotdata, aes(x = L1.mean_LI, y = L2.mean_LI)) + 
+Fig1 <- ggplot(data = plotdata, aes(x = L1.mean_LI, y = L2.mean_LI)) + 
   geom_point()+
   theme_bw()+
   xlab("LI for L1 (French / German)") +  
@@ -179,7 +179,7 @@ Fig2 <- ggplot(data = plotdata, aes(x = L1.mean_LI, y = L2.mean_LI)) +
   geom_text(x = 2, y = 7, label = paste('r = ', round(L1_L2_corr$estimate, 3)), colour = 'red') +
   geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
   geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8)  + 
-  ggtitle('Figure 2')
+  ggtitle('Figure 1')
 
 # Check correlations with EHI
 EHI_LI_L1_cor <- cor.test (background_data$EHI, L1_data$L1.mean_LI, method = "spearman")
@@ -268,11 +268,11 @@ table2
 
   Table 2 shows summary statistics for the LI values for L1 and L2. The percentage of participants in each group categorised as left lateralised, bilateral or right lateralised is also shown. The majority of participants were left lateralised, with only around 10% showing bilateral activation. No participants showed right lateralisation for either L1 or L2. T-tests showed that there were no significant effects of testing order on LI values, either for L1 (p = `r round(testing_ttest_L1$p.value, 3)`) or L2 (p = `r round(testing_ttest_L2$p.value, 3)`).
   
-  As can be seen in the scatterplot in Figure 2, laterality indices for L1 and L2 were very similar, and were strongly correlated (Spearman's R = `r round(L1_L2_corr$estimate, 3)`). 
+  As can be seen in the scatterplot in Figure 1, laterality indices for L1 and L2 were very similar, and were strongly correlated (Spearman's R = `r round(L1_L2_corr$estimate, 3)`). 
 
-```{r Fig2, warning=FALSE, message=FALSE, echo=FALSE}
+```{r Fig1, warning=FALSE, message=FALSE, echo=FALSE}
 
-print(Fig2)
+print(Fig1)
 
 ```
 
@@ -285,7 +285,7 @@ aoa_L2_corr <- cor.test(total_info$L2_Acquisition, total_info$L2.mean_LI, method
 aoF_L2_corr <- cor.test(total_info$L2_Fluent, total_info$L2.mean_LI, method = "spearman")
 prof_L2_corr <- cor.test(total_info$L2_prof, total_info$L2.mean_LI, method="spearman")
 
-Fig7 <- ggplot(data = total_info, aes(x = L2_Acquisition, y = L2.mean_LI)) + 
+Fig2 <- ggplot(data = total_info, aes(x = L2_Acquisition, y = L2.mean_LI)) + 
   geom_point() + 
   theme_bw() + 
   xlab("Age of English Acquisition (years)") + 
@@ -294,16 +294,16 @@ Fig7 <- ggplot(data = total_info, aes(x = L2_Acquisition, y = L2.mean_LI)) +
   geom_errorbar(aes(ymin = L2.mean_LI - L2.mean_se, ymax = L2.mean_LI + L2.mean_se ),linetype = "dotted") +
   geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
   geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8) +
-  ggtitle('Figure 7')
+  ggtitle('Figure 2')
 
 
-print(Fig7)
+print(Fig2)
 
 
 ```
 
 
-To test whether strength of laterality is affected by the age of acquisition, we computed Spearman's correlations between the LI values for L2 (English) and the age of acquisition of English. This was not significant (r = `r round(aoa_L2_corr$estimate, 2)`, p = `r round(aoa_L2_corr$p.value, 3)`). Similarly, there were no significant correlations between LI values for L2 and the age of acheiving fluency in English (r = `r round(aoF_L2_corr$estimate, 2)`, p = `r round(aoF_L2_corr$p.value, 3)`) or overall proficiency in English (r = `r round(prof_L2_corr$estimate, 2)`, p = `r round(prof_L2_corr$p.value, 3)`). This is displayed in figure 7. 
+To test whether strength of laterality is affected by the age of acquisition, we computed Spearman's correlations between the LI values for L2 (English) and the age of acquisition of English. This was not significant (r = `r round(aoa_L2_corr$estimate, 2)`, p = `r round(aoa_L2_corr$p.value, 3)`). This is displayed in Figure 2. Similarly, there were no significant correlations between LI values for L2 and the age of acheiving fluency in English (r = `r round(aoF_L2_corr$estimate, 2)`, p = `r round(aoF_L2_corr$p.value, 3)`) or overall proficiency in English (r = `r round(prof_L2_corr$estimate, 2)`, p = `r round(prof_L2_corr$p.value, 3)`).  
 
 
 
@@ -336,6 +336,14 @@ L2_Sem_data <- Miho_L2_data[which(Miho_exclude==0), ]
 # How many subjects were included for each task?
 Phon_nsubj <- dim(L1_Phon_data)[1]
 Sem_nsubj <- dim(L1_Sem_data)[1]
+
+# Add column for english proficiency category: < 40 = basic, > 40 = intermediate, > 48 = advanced
+Miho_background_data_total$Eng_cat <- NA
+Miho_background_data_total$Eng_cat[which(Miho_background_data_total$Eng_score < 40)] <- "basic"
+Miho_background_data_total$Eng_cat[which(Miho_background_data_total$Eng_score >= 40)] <- "intermediate"
+Miho_background_data_total$Eng_cat[which(Miho_background_data_total$Eng_score >= 48)] <- "advanced"
+Miho_background_data_total$Eng_cat <- factor(Miho_background_data_total$Eng_cat, levels = c("basic", "intermediate","advanced", "NA"))
+
 # Remove excluded participants from backgound data too
 Miho_background_data <- Miho_background_data_total[which(Miho_exclude==0), ]
 
@@ -452,10 +460,12 @@ summary_stats[which(is.na(summary_stats[,8])), 8] <- 0
 summary_stats <- as.data.frame(summary_stats)
 
 # Plot Miho Phon L1 and L2 data
-plotdata_j <- inner_join(x = L1_Phon_data, L2_Phon_data)
-L1_L2_Phon_corr <- cor.test (plotdata_j$L1_Phon.mean_LI, plotdata_j$L2_Phon.mean_LI, method = "spearman")
+plotdata_Phon <- inner_join(x = L1_Phon_data, L2_Phon_data)
+plotdata_Phon <- inner_join(x = plotdata_Phon, y = Miho_background_data, by = c("ID"))
 
-Fig3 <- ggplot(data = plotdata_j, aes(x = L1_Phon.mean_LI, y = L2_Phon.mean_LI)) + 
+L1_L2_Phon_corr <- cor.test (plotdata_Phon$L1_Phon.mean_LI, plotdata_Phon$L2_Phon.mean_LI, method = "spearman")
+
+Fig3 <- ggplot(data = plotdata_Phon, aes(x = L1_Phon.mean_LI, y = L2_Phon.mean_LI, color = Eng_cat)) + 
   geom_point()+
   theme_bw()+
   xlab("LI for L1 (Japanese), Phonological Fluency") +  
@@ -463,16 +473,19 @@ Fig3 <- ggplot(data = plotdata_j, aes(x = L1_Phon.mean_LI, y = L2_Phon.mean_LI))
   xlim(-2,9) + ylim (-2,9) + 
   geom_errorbar(aes(ymin = L2_Phon.mean_LI - L2_Phon.mean_se, ymax = L2_Phon.mean_LI + L1_Phon.mean_se),linetype = "dotted") + 
   geom_errorbarh(aes(xmin = L1_Phon.mean_LI - L1_Phon.mean_se, xmax = L1_Phon.mean_LI + L1_Phon.mean_se), linetype = "dotted")+
-  geom_text(x = 2, y = 7, label = paste('r = ', round(L1_L2_corr$estimate, 3)), colour = 'red') +
+  geom_text(x = 2, y = 7, label = paste('r = ', round(L1_L2_Phon_corr$estimate, 3)), colour = 'red') +
   geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
   geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8) +
+  scale_color_discrete(name = "English Proficiency") +
   ggtitle('Figure 3')
 
 # Plot Miho Sem L1 and L2 data
-plotdata_j <- inner_join(x = L1_Sem_data, y = L2_Sem_data)
-L1_L2_Sem_corr <- cor.test (plotdata_j$L1_Sem.mean_LI, plotdata_j$L2_Sem.mean_LI, method = "spearman")
+plotdata_Sem <- inner_join(x = L1_Sem_data, y = L2_Sem_data)
+plotdata_Sem <- inner_join(x = plotdata_Sem, y = Miho_background_data, by = c("ID"))
 
-Fig4 <- ggplot(data = plotdata_j, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
+L1_L2_Sem_corr <- cor.test (plotdata_Sem$L1_Sem.mean_LI, plotdata_Sem$L2_Sem.mean_LI, method = "spearman")
+
+Fig4 <- ggplot(data = plotdata_Sem, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI, color = Eng_cat)) +
   geom_point()+
   theme_bw()+
   xlab("LI for L1 (Japanese), Semantic Fluency") +
@@ -480,9 +493,10 @@ Fig4 <- ggplot(data = plotdata_j, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
   xlim(-2,9) + ylim (-2,9) +
   geom_errorbar(aes(ymin = L2_Sem.mean_LI - L2_Sem.mean_se, ymax = L2_Sem.mean_LI + L1_Sem.mean_se),linetype = "dotted") +
   geom_errorbarh(aes(xmin = L1_Sem.mean_LI - L1_Sem.mean_se, xmax = L1_Sem.mean_LI + L1_Sem.mean_se), linetype = "dotted")+
-  geom_text(x = 2, y = 7, label = paste('r = ', round(L1_L2_corr$estimate, 3)), colour = 'red') +
+  geom_text(x = 2, y = 7, label = paste('r = ', round(L1_L2_Sem_corr$estimate, 3)), colour = 'red') +
   geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
   geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8) +
+  scale_color_discrete(name = "English Proficiency") +
   ggtitle('Figure 4')
 
 # Check correlations with EHI
@@ -504,18 +518,18 @@ Fig4 <- ggplot(data = plotdata_j, aes(x = L1_Sem.mean_LI, y = L2_Sem.mean_LI)) +
 
 
 # descriptive statistics for words produced in task
-total_info_j <- inner_join(x = plotdata_j, y = Miho_background_data, by = c("ID"))
-mean_jwords_phon <- mean(total_info_j$JPhon_words, na.rm = TRUE)
-sd_jwords_phon <- sd(total_info_j$JPhon_words, na.rm = TRUE)
-mean_jwords_sem <- mean(total_info_j$JSem_words, na.rm = TRUE)
-sd_jwords_sem <- sd(total_info_j$JSem_words, na.rm = TRUE)
-mean_ewords_phon <- mean(total_info_j$EPhon_words, na.rm = TRUE)
-sd_ewords_phon <- sd(total_info_j$EPhon_words, na.rm = TRUE)
-mean_ewords_sem <- mean(total_info_j$ESem_words, na.rm = TRUE)
-sd_ewords_sem <- sd(total_info_j$ESem_words, na.rm = TRUE)
 
-words_produced_phon <- t.test(total_info_j$JPhon_words, total_info_j$EPhon_words, na.rm = TRUE)
-words_produced_sem <- t.test(total_info_j$JSem_words, total_info_j$ESem_words, na.rm = TRUE)
+mean_jwords_phon <- mean(plotdata_Phon$JPhon_words, na.rm = TRUE)
+sd_jwords_phon <- sd(plotdata_Phon$JPhon_words, na.rm = TRUE)
+mean_jwords_sem <- mean(plotdata_Sem$JSem_words, na.rm = TRUE)
+sd_jwords_sem <- sd(plotdata_Sem$JSem_words, na.rm = TRUE)
+mean_ewords_phon <- mean(plotdata_Phon$EPhon_words, na.rm = TRUE)
+sd_ewords_phon <- sd(plotdata_Phon$EPhon_words, na.rm = TRUE)
+mean_ewords_sem <- mean(plotdata_Sem$ESem_words, na.rm = TRUE)
+sd_ewords_sem <- sd(plotdata_Sem$ESem_words, na.rm = TRUE)
+
+words_produced_phon <- t.test(plotdata_Phon$JPhon_words, plotdata_Phon$EPhon_words, na.rm = TRUE)
+words_produced_sem <- t.test(plotdata_Sem$JSem_words, plotdata_Sem$ESem_words, na.rm = TRUE)
 ```
 
 The same fTCD analysis method was used as in Study 1. The epoch lengths were changed to match timings for Study 2. The POI started at 6s after the onset of the ‘Clear Mind’ stimulus (i.e., 3s after the word generation task had begun) and ended at 20s (i.e., at the end of the word generation task). 
@@ -545,14 +559,14 @@ demo_table_j[7,2] <- paste0(round(miho_demo_summary$mean_eng_read_j, 2), ' (', r
 demo_table_j[8,2] <- paste0(round(miho_demo_summary$mean_eng_write_j, 2), ' (', round(miho_demo_summary$sd_eng_write_j, 2), ')')
 demo_table_j <- as.data.frame(demo_table_j)
 
-table101 <- flextable(demo_table_j) %>% set_caption('table101', caption=paste0('Table 101. Demographics for the Study 2 participants, N=', miho_demo_summary$N_total, ' (', miho_demo_summary$N_female_j, ' female)')) 
-table101 <- autofit(table101)
-table101
+table3 <- flextable(demo_table_j) %>% set_caption('table3', caption=paste0('Table 101. Demographics for the Study 2 participants, N=', miho_demo_summary$N_total, ' (', miho_demo_summary$N_female_j, ' female)')) 
+table3 <- autofit(table3)
+table3
 
 ```
 
 ### Language History
-Summary statistics of language history can be seen in Table 101. Age of English  acquisition ranged from 4-13.
+Summary statistics of language history can be seen in Table 3. Age of English  acquisition ranged from 4-13.
 
 !NOT SURE WHAT THE PARTICIPANTS WERE ASKED TO SELF-REPORT! 
 
@@ -617,8 +631,8 @@ print(Fig4)
 # Correlation between AOA and LIs
 # normally distributed (lines 490-493)
 
-aoa_l2_corr_phon_j <- cor.test(total_info_j$aoa_L2, total_info_j$L2_Phon.mean_LI, method = "spearman")
-aoa_l2_corr_sem_j <- cor.test(total_info_j$aoa_L2, total_info_j$L2_Sem.mean_LI, method = "spearman")
+aoa_l2_corr_phon_j <- cor.test(plotdata_Phon$aoa_L2, plotdata_Phon$L2_Phon.mean_LI, method = "spearman")
+aoa_l2_corr_sem_j <- cor.test(plotdata_Sem$aoa_L2, plotdata_Sem$L2_Sem.mean_LI, method = "spearman")
 
 #do we need any more correlations? 
 
@@ -627,26 +641,28 @@ aoa_l2_corr_sem_j <- cor.test(total_info_j$aoa_L2, total_info_j$L2_Sem.mean_LI, 
 
 ```{r scatterplot_AOA_LI, echo=FALSE, warning=FALSE, message=FALSE}
 
-Fig5 <- ggplot (data = total_info_j, aes(x = aoa_L2, y = L2_Phon.mean_LI )) + 
+Fig5 <- ggplot (data = plotdata_Phon, aes(x = aoa_L2, y = L2_Phon.mean_LI, color=Eng_cat)) + 
   geom_point() + 
   theme_bw() + 
   xlab("Age of English Acquisition (years)") + 
-  ylab("LI for L2 (Phonology)") + 
+  ylab("LI for L2 (English), Phonological Fluency") + 
   scale_x_continuous(breaks = seq(0, 14, by=2)) + ylim (-1,6) + 
   geom_errorbar(aes(ymin = L2_Phon.mean_LI - L2_Phon.mean_se, ymax = L2_Phon.mean_LI + L2_Phon.mean_se),linetype = "dotted") +
   geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
   geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8) +
+  scale_color_discrete(name = "English Proficiency") +
   ggtitle('Figure 5')
   
-Fig6 <- ggplot (data = total_info_j, aes(x = aoa_L2, y = L2_Sem.mean_LI )) + 
+Fig6 <- ggplot (data = plotdata_Sem, aes(x = aoa_L2, y = L2_Sem.mean_LI, color=Eng_cat)) + 
   geom_point() +
   theme_bw() + 
   xlab("Age of English Acquisition (years)") + 
-  ylab("LI for L2 (Semantics)") +
+  ylab("LI for L2 (English), Semantic Fluency") +
   scale_x_continuous(breaks = seq(0, 14, by=2)) + ylim (-1,6) +
   geom_errorbar(aes(ymin = L2_Sem.mean_LI - L2_Sem.mean_se, ymax = L2_Sem.mean_LI + L2_Sem.mean_se),linetype = "dotted") +
   geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
   geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8) +
+  scale_color_discrete(name = "English Proficiency") +
   ggtitle('Figure 6')
 
 ```
@@ -654,7 +670,7 @@ Fig6 <- ggplot (data = total_info_j, aes(x = aoa_L2, y = L2_Sem.mean_LI )) +
 
 We explored whether age of acqusition for English was related to strength of laterality in L2. 
 
-This was found not to be significant for LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`) or the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`)
+This was found not to be significant for LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 5) or the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 6)
 
 It is worth noting that AOA was only collected for 15 of the 25 subjects. 
 
