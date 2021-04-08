@@ -1,0 +1,27 @@
+ID,L2.Comment,L2.nMark,L2.nSpike,L2.nExtreme,L2.N,L2.peak_LI,L2.peak_latency,L2.peak_se,L2.peak_laterality,L2.peak_odd,L2.peak_even,L2.mean_LI,L2.mean_se,L2.mean_laterality,L2.mean_odd,L2.mean_even,L2.exclusions
+14,NA . Manual override 8 trial 1 . Manual override 8 trial 2 . Manual override 8 trial 3 . Manual override 8 trial 4 . Manual override 8 trial 5 . Manual override 8 trial 6 . Manual override 8 trial 7 . Manual override 8 trial 11 . Manual override 8 trial 12 . Manual override 8 trial 13 . Manual override 8 trial 14,23,4,0,23,4.56,15,1.629,L,6.069,2.915,2.944,1.299,L,4.474,1.274,1
+16,NA . Manual override 8 trial 21,23,6,5,21,5.367,12.68,0.731,L,5.159,5.596,4.268,0.596,L,4.318,4.213,0
+17,NA . Manual override 8 trial 2 . Manual override 8 trial 6 . Manual override 8 trial 7 . Manual override 8 trial 8 . Manual override 8 trial 11 . Manual override 8 trial 17 . Manual override 8 trial 21,23,2,0,22,5.119,19,0.814,L,5.316,4.922,3.938,0.594,L,3.954,3.921,0
+20,NA . Manual override 8 trial 3 . Manual override 8 trial 4 . Manual override 8 trial 6 . Manual override 8 trial 7 . Manual override 9 trial 8 . Manual override 9 trial 11 . Manual override 9 trial 14 . Manual override 9 trial 15 . Manual override 9 trial 16 . Manual override 9 trial 17,23,1,0,17,5.942,14.44,0.715,L,5.282,6.684,5.244,0.687,L,5.026,5.49,0
+22,NA . Manual override 8 trial 2 . Manual override 8 trial 16,23,3,0,23,1.239,12.52,0.78,bilat,1.246,1.232,0.836,0.679,bilat,0.687,0.999,0
+24,NA . Manual override 8 trial 3 . Manual override 8 trial 10 . Manual override 8 trial 14 . Manual override 8 trial 17,23,4,0,23,4.88,14.6,0.604,L,5.761,3.918,3.915,0.488,L,4.848,2.897,0
+26,NA . Manual override 8 trial 5,23,5,5,22,3.287,19.4,0.632,L,2.482,4.092,2.331,0.443,L,1.625,3.038,0
+27,NA . Manual override 8 trial 12 . Manual override 9 trial 13,23,4,0,22,4.202,13.72,0.761,L,4.496,3.908,3.382,0.808,L,3.703,3.062,0
+28,NA . Manual override 8 trial 19 . Manual override 9 trial 22,23,5,0,21,4.251,14.2,1.337,L,6.169,2.142,3.529,1.057,L,5.183,1.709,0
+31,NA . Manual override 9 trial 9,23,4,252,21,3.004,11.56,0.567,L,2.787,3.242,1.973,0.473,L,2.027,1.914,0
+32,NA,23,1,0,23,2.856,16.44,0.728,L,3.45,2.208,2.316,0.617,L,2.531,2.083,0
+36,NA . Manual override 9 trial 6 . Manual override 9 trial 13 . Manual override 9 trial 15 . Manual override 9 trial 16 . Manual override 9 trial 17 . Manual override 9 trial 18 . Manual override 9 trial 21,23,1,0,16,4.176,12.12,0.72,L,4.048,4.305,3.47,0.619,L,3.388,3.553,0
+37,NA,23,0,0,23,1.794,8.76,0.486,L,2.308,1.232,1.344,0.301,L,1.404,1.278,0
+39,NA,23,1,0,23,4.084,16.6,0.776,L,5.152,2.92,3.126,0.777,L,3.961,2.216,0
+40,NA . Manual override 8 trial 8,23,5,0,23,4.806,13,0.967,L,7.294,2.092,4.111,0.753,L,6.107,1.935,0
+41,NA,23,3,0,23,1.766,13.56,0.379,L,1.541,2.012,1.458,0.33,L,1.52,1.392,0
+42,NA . Manual override 9 trial 4,23,2,0,22,5.012,18.92,0.86,L,4.983,5.042,4.814,0.711,L,5.269,4.36,0
+43,NA . Manual override 9 trial 3 . Manual override 9 trial 11 . Manual override 9 trial 12 . Manual override 9 trial 13,23,2,0,19,2.95,13.48,0.947,L,2.903,3.003,1.105,0.594,bilat,1.279,0.912,0
+44,NA,23,5,0,22,3.13,18.44,0.603,L,2.913,3.346,2.969,0.509,L,3.271,2.668,0
+45,NA . Manual override 8 trial 20,23,2,0,23,7.299,12.28,0.899,L,6.231,8.463,6.113,0.603,L,5.302,6.998,0
+46,NA,23,4,0,23,1.579,11.96,0.39,L,2.123,0.985,1.193,0.29,L,1.81,0.519,0
+48,NA . Manual override 8 trial 1,23,5,0,23,3.205,11.96,0.853,L,3.994,2.343,2.711,0.856,L,3.673,1.662,0
+49,NA . Manual override 8 trial 1,23,4,0,23,3.477,12.6,0.413,L,3.657,3.28,2.936,0.337,L,2.863,3.016,0
+51,NA . Manual override 9 trial 2 . Manual override 9 trial 17,23,3,0,21,3.644,14.36,0.506,L,3.319,4,2.37,0.313,L,2.254,2.497,0
+53,NA . Manual override 8 trial 1 . Manual override 9 trial 23,23,3,0,22,2.13,12.92,0.787,L,3.53,0.73,1.134,0.709,bilat,2.262,0.006,0
+54,NA . Manual override 9 trial 15,23,3,0,22,3.214,11.16,0.607,L,2.396,4.032,2.49,0.456,L,1.945,3.035,0
