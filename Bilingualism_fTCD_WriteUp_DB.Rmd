@@ -367,13 +367,24 @@ for (l in 1:2){
       grandmean$L2_Left <- rowMeans(Ldata)
       grandmean$L2_Right <- rowMeans(Rdata)}
 }
+grandmean$time = time
+
 # Crop to -10 to 20 seconds
 start_index <- which(time==-10)
 end_index <- which(time==20)
 xtime <- time[start_index:end_index]
 grandmean <- grandmean[start_index:end_index, ]
-plot(xtime, y=grandmean$L1_Left, type='l',col='red')
-lines(xtime, y=grandmean$L1_Right, col='blue')
+
+# Make data longer
+grandmean_long <- pivot_longer(data=grandmean, cols=c(1:4), names_to = 'Condition', values_to='Velocity')
+ggplot(data=grandmean_long, aes(x=time, y=Velocity, group=Condition)) +
+  geom_line(aes(colour=Condition)) +
+  geom_hline(yintercept = 100, linetype="solid", alpha = 0.8) +
+  geom_vline(xintercept = 0, linetype="solid", alpha = 0.8) +
+  scale_y_continuous(breaks = seq(94, 104, by=2)) +
+  geom_vline(xintercept = 8, linetype = "dashed", alpha = 0.8) + # Start of POI
+  geom_vline(xintercept = 20, linetype = "dashed", alpha = 0.8)  # End of POI
+
 ```
  
 Figure 2. Left and right velocity L1 and L2.
