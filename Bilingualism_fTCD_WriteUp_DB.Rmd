@@ -46,14 +46,16 @@ Miho_background_data_total <- read.csv(text=download,stringsAsFactors=F)
 colnames(Miho_background_data_total)[1] <-  colnames(Miho_background_data_total)[1] <- 'ID'
 Miho_background_data_total$ID <- as.numeric(gsub("BL", replacement = "", Miho_background_data_total$ID))
 
-miho_extra <- read.csv('Miho_background16.csv',stringsAsFactors=F) #this file was on OSF and has data on Placement score, but only for the first 16 people
-miho_extra$ID <- as.numeric(gsub("BL", replacement = "", miho_extra$ID))
-miho_extra$ID[1]<-6 #oddly formatted first row, so need manual replacement of ID
+## ZW: I have removed these lines as it's not necessary to read in this extra data - Placement_score is already present in Miho_background_data_total, in a variable called Eng_score
 
-Miho_background_data_total$placement <- NA
+#miho_extra <- read.csv('Miho_background_data.csv',stringsAsFactors=F) #this file was on OSF and has data on Placement score, but only for the first 16 people
+#miho_extra$ID <- as.numeric(gsub("BL", replacement = "", miho_extra$subject))
+#miho_extra$ID[1]<-6 #oddly formatted first row, so need manual replacement of ID
+
+#Miho_background_data_total$placement <- NA
 #add in placement scores for those from miho_extra, who are a subset of all subjects
-w<-which(Miho_background_data_total$ID %in% miho_extra$ID) #this only works because miho_extra$ID are in numeric order! 
-Miho_background_data_total$placement[w]<-miho_extra$Placement_score
+#w<-which(Miho_background_data_total$ID %in% miho_extra$ID) #this only works because miho_extra$ID are in numeric order! 
+#Miho_background_data_total$placement[w]<-miho_extra$Placement_score
 
 
 ```
@@ -445,9 +447,9 @@ Sem_nsubj <- dim(L1_Sem_data)[1]
 
 # Add column for english proficiency category: < 40 = basic, > 40 = intermediate, > 48 = advanced
 Miho_background_data_total$Eng_cat <- NA
-Miho_background_data_total$Eng_cat[which(Miho_background_data_total$placement < 40)] <- "basic"
-Miho_background_data_total$Eng_cat[which(Miho_background_data_total$placement >= 40)] <- "intermediate"
-Miho_background_data_total$Eng_cat[which(Miho_background_data_total$placement >= 48)] <- "advanced"
+Miho_background_data_total$Eng_cat[which(Miho_background_data_total$Eng_score < 40)] <- "basic"
+Miho_background_data_total$Eng_cat[which(Miho_background_data_total$Eng_score >= 40)] <- "intermediate"
+Miho_background_data_total$Eng_cat[which(Miho_background_data_total$Eng_score >= 48)] <- "advanced"
 Miho_background_data_total$Eng_cat <- factor(Miho_background_data_total$Eng_cat, levels = c("basic", "intermediate","advanced", "NA"))
 
 # Remove excluded participants from background data too
