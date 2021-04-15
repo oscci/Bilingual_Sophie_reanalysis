@@ -229,9 +229,36 @@ table1 <- autofit(table1)
 table1
 ```
 
+```{r, native language and LI, echo=FALSE, warning=FALSE}
+
+anova_data <- data.frame(
+  'ID' = L1_data$ID,
+  'NativeLanguage' = as.factor(total_info$L1),
+  'L1' = total_info$L1.mean_LI,
+  'L2' = total_info$L2.mean_LI)
+anova_data_long <- pivot_longer(anova_data, cols = c(3,4), names_to = 'LanguageTested', values_to = 'LI')
+anova_data_long$ID <- as.factor(anova_data_long$ID)
+anova_data_long$LanguageTested <- as.factor(anova_data_long$LanguageTested)
+
+language_anova <- aov(data=anova_data_long, LI ~ LanguageTested * NativeLanguage + Error(ID))
+
+anova_summary <- summary(language_anova) 
+
+native_language_F <- anova_summary$`Error: ID`[[1]]$`F value`[1]
+native_language_P <- anova_summary$`Error: ID`[[1]]$`Pr(>F)`[1]
+language_tested_F <- anova_summary$`Error: Within`[[1]]$`F value`[1]
+language_tested_P <- anova_summary$`Error: Within`[[1]]$`Pr(>F)`[1]
+interaction_F <- anova_summary$`Error: Within`[[1]]$`F value`[2]
+interaction_P <- anova_summary$`Error: Within`[[1]]$`Pr(>F)`[2]
+
+```
+
+
 ### Language History
 
 Summary statistics for the language history questionnaire can be seen in Table 1. Self-reported proficiency in speaking, reading and understanding English were all generally high (all around 9/10), with a minimum for any individual rating of 6/10. Age of acquisition was more variable, ranging from `r min(background_data$L2_Acquisition)` to `r max(background_data$L2_Acquisition)`.
+
+A 2x2 mixed ANOVA was conducted to investigate the relationship between native language and mean LI. There were no significant main effects for native language on LI for L1 (F(1,23) =  `r round(native_language_F, 3)`, p = `r round(native_language_P, 3)`) or L2 (F(1,23) =  `r round(language_tested_F, 3)`, p = `r round(language_tested_P, 3)`). The interaction between these factors was also not significant (F (1,23) = `r round(interaction_F, 3)`, p = `r round(interaction_P,3)`). 
 
 ### fTCD Data Quality and Reliability
 
@@ -364,13 +391,11 @@ miho_demo_summary <- Miho_background_data %>%
 
 ```
 
-There was a total of `r Phon_nsubj` participants included in the final analysis. `r length(which(Miho_exclude!=0))` participant was excluded due to poor quality data or insufficient trial numbers. 
+There was a total of `r Phon_nsubj` participants included in the final analysis. `r length(which(Miho_exclude!=0))` participant was excluded due to poor quality data or insufficient trial numbers. All further analyses are based on the final sample of `r miho_demo_summary$N_total` participants (mean age = `r round(miho_demo_summary$mean_age, 2)` years, sd = `r round(miho_demo_summary$sd_age, 2)` years).
 
-All further analyses are based on the final sample of `r miho_demo_summary$N_total` participants (mean age = `r round(miho_demo_summary$mean_age, 2)` years, sd = `r round(miho_demo_summary$sd_age, 2)` years).
+Gender data was available for 15 participants, of which, `r miho_demo_summary$N_female` were female. 
 
-Gender data was availble for 15 participants of and of those 15, `r miho_demo_summary$N_female` were female. 
-
-All participants self-reported as being right handed. 
+All participants self-reported as being right-handed. 
 
 ### Ethics Statement
 
@@ -380,29 +405,29 @@ All participants self-reported as being right handed.
 
 All participants were native Japanese speakers.
 
-English language was assessused using the Quick Placement Test which assessed English reading, listening, and grammar. The test is scored out of 60. Those who scored under 40 were classed as having basic level proficiency (A1/A2); between 40 and 48 were classed as having intermediate level proficiency (B1/B2); and above 48 were classed as having advanced level proficiency (C1/C2) (UCLES, 2001). 
+English language ability was measured using the Quick Placement Test which assessed English reading, listening, and grammar. The test is scored out of 60. Those who scored under 40 were classed as having basic level proficiency (A1/A2); between 40 and 48 were classed as having intermediate level proficiency (B1/B2); and above 48 were classed as having advanced level proficiency (C1/C2) (UCLES, 2001). 
 
-Data was available for 24 of the 25 participants. The mean score on this test was `r round(miho_demo_summary$mean_eng_score_j, 2)` out of 60.  
+Data was available for 24 of the 25 participants. The mean score on this test was `r round(miho_demo_summary$mean_eng_score_j, 2)` (sd = `r round(miho_demo_summary$sd_eng_score_j, 2)`) out of 60.  
 
 ### fTCD Apparatus
 
 !! NEED DOPPLER INFO!! 
 
 ### Word Generation Task
-Participants completed both phonological and semantic word generation tasks in English and Japanese. For each trial participants saw "Clear Mind" presented on the screen for 3 seconds. The cue stimulus was then presented and participants had 17 seconds to overtly generate as many words as possible - note that this differs from Study 1, where covert generation was used. Participants were then instructed to relax for 16 seconds to restore baseline activity. Each trial lasted a total of 36 seconds.  
+Participants completed both phonological and semantic word generation tasks in English and Japanese. For each trial participants saw "Clear Mind" presented on the screen for 3 seconds. The cue stimulus was then presented, and participants had 17 seconds to overtly generate as many words as possible - note that this differs from Study 1, where covert generation was used. Participants were then instructed to relax for 16 seconds to restore baseline activity. Each trial lasted a total of 36 seconds.  
 
 ### Stimuli
 #### Phonological Word Generation - Japanese
-Participants were presented with a cue in Kana, a Japanese phonological script. Following the Japanese mora frequency analysis conducted by Dan et al. (2012) based on the familiarity ratings in Amano & Kondo (1999), 10 of the 12 most frequent moras that are positioned at the beginning of words were selected (see Table XXX below). The two moras omitted were は (/ha/) and じ (/ji/). は was omitted because it would be pronounced /wa/ when it was the subject-marker and じ was omitted because it was the voiced sound of し (/shi/) that was included in the stimuli. Each kana was presented twice, and the 20 trials  were presented in a pseudo-randomised order to ensure all 10 cues had been presented once before a cue was repeated. 
+Participants were presented with a cue in Kana, a Japanese phonological script. Following the Japanese mora frequency analysis conducted by Dan et al. (2012) based on the familiarity ratings in Amano & Kondo (1999), 10 of the 12 most frequent moras that are positioned at the beginning of words were selected. The two moras omitted were は (/ha/) and じ (/ji/). は was omitted because it would be pronounced /wa/ when it was the subject-marker and じ was omitted because it was the voiced sound of し (/shi/) that was included in the stimuli. Participants had to produce as many words as possible that began with the specified kana. Each kana was presented twice, and the 20 trials  were presented in a pseudo-randomised order to ensure all 10 cues had been presented once before a cue was repeated. 
 
 #### Phonological Word Generation - English 
-Participants were presented with 10 alphabetic letters (A, B, C, F, H, M, O, S, T, W). The task consisted of 20 trials which were presented in a pseudo-randomised order to ensure all 10 cues had been presented once before a cue was repeated.
+Participants were presented with 10 alphabetic letters (A, B, C, F, H, M, O, S, T, W). Participants had to produce as many words as possible that began with the specified letter. The task consisted of 20 trials which were presented in a pseudo-randomised order to ensure all 10 cues had been presented once before a cue was repeated.
 
 #### Semantic Word Generation - Japanese 
-10 Japanese words representing semantic categories were presented: farm animals, zoo animals, vegetables, fruits, drinks, colours, sports, pets, tools and transport. Each category was repeated twice in the semantic fluency blocks. Categories were  presented in a pseudo randomised order. 
+10 Japanese words representing semantic categories were presented: farm animals, zoo animals, vegetables, fruits, drinks, colours, sports, pets, tools, and transport. Participants had to report as many words that matched these categories as possible. Each category was repeated twice in the semantic fluency blocks. Categories were presented in a pseudo randomised order. 
 
 #### Semantic Word Generation - English 
-The same semantic categories were presented in English. Each category was repeated twice in the semantic fluency blocks. Categories were  presented in a pseudo-randomised order.  
+The same semantic categories were presented in English. Participants had to report as many words that matched these categories as possible. Each category was repeated twice in the semantic fluency blocks. Categories were presented in a pseudo-randomised order.  
 
 ### fTCD Analysis
 
@@ -570,7 +595,7 @@ Summary statistics of language history can be seen in Table 3. Age of English  a
 
 !NOT SURE WHAT THE PARTICIPANTS WERE ASKED TO SELF-REPORT! 
 
-The mean number of words produced per trial in the phonological conditions was `r round(mean_jwords_phon, 2)` (sd = `r round(sd_jwords_phon, 2)`) for Japanese and `r round(mean_ewords_phon, 2)` (sd = `r round(sd_ewords_phon, 2)`) for English. The mean number of words produced per trial in the semantic condition was `r round(mean_jwords_sem, 2)` (sd = `r round(sd_jwords_sem, 2)`) for Japanese and `r round(mean_ewords_sem, 2)` (sd = (`r round(sd_ewords_sem, 2)`) for English. There was no significant difference between the mean number of words produced per trial for L1 and L2 in the phonological condition (t(`r round(words_produced_phon$parameter, 1)`) = `r round(words_produced_phon$statistic, 2)`, p = `r round(words_produced_phon$p.value, 3)`) or the semantic condition (t(`r round(words_produced_sem$parameter, 1)`) = `r round(words_produced_sem$statistic, 2)`, p = `r round(words_produced_sem$p.value, 3)`). 
+The mean number of words produced per trial in the phonological conditions was `r round(mean_jwords_phon, 2)` (sd = `r round(sd_jwords_phon, 2)`) for Japanese and `r round(mean_ewords_phon, 2)` (sd = `r round(sd_ewords_phon, 2)`) for English. The mean number of words produced per trial in the semantic condition was `r round(mean_jwords_sem, 2)` (sd = `r round(sd_jwords_sem, 2)`) for Japanese and `r round(mean_ewords_sem, 2)` (sd = `r round(sd_ewords_sem, 2)`) for English. There was no significant difference between the mean number of words produced per trial for L1 and L2 in the phonological condition (t(`r round(words_produced_phon$parameter, 1)`) = `r round(words_produced_phon$statistic, 2)`, p = `r round(words_produced_phon$p.value, 3)`) or the semantic condition (t(`r round(words_produced_sem$parameter, 1)`) = `r round(words_produced_sem$statistic, 2)`, p = `r round(words_produced_sem$p.value, 3)`). 
 
 
 ### fTCD Data Quality and Reliability
@@ -603,11 +628,11 @@ Split-half reliability was assessed by correlating the LI values from odd and ev
 
 ### LI Values
 
-Table 4 shows summary statistics for L1 and L2 in both phonological and semantic word generation tasks. For the phonological task around 24% were bilaterally lateralised and for the semantic task this was around 30%. 4% of particiapants were right lateralised for L2 in the phonological and semantic tasks but not for L1. 
+Table 4 shows summary statistics for L1 and L2 in both phonological and semantic word generation tasks. For the phonological task around 24% were bilaterally lateralised and for the semantic task this was around 30%. 4% of participants were right lateralised for L2 in the phonological and semantic tasks but not for L1. 
 
 !TESTING ORDER - NOT SURE!
 
-Laterality indicies for L1 and L2 were strongly correlated in both the phonological task (Spearman's R = `r round(L1_L2_Phon_corr$estimate, 3)`) and the semantic task (Spearman's R = `r round(L1_L2_Sem_corr$estimate, 3)`), closely replicating the results of Study 1. This is shown in the scatterplots in Figures 3 and 4. 
+Laterality indices for L1 and L2 were strongly correlated in both the phonological task (Spearman's R = `r round(L1_L2_Phon_corr$estimate, 3)`) and the semantic task (Spearman's R = `r round(L1_L2_Sem_corr$estimate, 3)`), closely replicating the results of Study 1. This is shown in the scatterplots in Figures 3 and 4. 
 
 ```{r table4, echo=FALSE, warning=FALSE, message=FALSE}
 table4 <- flextable(summary_stats) 
@@ -668,11 +693,9 @@ Fig6 <- ggplot (data = plotdata_Sem, aes(x = aoa_L2, y = L2_Sem.mean_LI, color=E
 ```
 
 
-We explored whether age of acqusition for English was related to strength of laterality in L2. 
+We explored whether age of acquisition for English was related to strength of laterality in L2. A significant correlation was found between AOA and LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 3) but not the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 4)
 
-This was found not to be significant for LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 5) or the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 6)
-
-It is worth noting that AOA was only collected for 15 of the 25 subjects. 
+It is worth noting that AOA was only available for 15 of the 25 subjects. 
 
 ```{r fig5_6, echo=FALSE, warning=FALSE, message=FALSE}
 print(Fig5)
