@@ -136,7 +136,7 @@ The cerebral blood flow velocity data were analysed using custom scripts in R St
 
 -	Downsampling from 100 Hz to 25 Hz
 
--	Epoching from -11 s to 21 s relative to the onset of the ‘Clear Mind’ cue
+-	Epoching from -11 s to 30 s relative to the onset of the ‘Clear Mind’ cue
 
 -	Manual exclusion of trials with obvious spiking or dropout artefacts
 
