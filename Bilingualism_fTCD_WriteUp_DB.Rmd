@@ -237,24 +237,63 @@ return(myfig)
 }
 ```
 
-```{r dofig1,echo=FALSE, messgae = FALSE,warning=FALSE}
-Fig3 <- dofigure(plotdata=plotdata,
-                 L1 = plotdata$L1.mean_LI,
-                 L2 = plotdata$L2.mean_LI,
-                 colourcol = plotdata$AoA,
-                 pchcol = as.factor(rep(16,nrow(plotdata))), #use pch of 16 for all points - this is used to code different pch by proficiency in figs 2 and 3
-                 xlab="LI for L1 (French / German)",
-                 ylab="LI for L2 (English)",
-                 captiontitle1 = "Age of Acquisition",
-                 captiontitle2 = " ",
-                 xlim= c(-2,9),
-                 ylim = c(-2,9),
-                 correlcoef = round(L1_L2_corr$estimate, 3),
-                 BlandAltmanlimit = 2.5,
-                L1se = plotdata$L1.mean_se,
-                 L2se = plotdata$L2.mean_se,
-                showpch = 0)
+```{r function_doGrandmean, echo=FALSE, message=FALSE, warning=FALSE}
+doGrandmean <- function(study, task){
+  if (study == 1){
+    POI_start = 8
+    data_dir = 'Raw Means'}
+  if (study == 2){
+    POI_start = 6
+    data_dir = 'Miho Raw Means'}
 
+  for (l in 1:2){
+    if (study == 1){
+      myfiles <- list.files(path = data_dir, pattern = paste0('*_L',l,'.csv'))}
+    if (study == 2){
+      myfiles <- list.files(path = data_dir, pattern = paste0('*_L',l,'_',task,'.csv'))}
+    nfiles <- length(myfiles)
+    # Prepare dataframes
+    Ldata <- matrix(data=NA, nrow = 801, ncol=nfiles)
+    Rdata <- matrix(data=NA, nrow = 801, ncol=nfiles)
+    for (f in 1:nfiles){
+      mydata <- read.csv(paste0(data_dir,'/',myfiles[f]))
+      Ldata[,f] <- mydata$Lmean
+      Rdata[,f] <- mydata$Rmean
+      time <- mydata$time
+    }
+    # Calculate grandmean
+    if (l==1){
+      grandmean <- data.frame('L1_Left' = rowMeans(Ldata),
+                            'L1_Right' = rowMeans(Rdata))}
+    if (l==2){
+      grandmean$L2_Left <- rowMeans(Ldata)
+      grandmean$L2_Right <- rowMeans(Rdata)}
+  }
+  grandmean$time = time
+
+  # Crop to -10 to 20 seconds
+  start_index <- which(time==-10)
+  end_index <- which(time==20)
+  xtime <- time[start_index:end_index]
+  grandmean <- grandmean[start_index:end_index, ]
+
+  # Make data longer
+  grandmean_long <- pivot_longer(data=grandmean, cols=c(1:4), names_to = 'Condition', values_to='Velocity')
+
+  # Make plot
+  myfig <- ggplot(data=grandmean_long, aes(x=time, y=Velocity, group=Condition)) +
+    geom_line(aes(colour=Condition)) +
+    geom_hline(yintercept = 100, linetype="solid", alpha = 0.8) +
+    geom_vline(xintercept = 0, linetype="solid", alpha = 0.8) +
+    scale_y_continuous(breaks = seq(94, 104, by=2)) +
+    geom_vline(xintercept = -10, linetype = "dashed", alpha = 0.8) + # Start of Baseline
+    geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.8) + # End of Baseline
+    geom_vline(xintercept = POI_start, linetype = "dashed", alpha = 0.8) + # Start of POI
+    geom_vline(xintercept = 20, linetype = "dashed", alpha = 0.8)  # End of POI
+
+  return(myfig)
+}
+  
 ```
 
 ```{r correlcheck,echo=FALSE, messgae = FALSE,warning=FALSE}
@@ -276,7 +315,6 @@ testing_ttest_L2 <- t.test(testing_0$L2.mean_LI, testing_1$L2.mean_LI) # testing
 ### Handedness
 
 Summary statistics for the EHI handedness measure can be seen in Table 1. All participants but one had EHI values above 0, indicating right handedness. The remaining participant had an EHI of -20, indicating weak left handedness. Correlations between LI from fTCD and handedness scores on the EHI, were not significant for either L1 (r = `r round(EHI_LI_L1_cor$estimate, 3)`) or L2 (r = `r round(EHI_LI_L2_cor$estimate, 3)`).
-
 
 ```{r table1, echo=FALSE, warning=FALSE,message=FALSE}
 # Make a demographics table
@@ -346,53 +384,13 @@ table2
 
   Normalized Doppler velocities for the left and right hemisphere activation are presented for each task in Figure 2. Descriptive statistics for the general Doppler data are presented in Table 2.
   
-```{r grandmean_Fig2, warning=FALSE, message=FALSE, echo=FALSE}
-data_dir <- 'Raw Means'
-for (l in 1:2){
-    myfiles <- list.files(path = data_dir, pattern = paste0('*_L',l,'.csv'))
-    nfiles <- length(myfiles)
-    # Prepare dataframes
-    Ldata <- matrix(data=NA, nrow = 801, ncol=nfiles)
-    Rdata <- matrix(data=NA, nrow = 801, ncol=nfiles)
-    for (f in 1:nfiles){
-      mydata <- read.csv(paste0(data_dir,'/',myfiles[f]))
-      Ldata[,f] <- mydata$Lmean
-      Rdata[,f] <- mydata$Rmean
-      time <- mydata$time
-    }
-    # Calculate grandmean
-    if (l==1){
-      grandmean <- data.frame('L1_Left' = rowMeans(Ldata),
-                            'L1_Right' = rowMeans(Rdata))}
-    if (l==2){
-      grandmean$L2_Left <- rowMeans(Ldata)
-      grandmean$L2_Right <- rowMeans(Rdata)}
-}
-grandmean$time = time
-
-# Crop to -10 to 20 seconds
-start_index <- which(time==-10)
-end_index <- which(time==20)
-xtime <- time[start_index:end_index]
-grandmean <- grandmean[start_index:end_index, ]
-
-# Make data longer
-grandmean_long <- pivot_longer(data=grandmean, cols=c(1:4), names_to = 'Condition', values_to='Velocity')
-ggplot(data=grandmean_long, aes(x=time, y=Velocity, group=Condition)) +
-  geom_line(aes(colour=Condition)) +
-  geom_hline(yintercept = 100, linetype="solid", alpha = 0.8) +
-  geom_vline(xintercept = 0, linetype="solid", alpha = 0.8) +
-  scale_y_continuous(breaks = seq(94, 104, by=2)) +
-  geom_vline(xintercept = -10, linetype = "dashed", alpha = 0.8) + # Start of Baseline
-  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.8) + # End of Baseline
-  geom_vline(xintercept = 8, linetype = "dashed", alpha = 0.8) + # Start of POI
-  geom_vline(xintercept = 20, linetype = "dashed", alpha = 0.8)  # End of POI
+```{r Fig2, warning=FALSE, message=FALSE, echo=FALSE}
+Fig2 <- doGrandmean(1)
+print(Fig2)
 
 ```
  
-_Figure 2. Left and right velocity L1 and L2.
-Left and right hemisphere activation is displayed at a function of epoch time in seconds for word generation task L1 and L2. Dotted lines indicate the start of the baseline period (left) depicted from -10 to 0 seconds and period of interest from 8 (middle line) to 20 seconds after cue onset (right line). L1, first language; L2, second language._
-
+_Figure 2. Left and right hemisphere activation is displayed as a function of epoch time in seconds for the word generation task for L1 (French or German) and L2 (English) in Study 1. Dotted lines indicate the start and end of the baseline period (from -10 to 0 seconds) and the period of interest (from 8 to 20 seconds). L1, first language; L2, second language._
 
 
   Table 2 shows summary statistics for the LI values for L1 and L2. The percentage of participants in each group categorised as left lateralised, bilateral or right lateralised is also shown. The majority of participants were left lateralised, with only around 10% showing bilateral activation. No participants showed right lateralisation for either L1 or L2. T-tests showed that there were no significant effects of testing order on LI values, either for L1 (p = `r round(testing_ttest_L1$p.value, 3)`) or L2 (p = `r round(testing_ttest_L2$p.value, 3)`). 
@@ -400,7 +398,22 @@ Left and right hemisphere activation is displayed at a function of epoch time in
   As can be seen in the scatterplot in Figure 3, laterality indices for L1 and L2 were similar, with Spearman's R = `r round(L1_L2_corr$estimate, 3)`. Furthermore, the points cluster around the continuous grey line, which shows the point of equivalence between L1 and L2, and all but one point falls within the Bland-Altman bounds (dotted grey lines), as would be expected if L1 and L2 were equivalent.  
 
 ```{r Fig3, warning=FALSE, message=FALSE, echo=FALSE}
-
+Fig3 <- dofigure(plotdata=plotdata,
+                 L1 = plotdata$L1.mean_LI,
+                 L2 = plotdata$L2.mean_LI,
+                 colourcol = plotdata$AoA,
+                 pchcol = as.factor(rep(16,nrow(plotdata))), #use pch of 16 for all points - this is used to code different pch by proficiency in figs 2 and 3
+                 xlab="LI for L1 (French / German)",
+                 ylab="LI for L2 (English)",
+                 captiontitle1 = "Age of Acquisition",
+                 captiontitle2 = " ",
+                 xlim= c(-2,9),
+                 ylim = c(-2,9),
+                 correlcoef = round(L1_L2_corr$estimate, 3),
+                 BlandAltmanlimit = 2.5,
+                L1se = plotdata$L1.mean_se,
+                 L2se = plotdata$L2.mean_se,
+                showpch = 0)
 print(Fig3)
 
 ```
@@ -419,28 +432,12 @@ aoa_L2_corr <- cor.test(total_info$L2_Acquisition, total_info$L2.mean_LI, method
 aoF_L2_corr <- cor.test(total_info$L2_Fluent, total_info$L2.mean_LI, method = "spearman")
 prof_L2_corr <- cor.test(total_info$L2_prof, total_info$L2.mean_LI, method="spearman")
 
-Figx <- ggplot(data = total_info, aes(x = L2_Acquisition, y = L2.mean_LI)) + 
-  geom_point() + 
-  theme_bw() + 
-  xlab("Age of English Acquisition (years)") + 
-  ylab("Mean LI for L2") +
-  scale_x_continuous(breaks = seq(0, 16, by=2)) + ylim (-1,7) + 
-  geom_errorbar(aes(ymin = L2.mean_LI - L2.mean_se, ymax = L2.mean_LI + L2.mean_se ),linetype = "dotted") +
-  geom_hline(yintercept = 0, linetype="solid", alpha = 0.8) + 
-  geom_vline(xintercept = 0, linetype= "solid", alpha = 0.8) +
-  ggtitle('Figure x')
-
-
-#print(Fig2)
-#DB: I have removed Fig2 and instead added information about AoA to Figure 1. 
 myt <- t.test(plotdata$L2.mean_LI~plotdata$AoA)
-
 
 ```
 
 
  One can see by inspection of Figure 3 that there is no evidence of a trend for lower LI for L2 in those with early AoA, and a t-test of differences in L2 LI for those with early and late AoA revealed no differences:  t = `r round(myt$statistic,2)`, p = `r round(myt$p.value,3)`.  For a more quantitative assessment of association, we computed Spearman's correlations between the LI values for L2 (English) and the age of acquisition of English. This was not statistically significant (r = `r round(aoa_L2_corr$estimate, 2)`, p = `r round(aoa_L2_corr$p.value, 3)`).
-
 
 ## Discussion
 
@@ -450,7 +447,6 @@ Proficiency was generally high in this sample, so it was not possible to assess 
 
 
 # Study 2: Japanese-English bilinguals with moderate-high proficiency
-
 
 ## Methods
 
@@ -517,7 +513,7 @@ A total of `r Phon_nsubj` participants were included in the final analysis, afte
 
 ### Ethics Statement
 
-!! NEED ETHICS INFO !!   
+Ethical approval for the study was granted by the UCL Research Ethics Committee (ID:3612/001). Participants gave written informed consent and were aware they could withdraw at any time. 	 
 
 ### Language History and Ability
 
@@ -527,11 +523,11 @@ English language ability was measured using the Quick Placement Test (Cambridge 
 
 ### fTCD Apparatus
 
-The apparatus was identical to that used in Study 1. 
-
-!![possibly a different headset?]
+Blood flow velocity through the left and right MCAs was examined using a DopplerBox ultrasonography device and DiaMon headset (manufactured by DWL Elektronische Systeme, Singen, Germany). Two 2-MHz transducer monitoring probes were mounted on the headset and placed at each temporal skull window. 	
 
 ### Word Generation Task
+Stimuli were presented using Cogent toolbox (http://www.vislab.ucl.ac.uk/cogent) for MATLAB (Mathworks Inc., Sherborn, MA). Triggers time locked to the onset of the stimulus were sent from the presentation PC to the Doppler Box set-up.
+
 The task was based on Gutierrez-Sigut, Payne, and MacSweeney (2015), and involved phonological and semantic word generation tasks in English and Japanese, with order counterbalanced across participants Unlike in study 1, there was no silent interval for covert word generation: participants spoke the words as they thought of them. Gutierrez-Sigut et al. had previously shown that LIs were similar regardless of whether overt or covert responses were given, and they noted a benefit of overt production was that the experimenter could record the participants' responses as they occurred. For each trial, participants saw "Clear Mind" presented on the screen for 3 seconds. The cue stimulus was then presented, and participants had 17 seconds to overtly generate as many words as possible. Participants were then instructed to relax for 16 seconds to restore baseline activity. Each trial lasted a total of 36 seconds.  
 
 ### Stimuli
@@ -549,15 +545,7 @@ The same semantic categories were presented in English. Participants had to repo
 
 ### fTCD Analysis
 
-```{r study2_descriptive_statistics, echo=FALSE, warning=FALSE, message=FALSE}
-#check how placement relates to other variables
-#plot(Miho_background_data$aoa_L2,Miho_background_data$placement)
-
-#cor(Miho_background_data$aoa_L2,Miho_background_data$placement,use="complete.obs")
-#plot(Miho_background_data$Eng_score,Miho_background_data$placement)
-#cor(Miho_background_data$Eng_score,Miho_background_data$placement,use="complete.obs")
-
-
+```{r dofig5, echo=FALSE, warning=FALSE, message=FALSE}
 # Plot Miho Phon L1 and L2 data
 plotdata_Phon <- inner_join(x = L1_Phon_data, L2_Phon_data)
 plotdata_Phon <- inner_join(x = plotdata_Phon, y = Miho_background_data, by = c("ID"))
@@ -568,15 +556,9 @@ plotdata_Phon$AoA[plotdata_Phon$aoa_L2>5]<-2
 plotdata_Phon$AoA<-as.factor(plotdata_Phon$AoA)
 levels(plotdata_Phon$AoA)<-c('Not known','Early','Late')
 
-
-
 L1_L2_Phon_corr <- cor.test (plotdata_Phon$L1_Phon.mean_LI, plotdata_Phon$L2_Phon.mean_LI, method = "spearman")
 
-```
-
-```{r dofig2&3,echo=FALSE, warning=FALSE,message=FALSE}
-
-Fig2 <- dofigure(plotdata=plotdata_Phon,
+Fig5a <- dofigure(plotdata=plotdata_Phon,
                  L1 = plotdata_Phon$L1_Phon.mean_LI,
                  L2 = plotdata_Phon$L2_Phon.mean_LI,
                  colourcol = plotdata_Phon$AoA,
@@ -593,7 +575,6 @@ Fig2 <- dofigure(plotdata=plotdata_Phon,
                  L2se = plotdata_Phon$L2_Phon.mean_se,
                  showpch=TRUE)
 
-
 # Plot Miho Sem L1 and L2 data
 plotdata_Sem <- inner_join(x = L1_Sem_data, y = L2_Sem_data)
 plotdata_Sem <- inner_join(x = plotdata_Sem, y = Miho_background_data, by = c("ID"))
@@ -602,7 +583,7 @@ L1_L2_Sem_corr <- cor.test (plotdata_Sem$L1_Sem.mean_LI, plotdata_Sem$L2_Sem.mea
 
 plotdata_Sem$AoA <-plotdata_Phon$AoA
 
-Fig3 <- dofigure(plotdata=plotdata_Sem,
+Fig5b <- dofigure(plotdata=plotdata_Sem,
                  L1 = plotdata_Sem$L1_Sem.mean_LI,
                  L2 = plotdata_Sem$L2_Sem.mean_LI,
                  colourcol = plotdata_Sem$AoA,
@@ -692,8 +673,6 @@ summary_stats[, 8] <- round(c(L1_Phon_laterality[3], L2_Phon_laterality[3],
                               L1_Sem_laterality[3], L2_Sem_laterality[3]))
 summary_stats[which(is.na(summary_stats[,8])), 8] <- 0 
 summary_stats <- as.data.frame(summary_stats)
-
-
 
 ```
 
@@ -785,9 +764,9 @@ Split-half reliability was assessed by correlating the LI values from odd and ev
 
 ### LI Values
 
-Table 4 shows summary statistics for L1 and L2 in both phonological and semantic word generation tasks. 
+Noramlized Doppler velocities for the left and right hemisphere activation are presented for each language and task in Figure 4. Table 4 shows summary statistics for L1 and L2 in both phonological and semantic word generation tasks. 
 
-Laterality indices for L1 and L2 were strongly correlated in both the phonological task (Spearman's R = `r round(L1_L2_Phon_corr$estimate, 3)`) and the semantic task (Spearman's R = `r round(L1_L2_Sem_corr$estimate, 3)`), closely replicating the results of Study 1. This is shown in the scatterplots in Figures 2 and 3. 
+Laterality indices for L1 and L2 were strongly correlated in both the phonological task (Spearman's R = `r round(L1_L2_Phon_corr$estimate, 3)`) and the semantic task (Spearman's R = `r round(L1_L2_Sem_corr$estimate, 3)`), closely replicating the results of Study 1. This is shown in the scatterplots in Figures 5a and 5b. 
 
 ```{r table4, echo=FALSE, warning=FALSE, message=FALSE}
 table4 <- flextable(summary_stats) 
@@ -796,25 +775,34 @@ set_caption(table4, caption='Table 4. Summary statistics for Study 2 laterality 
 
 ```
 
-```{r Fig2_4, echo=FALSE, warning=FALSE, message=FALSE}
-Fig2 <- Fig2 + ggtitle('Phonological')
-print(Fig2)
+```{r doFig4, warning=FALSE, message=FALSE, echo=FALSE}
+Fig4a <- doGrandmean(2, 'Phon')
+Fig4a <- Fig4a + ggtitle('A. Phonological')
+print(Fig4a)
 
+Fig4b <- doGrandmean(2, 'Sem')
+Fig4b <- Fig4b + ggtitle('B. Semantic')
+print(Fig4b)
+```
+  
+_Figure 4. Left and right hemisphere activation is displayed as a function of epoch time in seconds for word generation for L1 (Japanese) and L2 (English) in Study 2. Plot 4a shows the phonological word generation task, and 4b shows the semantic word generation task. Dotted lines indicate the start and end of the baseline period (from -10 to 0 seconds) and the period of interest (from 6 to 20 seconds). L1, first language; L2, second language._
+
+
+```{r Fig5a, echo=FALSE, warning=FALSE, message=FALSE}
+Fig5a <- Fig5a + ggtitle('A. Phonological')
+print(Fig5a)
 
 ```
   
-_Figure 2. Scatterplot showing individual mean LIs in L1 and L2 for Phonological task, with horizontal and vertical error bars denoting standard errors. English proficiency is coded by shape: circle = basic, triangle = intermediate, square = advanced. The continuous grey line corresponds to the point of equality of the two measures, and the dotted lines show the limits where difference between LIs is +/- 2.5._  
+```{r Fig5b, echo=FALSE, warning=FALSE, message=FALSE}
+Fig5b <- Fig5b + ggtitle('B. Semantic')
+print(Fig5b)
 
+```
+  
+_Figure 5. Scatterplot showing individual mean LIs in L1 and L2 for (a) Phonological and (b) Semantic Word Generation, with horizontal and vertical error bars denoting standard errors. English proficiency is coded by shape: circle = basic, triangle = intermediate, square = advanced.The continuous grey line corresponds to the point of equality of the two measures, and the dotted lines show the limits where difference between LIs is +/- 2.5._  
 
 _[NB - the coding of proficiency by shape is not satisfactory - barely visible. Probably not worth doing unless with have data on the full sample, in which case we might be able to do this with more distinctive shapes]_
-
-```{r Fig3, echo=FALSE, warning=FALSE, message=FALSE}
-Fig3 <- Fig3 + ggtitle('Semantic')
-print(Fig3)
-
-```
-  
-_Figure 3. Scatterplot showing individual mean LIs in L1 and L2 for Semantic task, with horizontal and vertical error bars denoting standard errors. English proficiency is coded by shape: circle = basic, triangle = intermediate, square = advanced.The continuous grey line corresponds to the point of equality of the two measures, and the dotted lines show the limits where difference between LIs is +/- 2.5._  
 
 ###  Effects of Age of Acquisition and Proficiency
 
@@ -830,7 +818,7 @@ aoa_l2_corr_sem_j <- cor.test(plotdata_Sem$aoa_L2, plotdata_Sem$L2_Sem.mean_LI, 
 
 ```
 
-Points in Figures 2 and 3 are coded to show Age of Acquisition and English proficiency on the Placement Test, but numbers are too small to justify formal analysis. It is noteworthy, however, that insofar as there is a trend for an effect of AoA on lateralisation of L2, it is in the opposite direction to that predicted by Hull and Vaid (2007), who found, using behavioural measures of lateralisation, that L2 was less lateralised when L2 was acquired early.
+Points in Figure 5 are coded to show Age of Acquisition and English proficiency on the Placement Test, but numbers are too small to justify formal analysis. It is noteworthy, however, that insofar as there is a trend for an effect of AoA on lateralisation of L2, it is in the opposite direction to that predicted by Hull and Vaid (2007), who found, using behavioural measures of lateralisation, that L2 was less lateralised when L2 was acquired early.
 
 [?? NOT SURE IF WE SHOULD JUST LEAVE AS DESCRIPTIVE - we have computed correlations with quantitative scores and could report these]
 <!--- Currently commented out as I think the numbers don'e justify more than descriptive analysis.
