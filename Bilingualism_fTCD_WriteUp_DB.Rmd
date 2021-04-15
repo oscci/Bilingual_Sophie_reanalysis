@@ -107,7 +107,7 @@ A total of 40 individuals were assessed for viability as study participants. In 
 ### Ethics Statement
 The study was approved by the University of Oxford Central Research Ethics Committee (CUREC), approval number, MS-IDREC-C1-2015-126). All participants provided written informed consent.
 
-### fTCD Apparatus
+### Apparatus
 A commercially available transcranial Doppler ultrasonography device (DWL, Multidop T2; manufacturer, DWL Elektronische Systeme, Singen, Germany) was used for continuous measurements of the changes in cerebral blood flow velocity (CBFV) through the left and right MCA. The MCA was insonated at ~5 cm (40–60 mm). Activity in frontal and medial cortical areas, supplied by the anterior cerebral artery, and inferior temporal cortex, supplied by the posterior cerebral artery, do not contribute to the measurements made in the MCA. Two 2-MHz transducer probes, which are relatively insensitive to participant motion, were mounted on a screw-top headset and positioned bilaterally over the temporal skull window (Deppe et al., 2004).
 
 ### Handedness
@@ -128,6 +128,7 @@ The cued word generation paradigms were based on Knecht and colleagues’ 1998 p
 
 Each trial started with an auditory tone and the written instruction “Clear Mind” (5 s), followed by the letter cue to which the participant silently generated words (15 s), and then overt word generation (5 s) (Figure 1). To restore baseline activity, participants were instructed to relax (25 s) at the end of each trial. Event markers were sent to the Multi-Dop system when the letter cue appeared, denoting trial onset for subsequent analysis of the Doppler signal.
 
+_Figure 1. A schematic diagram of the word generation task is depicted. Period of interest (POI) is marked in grey from 8 to 20 s, and the event marker is displayed in red._
 
 ### Data pre-analysis and calculation of asymmetry indices
 
@@ -343,7 +344,7 @@ table2
 ```
 
 
-  Normalized Doppler velocities for the left and right hemisphere activation are presented for each task in Figure 2.
+  Normalized Doppler velocities for the left and right hemisphere activation are presented for each task in Figure 2. Descriptive statistics for the general Doppler data are presented in Table 2.
   
 ```{r grandmean_Fig2, warning=FALSE, message=FALSE, echo=FALSE}
 data_dir <- 'Raw Means'
@@ -382,13 +383,15 @@ ggplot(data=grandmean_long, aes(x=time, y=Velocity, group=Condition)) +
   geom_hline(yintercept = 100, linetype="solid", alpha = 0.8) +
   geom_vline(xintercept = 0, linetype="solid", alpha = 0.8) +
   scale_y_continuous(breaks = seq(94, 104, by=2)) +
+  geom_vline(xintercept = -10, linetype = "dashed", alpha = 0.8) + # Start of Baseline
+  geom_vline(xintercept = 0, linetype = "dashed", alpha = 0.8) + # End of Baseline
   geom_vline(xintercept = 8, linetype = "dashed", alpha = 0.8) + # Start of POI
   geom_vline(xintercept = 20, linetype = "dashed", alpha = 0.8)  # End of POI
 
 ```
  
-Figure 2. Left and right velocity L1 and L2.
-Left and right hemisphere activation is displayed at a function of epoch time in seconds for word generation task L1 and L2. Dotted lines indicate the start of the baseline period (left) depicted from -10 to 0 seconds and period of interest from 8 (middle line) to 20 seconds after cue onset (right line). L1, first language; L2, second language.
+_Figure 2. Left and right velocity L1 and L2.
+Left and right hemisphere activation is displayed at a function of epoch time in seconds for word generation task L1 and L2. Dotted lines indicate the start of the baseline period (left) depicted from -10 to 0 seconds and period of interest from 8 (middle line) to 20 seconds after cue onset (right line). L1, first language; L2, second language._
 
 
 
@@ -440,12 +443,11 @@ myt <- t.test(plotdata$L2.mean_LI~plotdata$AoA)
 
 
 ## Discussion
-All high proficiency
-Good agreement - validates method
-AoA no effect.
 
+Nearly all participants showed significant left lateralised blood-flow for both L1 and L2 during the word generation task; only four participants were classified as bilateral for one language, and for three of these it was L1 that was bilateral.
+Furthermore, asymmetry indices for L1 and L2 were highly related and similar in magnitude, indicating good reliability of the measure. 
+Proficiency was generally high in this sample, so it was not possible to assess the impact of variation in proficiency on lateralisation. The sample was small, and so lacking in power to detect small effects, but there was no indication of support for the hypothesis that AoA affected either absolute levels of language lateralisation or the difference in lateralisation between the two languages.
 
-TO BE COMPLETED
 
 # Study 2: Japanese-English bilinguals with moderate-high proficiency
 
@@ -509,11 +511,9 @@ miho_demo_summary <- Miho_background_data %>%
 
 ```
 
-Participants were native speakers of Japanese, who were advanced users of English from the London area, and had lived in English-speaking countries for at least 3 years. All were self-reported right-handers, and none reported any reading or language difficulties. 
+Participants were native speakers of Japanese, who were advanced users of English living in the London area. All were self-reported right-handers, and none reported any reading or language difficulties. 
 
-A total of `r Phon_nsubj` participants were included in the final analysis, after excluding `r length(which(Miho_exclude!=0))` participant due to poor quality data or insufficient trial numbers. All further analyses are based on the final sample of `r miho_demo_summary$N_total` participants (mean age = `r round(miho_demo_summary$mean_age, 2)` years, sd = `r round(miho_demo_summary$sd_age, 2)` years).
-
-Gender data was available for 15 participants, of whom, `r miho_demo_summary$N_female` were female. 
+A total of `r Phon_nsubj` participants were included in the final analysis, after excluding `r length(which(Miho_exclude!=0))` participant due to poor quality data or insufficient trial numbers. All analyses are based on the final sample of `r miho_demo_summary$N_total` participants (`r miho_demo_summary$N_female` female, mean age = `r round(miho_demo_summary$mean_age, 2)` years, sd = `r round(miho_demo_summary$sd_age, 2)` years).
 
 ### Ethics Statement
 
