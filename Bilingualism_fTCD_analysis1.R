@@ -26,17 +26,17 @@ rawmeansdir<- "Raw Means"
 if(!file.exists(rawmeansdir)){dir.create(rawmeansdir)}
 
 checkmarkers=0; #set to 1 to see a sample of the file to check markers are there
-initialdatacheck=1; #set to 1 toview raw data for each epoch
+initialdatacheck=0; #set to 1 toview raw data for each epoch
 initialdatacheck1=0; # set to 1 to view epochs after normalisation
 initialdatacheck2=0; #set to 1 to view epochs after heartbeat Correction
 initialdatacheck3=0; # set to 1 to visualise after baseline correction
-initialdatacheck4=1; # set to 1 to plot AND SAVE average for each subject
+initialdatacheck4=0; # set to 1 to plot AND SAVE average for each subject
 
 # Timings in secs
 premarker=-11 # epoch start
 basestart=-10 # baseline start
 baseend=0 # baseline end
-postmarker=21 # end of epoch 
+postmarker=30 # end of epoch 
 poistart=8 # period of interest start
 poiend=20 # period of interest end
 
@@ -100,8 +100,7 @@ results1$L1.mean_laterality <- as.character(results1$L1.mean_laterality)
 results2$L2.peak_laterality <- as.character(results2$L2.peak_laterality)
 results2$L2.mean_laterality <- as.character(results2$L2.mean_laterality)
 
-for (mysub in 26
-    ){ # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
+for (mysub in 1:length(all_subjects)){ # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
   
   mysubname <- all_subjects[mysub]
   cat(mysubname, "\n\n")
@@ -121,14 +120,14 @@ for (mysub in 26
     mycomment <- NA
     
     # Read exp data
-    if (language == 2){
-      dataloc <- paste0("data/CG_", mysubname,"E.exp")}
     if (language == 1){
       if(file.exists (paste0('data/CG_', mysubname, "F.exp"))){
         dataloc <- paste0('data/CG_', mysubname, "F.exp")}
       else{
         dataloc <- paste0('data/CG_', mysubname, "G.exp")}
     }
+    if (language == 2){
+      dataloc <- paste0("data/CG_", mysubname,"E.exp")}
 
     dat<-read.table(dataloc, skip = 6,  header =FALSE, sep ="\t")
     # downsample to 25 Hz by taking every 4th point
@@ -145,7 +144,7 @@ for (mysub in 26
     #-------------------------------------------------------
     # Brief marker channel to check all OK
     #-------------------------------------------------------
-    if (checkmarkers==0)
+    if (checkmarkers==1)
     {
       plot(rawdata$marker, type="l") #set up plot - doesn"t actually plot anything
       cat("Press [enter] to continue")
