@@ -26,12 +26,12 @@ dir <- getwd() # Set data directory path here
 rawmeansdir<- "Miho Raw Means"
 if(!file.exists(rawmeansdir)){dir.create(rawmeansdir)}
 
-checkmarkers=1; #set to 1 to see a sample of the file to check markers are there
-initialdatacheck=1; #set to 1 toview raw data for each epoch
+checkmarkers=0; #set to 1 to see a sample of the file to check markers are there
+initialdatacheck=0; #set to 1 toview raw data for each epoch
 initialdatacheck1=0; # set to 1 to view epochs after normalisation
 initialdatacheck2=0; #set to 1 to view epochs after heartbeat Correction
 initialdatacheck3=0; # set to 1 to visualise after baseline correction
-initialdatacheck4=1; # set to 1 to plot AND SAVE average for each subject
+initialdatacheck4=0; # set to 1 to plot AND SAVE average for each subject
 
 # Timings in secs
 premarker=-11 # epoch start
@@ -111,7 +111,8 @@ results1$L1_Sem.mean_laterality <- as.character(results1$L1_Sem.mean_laterality)
 results2$L2_Sem.peak_laterality <- as.character(results2$L2_Sem.peak_laterality)
 results2$L2_Sem.mean_laterality <- as.character(results2$L2_Sem.mean_laterality)
 
-for (mysub in 19){ # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
+for (mysub in 1:length(all_subjects)){
+     # If you want to analyse ALL subjects you can change this to (mysub in 1:length(all_subjects)){    
   
   mysubname <- all_subjects[mysub]
   cat(paste0("BL",mysubname), "\n\n")
@@ -341,7 +342,7 @@ for (mysub in 19){ # If you want to analyse ALL subjects you can change this to 
       # X axis will be time of full epoch
       timeline = rawdata$sec[1:(postpoints-prepoints+1)] #timeline used in all plots
       
-      if(initialdatacheck==1) #set initialdatacheck to zero to avoid plotting
+            if(initialdatacheck==1) #set initialdatacheck to zero to avoid plotting
       {  myplotbit <- myepoched[mym, , ,1]
         #first plot the old values with no correction
         myylim <- range(c(range(na.omit(myplotbit[,1])),range(na.omit(myplotbit[,2]))))
