@@ -136,7 +136,7 @@ The cerebral blood flow velocity data were analysed using custom scripts in R St
 
 -	Downsampling from 100 Hz to 25 Hz
 
--	Epoching from -11 s to 21 s relative to the onset of the ‘Clear Mind’ cue
+-	Epoching from -11 s to 30 s relative to the onset of the ‘Clear Mind’ cue
 
 -	Manual exclusion of trials with obvious spiking or dropout artefacts
 
@@ -241,10 +241,12 @@ return(myfig)
 doGrandmean <- function(study, task){
   if (study == 1){
     POI_start = 8
-    data_dir = 'Raw Means'}
+    data_dir = 'Raw Means'
+    end_time = 29}
   if (study == 2){
     POI_start = 6
-    data_dir = 'Miho Raw Means'}
+    data_dir = 'Miho Raw Means'
+    end_time = 24}
 
   for (l in 1:2){
     if (study == 1){
@@ -253,8 +255,10 @@ doGrandmean <- function(study, task){
       myfiles <- list.files(path = data_dir, pattern = paste0('*_L',l,'_',task,'.csv'))}
     nfiles <- length(myfiles)
     # Prepare dataframes
-    Ldata <- matrix(data=NA, nrow = 801, ncol=nfiles)
-    Rdata <- matrix(data=NA, nrow = 801, ncol=nfiles)
+    mydata <- read.csv(paste0(data_dir,'/',myfiles[1])) # Use first data file to determine matrix size
+    myrows <- dim(mydata)[1]
+    Ldata <- matrix(data=NA, nrow = myrows, ncol=nfiles)
+    Rdata <- matrix(data=NA, nrow = myrows, ncol=nfiles)
     for (f in 1:nfiles){
       mydata <- read.csv(paste0(data_dir,'/',myfiles[f]))
       Ldata[,f] <- mydata$Lmean
@@ -271,9 +275,9 @@ doGrandmean <- function(study, task){
   }
   grandmean$time = time
 
-  # Crop to -10 to 20 seconds
+  # Crop to -10 to 30 seconds
   start_index <- which(time==-10)
-  end_index <- which(time==20)
+  end_index <- which(time==end_time)
   xtime <- time[start_index:end_index]
   grandmean <- grandmean[start_index:end_index, ]
 
