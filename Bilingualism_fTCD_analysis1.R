@@ -65,7 +65,7 @@ trialsperrun=23
 # Read in Triallist to get list of subject IDs
 # Can edit this line to download the data from OSF once the project is public
 # osf_retrieve_file("https://osf.io/pvb57") %>%  osf_download(conflicts = "skip") # Edit the file location
-trialloc<-"filelist_L1_L2.xlsx" # File lists all subjects and trial inclusions/exclusions
+trialloc<-"Study1_filelist.xlsx" # File lists all subjects and trial inclusions/exclusions
 triallist1 <- read_excel(trialloc, sheet=1)
 triallist2 <- read_excel(trialloc, sheet=2)
 
@@ -74,11 +74,11 @@ all_subjects <- triallist1$ID
 nsubj <- length(all_subjects)
 
 # Create matrices for results
-resultsloc1 <- "Results_L1.csv" # File name for Results from session 1
-resultsloc2 <- "Results_L2.csv" # File name for Results from session 1
+resultsloc1 <- "Study1_resultsL1.csv" # File name for Results from session 1
+resultsloc2 <- "Study1_resultsL2.csv" # File name for Results from session 1
 # Can edit this line to download list of column names for results file directly from OSF
 # osf_retrieve_file("https://osf.io/zuj6x") %>% osf_download(conflicts = "skip") # Edit file location
-mycolumns<- read.csv("col_names.txt", header=FALSE)
+mycolumns<- read.csv("Study1_colnames.txt", header=FALSE)
 results2 <- results1 <- as.data.frame(matrix(data=NA, nrow=nsubj, ncol=17))
 colnames(results1) <- mycolumns[1:17, ]
 colnames(results2) <- mycolumns[c(1,18:33), ]
