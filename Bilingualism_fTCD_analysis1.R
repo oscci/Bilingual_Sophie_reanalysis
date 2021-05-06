@@ -670,5 +670,5 @@ write.csv(results2, file = resultsloc2, row.names=F)
 
 # Print triallist files
 sheets <- list('L1' = triallist1, 'L2' = triallist2)
-write_xlsx(sheets, 'filelist_L1_L2.xlsx')
+write_xlsx(sheets, 'Study1_filelist.xlsx')
   
