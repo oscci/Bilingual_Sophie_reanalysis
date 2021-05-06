@@ -23,7 +23,7 @@ require(writexl)
 ########################################################
 # Specify directory and other variable parameters
 dir <- getwd() # Set data directory path here
-rawmeansdir<- "Miho Raw Means"
+rawmeansdir<- "Study2_Grand_Means"
 if(!file.exists(rawmeansdir)){dir.create(rawmeansdir)}
 
 checkmarkers=0; #set to 1 to see a sample of the file to check markers are there
@@ -117,7 +117,7 @@ for (mysub in 1:length(all_subjects)){ # If you want to analyse ALL subjects you
   cat(paste0("BL",mysubname), "\n\n")
   
   # Read exp data
-  dataloc <- paste0("Miho_data/BL", mysubname,".exp")
+  dataloc <- paste0("Study2_data/BL", mysubname,".exp")
   
   dat<-read.table(dataloc, skip = 6,  header =FALSE, sep ="\t")
   # downsample to 25 Hz by taking every 4th point
