@@ -22,7 +22,7 @@ require(writexl)
 ########################################################
 # Specify directory and other variable parameters
 dir <- getwd() # Set data directory path here
-rawmeansdir<- "Raw Means"
+rawmeansdir<- "Study1_Grand_Means"
 if(!file.exists(rawmeansdir)){dir.create(rawmeansdir)}
 
 checkmarkers=0; #set to 1 to see a sample of the file to check markers are there
@@ -121,13 +121,13 @@ for (mysub in 1:length(all_subjects)){ # If you want to analyse ALL subjects you
     
     # Read exp data
     if (language == 1){
-      if(file.exists (paste0('data/CG_', mysubname, "F.exp"))){
-        dataloc <- paste0('data/CG_', mysubname, "F.exp")}
+      if(file.exists (paste0('Study1_data/CG_', mysubname, "F.exp"))){
+        dataloc <- paste0('Study1_dat/CG_', mysubname, "F.exp")}
       else{
-        dataloc <- paste0('data/CG_', mysubname, "G.exp")}
+        dataloc <- paste0('Study1_dat/CG_', mysubname, "G.exp")}
     }
     if (language == 2){
-      dataloc <- paste0("data/CG_", mysubname,"E.exp")}
+      dataloc <- paste0("Study1_dat/CG_", mysubname,"E.exp")}
 
     dat<-read.table(dataloc, skip = 6,  header =FALSE, sep ="\t")
     # downsample to 25 Hz by taking every 4th point
