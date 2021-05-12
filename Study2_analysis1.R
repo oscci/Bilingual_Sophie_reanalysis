@@ -25,6 +25,8 @@ require(writexl)
 dir <- getwd() # Set data directory path here
 rawmeansdir<- "Study2_Grand_Means"
 if(!file.exists(rawmeansdir)){dir.create(rawmeansdir)}
+plotdir <- "Study2_LI_Plots"
+if(!file.exists(plotdir)){dir.create(plotdir)}
 
 checkmarkers=0; #set to 1 to see a sample of the file to check markers are there
 initialdatacheck=0; #set to 1 toview raw data for each epoch
@@ -79,7 +81,7 @@ nsubj <- length(all_subjects)
 
 # Create matrices for results
 resultsloc1 <- "Study2_resultsL1.csv" # File name for Results from session 1
-resultsloc2 <- "Study2_resultsL2.csv" # File name for Results from session 1
+resultsloc2 <- "Study2_resultsL2.csv" # File name for Results from session 2
 # Can edit this line to download list of column names for results file directly from OSF
 # osf_retrieve_file("https://osf.io/zuj6x") %>% osf_download(conflicts = "skip") # Edit file location
 mycolumns<- read.csv("Study2_colnames.txt", header=FALSE)
@@ -650,7 +652,7 @@ for (mysub in 1:length(all_subjects)){ # If you want to analyse ALL subjects you
     cat ("Press [enter] to continue")
     line <- readline()
     
-    png(filename=paste0("LI_Plot_","BL",mysubname,"_L", language, "_", tasks[task],".png"))
+    png(filename=paste0(plotdir,"/LI_Plot_","BL",mysubname,"_L", language, "_", tasks[task],".png"))
 
     plot(timelinelong,Lmean, type="n",ylab="mean blood flow",xlab="time(s)",ylim=c(90,120)) #set up plot - doesn"t actually plot anything
     lines(timelinelong,Lmean,col="red")

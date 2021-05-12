@@ -23,7 +23,7 @@ mintrials <- 15 # Minimum trials is 15
 # Loop through languages, L1 and L2
 
 for (l in 1:2){
-  resultsfile <- paste0(rootdir,"Study2_results",l,".csv") # File lists analysis results
+  resultsfile <- paste0(rootdir,"/Study2_resultsL",l,".csv") # File lists analysis results
   
   ########################################################
   # Read in results file
