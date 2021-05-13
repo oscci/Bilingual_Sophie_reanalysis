@@ -27,36 +27,24 @@ require(RCurl) #for reading csv from a website
 
 ```{r read_data, echo=FALSE, messgae = FALSE}
 # read French/German data in from Github
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Results_L1.csv")
-L1_data <- read.csv(text=download)
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Results_L2.csv")
-L2_data <- read.csv(text=download)
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/background_data.csv")
-background_data_total <- read.csv(text=download,stringsAsFactors=F)
-colnames(background_data_total)[1] <-  colnames(background_data_total)[1] <- 'ID'
+download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study1_resultsL1.csv")
+Study1_L1_data <- read.csv(text=download)
+download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study1_resultsL2.csv")
+Study1_L2_data <- read.csv(text=download)
+download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study1_demographics.csv")
+Study1_demographics_total <- read.csv(text=download,stringsAsFactors=F)
+colnames(Study1_demographics_total)[1] <- 'ID'
 
 # read Japanese data in 
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Miho_Results_L1.csv")
-Miho_L1_data <- read.csv(text=download)
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Miho_Results_L2.csv")
-Miho_L2_data <- read.csv(text=download)
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Miho_background_data.csv")
-Miho_background_data_total <- read.csv(text=download,stringsAsFactors=F)
+download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study2_resultsL1.csv")
+Study2_L1_data <- read.csv(text=download)
+download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study2_resultsL2.csv")
+Study2_L2_data <- read.csv(text=download)
+download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study2_demographics.csv")
+Study2_demographics_total <- read.csv(text=download,stringsAsFactors=F)
 
-colnames(Miho_background_data_total)[1] <-  colnames(Miho_background_data_total)[1] <- 'ID'
-Miho_background_data_total$ID <- as.numeric(gsub("BL", replacement = "", Miho_background_data_total$ID))
-
-## ZW: I have removed these lines as it's not necessary to read in this extra data - Placement_score is already present in Miho_background_data_total, in a variable called Eng_score
-
-#miho_extra <- read.csv('Miho_background_data.csv',stringsAsFactors=F) #this file was on OSF and has data on Placement score, but only for the first 16 people
-#miho_extra$ID <- as.numeric(gsub("BL", replacement = "", miho_extra$subject))
-#miho_extra$ID[1]<-6 #oddly formatted first row, so need manual replacement of ID
-
-#Miho_background_data_total$placement <- NA
-#add in placement scores for those from miho_extra, who are a subset of all subjects
-#w<-which(Miho_background_data_total$ID %in% miho_extra$ID) #this only works because miho_extra$ID are in numeric order! 
-#Miho_background_data_total$placement[w]<-miho_extra$Placement_score
-
+colnames(Study2_demographics_total)[1] <- 'ID'
+Study2_demographics_total$ID <- as.numeric(gsub("BL", replacement = "", Study2_demographics_total$ID))
 
 ```
 
@@ -68,23 +56,23 @@ Miho_background_data_total$ID <- as.numeric(gsub("BL", replacement = "", Miho_ba
 
 ```{r study1_participants, echo=FALSE, message=FALSE, warning=FALSE}
 # How many participants are there, and how many were excluded from the analysis?
-nsubj_all <- dim(L1_data)[1]
+nsubj_all <- dim(Study1_L1_data)[1]
 # If a subject has data excluded in EITHER language, we'll have to exclude them.
-exclude <- L1_data$L1.exclusions + L2_data$L2.exclusions
+exclude <- Study1_L1_data$L1.exclusions + Study1_L2_data$L2.exclusions
 # We will include the rows in L1_data and L2_data for any participants where exclude = 0
-L1_data <- L1_data[which(exclude==0), ]
-L2_data <- L2_data[which(exclude==0), ]
+Study1_L1_data <- Study1_L1_data[which(exclude==0), ]
+Study1_L2_data <- Study1_L2_data[which(exclude==0), ]
 # Remove excluded participants from backgound data too
-background_data <- background_data_total[which(exclude==0), ]
-nsubj <- dim(L1_data)[1]
-background_data <- background_data %>% mutate(L2_prof = (L2_prof_Speaking+L2_prof_Reading+L2_prof_Understanding)/3)
+Study1_demographics <- Study1_demographics_total[which(exclude==0), ]
+nsubj <- dim(Study1_L1_data)[1]
+Study1_demographics <- Study1_demographics %>% mutate(L2_prof = (L2_prof_Speaking+L2_prof_Reading+L2_prof_Understanding)/3)
 
 #Create binary AoA for L2, below 6 or 6 and above
-background_data$AoA<-0
-background_data$AoA[background_data$L2_Acquisition>5]<-1
+Study1_demographics$AoA<-0
+Study1_demographics$AoA[Study1_demographics$L2_Acquisition>5]<-1
 
 # Calculate demographics summary statistics
-demo_summary <- background_data %>% 
+demo_summary <- Study1_demographics %>% 
   summarise(N_total = n(), N_german = length(which(L1==1)), N_french = length(which(L1==2)),
             N_female = length(which(Gender==0)), N_male = length(which(Gender==1)),
             mean_age = mean(Age), sd_age = sd(Age),
@@ -173,14 +161,20 @@ In addition, we report the correlation between LI values and strength of handedn
 
 ```{r study1_descriptive_statistics, echo=FALSE, message=FALSE, warning=FALSE}
 # Calculate mean and SEM LI value for L1 and L2
-L1_summary_stats <- L1_data %>% summarise(L1_mean = mean(L1.mean_LI), L1_se = sd(L1.mean_LI)/sqrt(nsubj),
-                                          L1_mean_trials = mean(L1.N), L1_min_trials = min(L1.N), L1_max_trials = max(L1.N)) 
-L2_summary_stats <- L2_data %>% summarise(L2_mean = mean(L2.mean_LI), L2_se = sd(L2.mean_LI)/sqrt(nsubj),
-                                          L2_mean_trials = mean(L2.N), L2_min_trials = min(L2.N), L2_max_trials = max(L2.N)) 
+L1_summary_stats <- Study1_L1_data %>% summarise(L1_mean = mean(L1.mean_LI), 
+                                                 L1_se = sd(L1.mean_LI)/sqrt(nsubj),
+                                                 L1_mean_trials = mean(L1.N), 
+                                                 L1_min_trials = min(L1.N), 
+                                                 L1_max_trials = max(L1.N)) 
+
+L2_summary_stats <- Study1_L2_data %>% summarise(L2_mean = mean(L2.mean_LI), 
+                                                 L2_se = sd(L2.mean_LI)/sqrt(nsubj),
+                                                 L2_mean_trials = mean(L2.N), 
+                                                 L2_min_trials = min(L2.N), L2_max_trials = max(L2.N)) 
 
 # Number of Ps left/ bilaterally lateralised
-L1_laterality <- L1_data %>% group_by(L1.mean_laterality) %>% summarise(N=n(), pc=N/nsubj*100)
-L2_laterality <- L2_data %>% group_by(L2.mean_laterality) %>% summarise(N=n(), pc=N/nsubj*100)
+L1_laterality <- Study1_L1_data %>% group_by(L1.mean_laterality) %>% summarise(N=n(), pc=N/nsubj*100)
+L2_laterality <- Study1_L2_data %>% group_by(L2.mean_laterality) %>% summarise(N=n(), pc=N/nsubj*100)
 
 
 # Make a massive table
@@ -197,9 +191,9 @@ summary_stats[which(is.na(summary_stats[,7])), 7] <- 0
 summary_stats <- as.data.frame(summary_stats)
 
 # Scatterplot of L1 and L2 data
-plotdata <- inner_join(x = L1_data,
-                        y = L2_data)
-plotdata<-cbind(plotdata,background_data$AoA)
+plotdata <- inner_join(x = Study1_L1_data,
+                        y = Study1_L2_data)
+plotdata<-cbind(plotdata,Study1_demographics$AoA)
 colnames(plotdata)[ncol(plotdata)] <- 'AoA'
 plotdata$AoA <- as.factor(plotdata$AoA)
 levels(plotdata$AoA)<-c('Early','Late')
@@ -231,8 +225,6 @@ dofigure <- function(plotdata,L1,L2,colourcol,pchcol,xlab,ylab,captiontitle1,cap
   scale_color_discrete(name = captiontitle1)+
     guides(pch=FALSE)
   
-
-  
 return(myfig)
 }
 ```
@@ -241,11 +233,11 @@ return(myfig)
 doGrandmean <- function(study, task){
   if (study == 1){
     POI_start = 8
-    data_dir = 'Raw Means'
+    data_dir = 'Study1_Grand_Means'
     end_time = 29}
   if (study == 2){
     POI_start = 6
-    data_dir = 'Miho Raw Means'
+    data_dir = 'Study2_Grand_Means'
     end_time = 24}
 
   for (l in 1:2){
@@ -302,13 +294,13 @@ doGrandmean <- function(study, task){
 
 ```{r correlcheck,echo=FALSE, messgae = FALSE,warning=FALSE}
 # Check correlations with EHI
-EHI_LI_L1_cor <- cor.test (background_data$EHI, L1_data$L1.mean_LI, method = "spearman")
-EHI_LI_L2_cor <- cor.test (background_data$EHI, L2_data$L2.mean_LI, method = "spearman")
+EHI_LI_L1_cor <- cor.test (Study1_demographics$EHI, Study1_L1_data$L1.mean_LI, method = "spearman")
+EHI_LI_L2_cor <- cor.test (Study1_demographics$EHI, Study1_L2_data$L2.mean_LI, method = "spearman")
 
 # Check for effect of testing order (0 = L2 tested first, 1 = L1 tested first)
-total_info <- inner_join(x = plotdata, y = background_data, by = c("ID"))
-nL1_testedfirst <- nrow(background_data[background_data$Tested == 1,]) #how many tested with L1 first
-nL1_testedsecond <- nrow(background_data[background_data$Tested == 0,]) # how many tested with L2 first
+total_info <- inner_join(x = plotdata, y = Study1_demographics, by = c("ID"))
+nL1_testedfirst <- nrow(Study1_demographics[Study1_demographics$Tested == 1,]) #how many tested with L1 first
+nL1_testedsecond <- nrow(Study1_demographics[Study1_demographics$Tested == 0,]) # how many tested with L2 first
 testing_0 <- filter(total_info, Tested == "0")
 testing_1 <- filter(total_info, Tested == "1")
 testing_ttest_L1 <- t.test(testing_0$L1.mean_LI, testing_1$L1.mean_LI) # testing if there is a sig. diff between laterality scoes of L1 in those tested in their native language first or second.
@@ -350,22 +342,22 @@ table1
 
 ### Language History
 
-Summary statistics for the language history questionnaire can be seen in Table 1. Self-reported proficiency in speaking, reading and understanding English were all generally high (all around 9/10), with a minimum for any individual rating of 6/10. Age of acquisition was more variable, ranging from `r min(background_data$L2_Acquisition)` to `r max(background_data$L2_Acquisition)` years. Binary categorisation of AoA, using Hull and Vaid's (2006) criteria gave `r length(which(background_data$AoA==0))` cases of early AoA (below 6 years of age), and `r length(which(background_data$AoA==1))` cases of late AoA.
+Summary statistics for the language history questionnaire can be seen in Table 1. Self-reported proficiency in speaking, reading and understanding English were all generally high (all around 9/10), with a minimum for any individual rating of 6/10. Age of acquisition was more variable, ranging from `r min(Study1_demographics$L2_Acquisition)` to `r max(Study1_demographics$L2_Acquisition)` years. Binary categorisation of AoA, using Hull and Vaid's (2006) criteria gave `r length(which(Study1_demographics$AoA==0))` cases of early AoA (below 6 years of age), and `r length(which(Study1_demographics$AoA==1))` cases of late AoA.
 
 ### fTCD Data Quality and Reliability
 
 ```{r study1_data_quality, echo=FALSE, warning=FALSE,message=FALSE}
 # Report number of excluded trials
-excluded_trials_L1 <- 100 - round(sum(L1_data$L1.N) / sum(L1_data$L1.nMark) * 100, 2)
-excluded_trials_L2 <- 100 - round(sum(L2_data$L2.N) / sum(L2_data$L2.nMark) * 100, 2)
+excluded_trials_L1 <- 100 - round(sum(Study1_L1_data$L1.N) / sum(Study1_L1_data$L1.nMark) * 100, 2)
+excluded_trials_L2 <- 100 - round(sum(Study1_L2_data$L2.N) / sum(Study1_L2_data$L2.nMark) * 100, 2)
 
 # Here we will use the Shapiro Wilks normality test to see if the LI values for L1 and L2 are normally distributed
-L1_normality <- shapiro.test(L1_data$L1.mean_LI)
-L2_normality <- shapiro.test(L2_data$L2.mean_LI)
+L1_normality <- shapiro.test(Study1_L1_data$L1.mean_LI)
+L2_normality <- shapiro.test(Study1_L2_data$L2.mean_LI)
 
 # spearman correlation test on odds and evens - means: Grabitz data 
-L1_splithalf <- cor.test(L1_data$L1.mean_odd, L1_data$L1.mean_even, method = "spearman")
-L2_splithalf <- cor.test(L2_data$L2.mean_odd, L2_data$L2.mean_even, method = "spearman")  
+L1_splithalf <- cor.test(Study1_L1_data$L1.mean_odd, Study1_L1_data$L1.mean_even, method = "spearman")
+L2_splithalf <- cor.test(Study1_L2_data$L2.mean_odd, Study1_L2_data$L2.mean_even, method = "spearman")  
 ```
 
   
@@ -458,46 +450,46 @@ Proficiency was generally high in this sample, so it was not possible to assess 
 
 ```{r study2_participants, echo=FALSE, warning=FALSE, message=FALSE}
 # How many participants are there, and how many were excluded from the analysis?
-Miho_nsubj_all <- dim(Miho_L1_data)[1]
+Miho_nsubj_all <- dim(Study2_L1_data)[1]
 
-#Miho_L1_data had NA for exclusions - need to fix this
-w<-which(is.na(Miho_L1_data$L1_Phon.exclusions))
-Miho_L1_data$L1_Phon.exclusions[w] <-0
-w<-which(is.na(Miho_L1_data$L1_Sem.exclusions))
-Miho_L1_data$L1_Sem.exclusions[w] <-0
+#Study2_L1_data had NA for exclusions - need to fix this
+w<-which(is.na(Study2_L1_data$L1_Phon.exclusions))
+Study2_L1_data$L1_Phon.exclusions[w] <-0
+w<-which(is.na(Study2_L1_data$L1_Sem.exclusions))
+Study2_L1_data$L1_Sem.exclusions[w] <-0
 
 # If a subject has data excluded in EITHER language, we'll have to exclude them
 # Phonological and Semantic fluency tasks will be treated separately
-Phon_exclude <- Miho_L1_data$L1_Phon.exclusions + Miho_L2_data$L2_Phon.exclusions
-Sem_exclude <- Miho_L1_data$L1_Sem.exclusions + Miho_L2_data$L2_Sem.exclusions 
+Phon_exclude <- Study2_L1_data$L1_Phon.exclusions + Study2_L2_data$L2_Phon.exclusions
+Sem_exclude <- Study2_L1_data$L1_Sem.exclusions + Study2_L2_data$L2_Sem.exclusions 
 Miho_exclude <- Phon_exclude + Sem_exclude
 
 # We will include the rows in L1_data and L2_data for any participants where exclude = 0
-L1_Phon_data <- Miho_L1_data[which(Miho_exclude==0), ]
-L2_Phon_data <- Miho_L2_data[which(Miho_exclude==0), ]
-L1_Sem_data <- Miho_L1_data[which(Miho_exclude==0), ]
-L2_Sem_data <- Miho_L2_data[which(Miho_exclude==0), ]
+L1_Phon_data <- Study2_L1_data[which(Miho_exclude==0), ]
+L2_Phon_data <- Study2_L2_data[which(Miho_exclude==0), ]
+L1_Sem_data <- Study2_L1_data[which(Miho_exclude==0), ]
+L2_Sem_data <- Study2_L2_data[which(Miho_exclude==0), ]
 
 # How many subjects were included for each task?
 Phon_nsubj <- dim(L1_Phon_data)[1]
 Sem_nsubj <- dim(L1_Sem_data)[1]
 
 # Add column for english proficiency category: < 40 = basic, > 40 = intermediate, > 48 = advanced
-Miho_background_data_total$Eng_cat <- NA
-Miho_background_data_total$Eng_cat[which(Miho_background_data_total$Eng_score < 40)] <- "basic"
-Miho_background_data_total$Eng_cat[which(Miho_background_data_total$Eng_score >= 40)] <- "intermediate"
-Miho_background_data_total$Eng_cat[which(Miho_background_data_total$Eng_score >= 48)] <- "advanced"
-Miho_background_data_total$Eng_cat <- factor(Miho_background_data_total$Eng_cat, levels = c("basic", "intermediate","advanced", "NA"))
+Study2_demographics_total$Eng_cat <- NA
+Study2_demographics_total$Eng_cat[which(Study2_demographics_total$Eng_score < 40)] <- "basic"
+Study2_demographics_total$Eng_cat[which(Study2_demographics_total$Eng_score >= 40)] <- "intermediate"
+Study2_demographics_total$Eng_cat[which(Study2_demographics_total$Eng_score >= 48)] <- "advanced"
+Study2_demographics_total$Eng_cat <- factor(Study2_demographics_total$Eng_cat, levels = c("basic", "intermediate","advanced", "NA"))
 
 # Remove excluded participants from background data too
-Miho_background_data <- Miho_background_data_total[which(Miho_exclude==0), ]
+Study2_demographics <- Study2_demographics_total[which(Miho_exclude==0), ]
 
 # Calculate demographics summary statistics (female = Gender 0)
 
-Miho_background_data$Eng_score <-(Miho_background_data$Eng_Speak+
-Miho_background_data$Eng_Listen+ Miho_background_data$Eng_Read+Miho_background_data$Eng_Write)/4
+Study2_demographics$Eng_score <-(Study2_demographics$Eng_Speak+
+Study2_demographics$Eng_Listen+ Study2_demographics$Eng_Read+Study2_demographics$Eng_Write)/4
 
-miho_demo_summary <- Miho_background_data %>%
+miho_demo_summary <- Study2_demographics %>%
   summarise(N_total = n(), N_female_j = length(which(Gender == "0")), N_male_j = length(which(Gender== "1")),
             mean_age_j = mean(Age, na.rm = TRUE), sd_age = sd(Age, na.rm = TRUE), 
             mean_aoa_L2_j = mean(aoa_L2, na.rm = TRUE), sd_aoa_L2_j = sd(aoa_L2, na.rm = TRUE),
@@ -523,7 +515,7 @@ Ethical approval for the study was granted by the UCL Research Ethics Committee 
 
 Age of acquisition of English and number of years of using English were evaluated via self-report.  As with Study 1, a binary age of acquisition (AoA) variable was created by subdividing participants into early (below 6 years) and late (6 years or over) subgroups.  
 
-English language ability was measured using the Quick Placement Test (Cambridge Local Examinations Syndicate, 2001), which assesses English reading, listening, and grammar. The test is scored out of 60. Those who scored under 40 were classed as having basic level proficiency (N = `r as.numeric(table(Miho_background_data$Eng_cat)[1])`); between 40 and 48 were classed as having intermediate level proficiency (N = `r as.numeric(table(Miho_background_data$Eng_cat)[2])`); and above 48 were classed as having advanced level proficiency (N = `r as.numeric(table(Miho_background_data$Eng_cat)[3])`).
+English language ability was measured using the Quick Placement Test (Cambridge Local Examinations Syndicate, 2001), which assesses English reading, listening, and grammar. The test is scored out of 60. Those who scored under 40 were classed as having basic level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[1])`); between 40 and 48 were classed as having intermediate level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[2])`); and above 48 were classed as having advanced level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[3])`).
 
 ### fTCD Apparatus
 
@@ -552,7 +544,7 @@ The same semantic categories were presented in English. Participants had to repo
 ```{r dofig5, echo=FALSE, warning=FALSE, message=FALSE}
 # Plot Miho Phon L1 and L2 data
 plotdata_Phon <- inner_join(x = L1_Phon_data, L2_Phon_data)
-plotdata_Phon <- inner_join(x = plotdata_Phon, y = Miho_background_data, by = c("ID"))
+plotdata_Phon <- inner_join(x = plotdata_Phon, y = Study2_demographics, by = c("ID"))
 
 plotdata_Phon$AoA <-0 #need to have code for cases where NA
 plotdata_Phon$AoA[plotdata_Phon$aoa_L2<6]<-1
@@ -581,7 +573,7 @@ Fig5a <- dofigure(plotdata=plotdata_Phon,
 
 # Plot Miho Sem L1 and L2 data
 plotdata_Sem <- inner_join(x = L1_Sem_data, y = L2_Sem_data)
-plotdata_Sem <- inner_join(x = plotdata_Sem, y = Miho_background_data, by = c("ID"))
+plotdata_Sem <- inner_join(x = plotdata_Sem, y = Study2_demographics, by = c("ID"))
 
 L1_L2_Sem_corr <- cor.test (plotdata_Sem$L1_Sem.mean_LI, plotdata_Sem$L2_Sem.mean_LI, method = "spearman")
 
