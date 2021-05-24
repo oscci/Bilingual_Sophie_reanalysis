@@ -27,21 +27,22 @@ require(RCurl) #for reading csv from a website
 
 ```{r read_data, echo=FALSE, messgae = FALSE}
 # read French/German data in from Github
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study1_resultsL1.csv")
-Study1_L1_data <- read.csv(text=download)
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study1_resultsL2.csv")
-Study1_L2_data <- read.csv(text=download)
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study1_demographics.csv")
-Study1_demographics_total <- read.csv(text=download,stringsAsFactors=F)
+pull_files <- c('Study1_resultsL1.csv', 'Study1_resultsL2.csv', 'Study1_demographics.csv',
+                'Study2_resultsL1.csv', 'Study2_resultsL2.csv', 'Study2_demographics.csv')
+download <- array(data=NA, dim = length(pull_files))
+for (f in 1:length(pull_files)){
+    download[f]<-getURL(paste0("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/", pull_files[f]))
+}
+
+Study1_L1_data <- read.csv(text=download[1])
+Study1_L2_data <- read.csv(text=download[2])
+Study1_demographics_total <- read.csv(text=download[3],stringsAsFactors=F)
 colnames(Study1_demographics_total)[1] <- 'ID'
 
 # read Japanese data in 
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study2_resultsL1.csv")
-Study2_L1_data <- read.csv(text=download)
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study2_resultsL2.csv")
-Study2_L2_data <- read.csv(text=download)
-download<-getURL("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/Study2_demographics.csv")
-Study2_demographics_total <- read.csv(text=download,stringsAsFactors=F)
+Study2_L1_data <- read.csv(text=download[4])
+Study2_L2_data <- read.csv(text=download[5])
+Study2_demographics_total <- read.csv(text=download[6],stringsAsFactors=F)
 
 colnames(Study2_demographics_total)[1] <- 'ID'
 Study2_demographics_total$ID <- as.numeric(gsub("BL", replacement = "", Study2_demographics_total$ID))
@@ -550,7 +551,7 @@ plotdata_Phon$AoA <-0 #need to have code for cases where NA
 plotdata_Phon$AoA[plotdata_Phon$aoa_L2<6]<-1
 plotdata_Phon$AoA[plotdata_Phon$aoa_L2>5]<-2
 plotdata_Phon$AoA<-as.factor(plotdata_Phon$AoA)
-levels(plotdata_Phon$AoA)<-c('Not known','Early','Late')
+levels(plotdata_Phon$AoA)<-c('Early','Late')
 
 L1_L2_Phon_corr <- cor.test (plotdata_Phon$L1_Phon.mean_LI, plotdata_Phon$L2_Phon.mean_LI, method = "spearman")
 
@@ -814,11 +815,6 @@ aoa_l2_corr_sem_j <- cor.test(plotdata_Sem$aoa_L2, plotdata_Sem$L2_Sem.mean_LI, 
 
 ```
 
-Points in Figure 5 are coded to show Age of Acquisition and English proficiency on the Placement Test, but numbers are too small to justify formal analysis. It is noteworthy, however, that insofar as there is a trend for an effect of AoA on lateralisation of L2, it is in the opposite direction to that predicted by Hull and Vaid (2007), who found, using behavioural measures of lateralisation, that L2 was less lateralised when L2 was acquired early.
+Points in Figure 5 are coded to show Age of Acquisition and English proficiency on the Placement Test. We explored whether age of acquisition for English was related to strength of laterality in L2,. There was correlation between AOA and LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 5A) or for the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 5B).
 
-[?? NOT SURE IF WE SHOULD JUST LEAVE AS DESCRIPTIVE - we have computed correlations with quantitative scores and could report these]
-<!--- Currently commented out as I think the numbers don'e justify more than descriptive analysis.
-We explored whether age of acquisition for English was related to strength of laterality in L2. A significant correlation was found between AOA and LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 2) but not the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 3). The difference did not survive Bonferroni correction, however, and also went in the opposite direction to prediction from Hull and Vaid, who found that L2 was less lateralised when L2 was acquired early.-->
-
-[Current analysis: AOA was only available for 15 of the 25 subjects. ]
 
