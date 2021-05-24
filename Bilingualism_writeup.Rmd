@@ -23,26 +23,30 @@ require(flextable)
 require(ggplot2)
 require(plotrix) #for standard error function 
 require(RCurl) #for reading csv from a website
+require(httr)
 ```
 
 ```{r read_data, echo=FALSE, messgae = FALSE}
-# read French/German data in from Github
+# read data in from github if it doesn't already exist in working directory
 pull_files <- c('Study1_resultsL1.csv', 'Study1_resultsL2.csv', 'Study1_demographics.csv',
                 'Study2_resultsL1.csv', 'Study2_resultsL2.csv', 'Study2_demographics.csv')
 download <- array(data=NA, dim = length(pull_files))
 for (f in 1:length(pull_files)){
-    download[f]<-getURL(paste0("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/", pull_files[f]))
+  if (!file.exists(pull_files[f])){  
+    url <- paste0("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/", pull_files[f])
+    GET(url, write_disk(pull_files[f]))
+  }
 }
 
-Study1_L1_data <- read.csv(text=download[1])
-Study1_L2_data <- read.csv(text=download[2])
-Study1_demographics_total <- read.csv(text=download[3],stringsAsFactors=F)
+Study1_L1_data <- read.csv(pull_files[1])
+Study1_L2_data <- read.csv(pull_files[2])
+Study1_demographics_total <- read.csv(pull_files[3],stringsAsFactors=F)
 colnames(Study1_demographics_total)[1] <- 'ID'
 
 # read Japanese data in 
-Study2_L1_data <- read.csv(text=download[4])
-Study2_L2_data <- read.csv(text=download[5])
-Study2_demographics_total <- read.csv(text=download[6],stringsAsFactors=F)
+Study2_L1_data <- read.csv(pull_files[4])
+Study2_L2_data <- read.csv(pull_files[5])
+Study2_demographics_total <- read.csv(pull_files[6],stringsAsFactors=F)
 
 colnames(Study2_demographics_total)[1] <- 'ID'
 Study2_demographics_total$ID <- as.numeric(gsub("BL", replacement = "", Study2_demographics_total$ID))
