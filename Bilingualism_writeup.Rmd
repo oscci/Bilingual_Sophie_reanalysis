@@ -11,7 +11,7 @@ output:
 
 _[N.B. Wellcome Open Research ask that we use a downloaded template for submission, based on the original paper, so this section will be knitted as Word and then pasted in]._
 
-<!--NB. Miho data on OSF: https://osf.io/ck6rx/
+<!--NB. Study2 data on OSF: https://osf.io/ck6rx/
 Summary of Results file has some background, including Placement test-->
 
 
@@ -360,7 +360,7 @@ excluded_trials_L2 <- 100 - round(sum(Study1_L2_data$L2.N) / sum(Study1_L2_data$
 L1_normality <- shapiro.test(Study1_L1_data$L1.mean_LI)
 L2_normality <- shapiro.test(Study1_L2_data$L2.mean_LI)
 
-# spearman correlation test on odds and evens - means: Grabitz data 
+# spearman correlation test on odds and evens - means: Study1 data 
 L1_splithalf <- cor.test(Study1_L1_data$L1.mean_odd, Study1_L1_data$L1.mean_even, method = "spearman")
 L2_splithalf <- cor.test(Study1_L2_data$L2.mean_odd, Study1_L2_data$L2.mean_even, method = "spearman")  
 ```
@@ -455,7 +455,7 @@ Proficiency was generally high in this sample, so it was not possible to assess 
 
 ```{r study2_participants, echo=FALSE, warning=FALSE, message=FALSE}
 # How many participants are there, and how many were excluded from the analysis?
-Miho_nsubj_all <- dim(Study2_L1_data)[1]
+Study2_nsubj <- dim(Study2_L1_data)[1]
 
 #Study2_L1_data had NA for exclusions - need to fix this
 w<-which(is.na(Study2_L1_data$L1_Phon.exclusions))
@@ -467,13 +467,13 @@ Study2_L1_data$L1_Sem.exclusions[w] <-0
 # Phonological and Semantic fluency tasks will be treated separately
 Phon_exclude <- Study2_L1_data$L1_Phon.exclusions + Study2_L2_data$L2_Phon.exclusions
 Sem_exclude <- Study2_L1_data$L1_Sem.exclusions + Study2_L2_data$L2_Sem.exclusions 
-Miho_exclude <- Phon_exclude + Sem_exclude
+Study2_exclude <- Phon_exclude + Sem_exclude
 
 # We will include the rows in L1_data and L2_data for any participants where exclude = 0
-L1_Phon_data <- Study2_L1_data[which(Miho_exclude==0), ]
-L2_Phon_data <- Study2_L2_data[which(Miho_exclude==0), ]
-L1_Sem_data <- Study2_L1_data[which(Miho_exclude==0), ]
-L2_Sem_data <- Study2_L2_data[which(Miho_exclude==0), ]
+L1_Phon_data <- Study2_L1_data[which(Study2_exclude==0), ]
+L2_Phon_data <- Study2_L2_data[which(Study2_exclude==0), ]
+L1_Sem_data <- Study2_L1_data[which(Study2_exclude==0), ]
+L2_Sem_data <- Study2_L2_data[which(Study2_exclude==0), ]
 
 # How many subjects were included for each task?
 Phon_nsubj <- dim(L1_Phon_data)[1]
@@ -487,14 +487,14 @@ Study2_demographics_total$Eng_cat[which(Study2_demographics_total$Eng_score >= 4
 Study2_demographics_total$Eng_cat <- factor(Study2_demographics_total$Eng_cat, levels = c("basic", "intermediate","advanced", "NA"))
 
 # Remove excluded participants from background data too
-Study2_demographics <- Study2_demographics_total[which(Miho_exclude==0), ]
+Study2_demographics <- Study2_demographics_total[which(Study2_exclude==0), ]
 
 # Calculate demographics summary statistics (female = Gender 0)
 
 Study2_demographics$Eng_score <-(Study2_demographics$Eng_Speak+
 Study2_demographics$Eng_Listen+ Study2_demographics$Eng_Read+Study2_demographics$Eng_Write)/4
 
-miho_demo_summary <- Study2_demographics %>%
+Study2_demo_summary <- Study2_demographics %>%
   summarise(N_total = n(), N_female_j = length(which(Gender == "0")), N_male_j = length(which(Gender== "1")),
             mean_age_j = mean(Age, na.rm = TRUE), sd_age = sd(Age, na.rm = TRUE), 
             mean_aoa_L2_j = mean(aoa_L2, na.rm = TRUE), sd_aoa_L2_j = sd(aoa_L2, na.rm = TRUE),
@@ -510,7 +510,7 @@ miho_demo_summary <- Study2_demographics %>%
 
 Participants were native speakers of Japanese, who were advanced users of English living in the London area. All were self-reported right-handers, and none reported any reading or language difficulties. 
 
-A total of `r Phon_nsubj` participants were included in the final analysis, after excluding `r length(which(Miho_exclude!=0))` participant due to poor quality data or insufficient trial numbers. All analyses are based on the final sample of `r miho_demo_summary$N_total` participants (`r miho_demo_summary$N_female` female, mean age = `r round(miho_demo_summary$mean_age, 2)` years, sd = `r round(miho_demo_summary$sd_age, 2)` years).
+A total of `r Sem_nsubj` participants were included in the final analysis, after excluding `r length(which(Study2_exclude!=0))` participant due to poor quality data or insufficient trial numbers. All analyses are based on the final sample of `r Study2_demo_summary$N_total` participants (`r Study2_demo_summary$N_female` female, mean age = `r round(Study2_demo_summary$mean_age, 2)` years, sd = `r round(Study2_demo_summary$sd_age, 2)` years).
 
 ### Ethics Statement
 
@@ -520,7 +520,7 @@ Ethical approval for the study was granted by the UCL Research Ethics Committee 
 
 Age of acquisition of English and number of years of using English were evaluated via self-report.  As with Study 1, a binary age of acquisition (AoA) variable was created by subdividing participants into early (below 6 years) and late (6 years or over) subgroups.  
 
-English language ability was measured using the Quick Placement Test (Cambridge Local Examinations Syndicate, 2001), which assesses English reading, listening, and grammar. The test is scored out of 60. Those who scored under 40 were classed as having basic level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[1])`); between 40 and 48 were classed as having intermediate level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[2])`); and above 48 were classed as having advanced level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[3])`).
+English language ability was measured using the Quick Placement Test (Cambridge Local Examinations Syndicate, 2001), which assesses English reading, listening, and grammar. The test is scored out of 60. Those who scored under 40 were classed as having basic level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[1])`); between 40 and 48 were classed as having intermediate level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[2])`); and above 48 were classed as having advanced level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[3])`). The test data was not available for one participant. 
 
 ### fTCD Apparatus
 
@@ -547,7 +547,7 @@ The same semantic categories were presented in English. Participants had to repo
 ### fTCD Analysis
 
 ```{r dofig5, echo=FALSE, warning=FALSE, message=FALSE}
-# Plot Miho Phon L1 and L2 data
+# Plot Study2 Phon L1 and L2 data
 plotdata_Phon <- inner_join(x = L1_Phon_data, L2_Phon_data)
 plotdata_Phon <- inner_join(x = plotdata_Phon, y = Study2_demographics, by = c("ID"))
 
@@ -576,7 +576,7 @@ Fig5a <- dofigure(plotdata=plotdata_Phon,
                  L2se = plotdata_Phon$L2_Phon.mean_se,
                  showpch=TRUE)
 
-# Plot Miho Sem L1 and L2 data
+# Plot Study2 Sem L1 and L2 data
 plotdata_Sem <- inner_join(x = L1_Sem_data, y = L2_Sem_data)
 plotdata_Sem <- inner_join(x = plotdata_Sem, y = Study2_demographics, by = c("ID"))
 
@@ -604,7 +604,7 @@ Fig5b <- dofigure(plotdata=plotdata_Sem,
 ```
 
 
-```{r correlcheckMiho,echo=FALSE, warning=FALSE,message=FALSE}
+```{r correlcheckStudy2,echo=FALSE, warning=FALSE,message=FALSE}
 # Check correlations with EHI
 #TO COMPLETE
 # EHI_LI_L1_Phon_cor <- cor.test (background_data$EHI, L1_data$L1_Phon.mean_LI, method = "spearman")
@@ -713,26 +713,26 @@ colnames(demo_table_j) <- c('Characteristic', 'Mean (sd)')
 
 demo_table_j[,1] <- c('Age, years', 'Age of English acquisition, years', 'Time using English, years', 'English overall score/60', 'English speaking/100', 'English listening/100', 'English reading/100', 'English writing/100')
 
-demo_table_j[1,2] <- paste0(round(miho_demo_summary$mean_age_j, 2), ' (', round(miho_demo_summary$sd_age, 2), ')')
-demo_table_j[2,2] <- paste0(round(miho_demo_summary$mean_aoa_L2_j, 2), ' (', round(miho_demo_summary$sd_aoa_L2_j, 2), ')')
-demo_table_j[3,2] <- paste0(round(miho_demo_summary$mean_eng_use_month_j/12, 2), ' (', round(miho_demo_summary$sd_eng_use_month_j/12, 2), ')')
-demo_table_j[4,2] <- paste0(round(miho_demo_summary$mean_eng_score_j, 2), ' (', round(miho_demo_summary$sd_eng_score_j, 2), ')')
-demo_table_j[5,2] <- paste0(round(miho_demo_summary$mean_eng_speak_j, 2), ' (', round(miho_demo_summary$sd_eng_speak_j, 2), ')')
-demo_table_j[6,2] <- paste0(round(miho_demo_summary$mean_eng_listen_j, 2), ' (', round(miho_demo_summary$sd_eng_listen_j, 2), ')')
-demo_table_j[7,2] <- paste0(round(miho_demo_summary$mean_eng_read_j, 2), ' (', round(miho_demo_summary$sd_eng_read_j, 2), ')')
-demo_table_j[8,2] <- paste0(round(miho_demo_summary$mean_eng_write_j, 2), ' (', round(miho_demo_summary$sd_eng_write_j, 2), ')')
+demo_table_j[1,2] <- paste0(round(Study2_demo_summary$mean_age_j, 2), ' (', round(Study2_demo_summary$sd_age, 2), ')')
+demo_table_j[2,2] <- paste0(round(Study2_demo_summary$mean_aoa_L2_j, 2), ' (', round(Study2_demo_summary$sd_aoa_L2_j, 2), ')')
+demo_table_j[3,2] <- paste0(round(Study2_demo_summary$mean_eng_use_month_j/12, 2), ' (', round(Study2_demo_summary$sd_eng_use_month_j/12, 2), ')')
+demo_table_j[4,2] <- paste0(round(Study2_demo_summary$mean_eng_score_j, 2), ' (', round(Study2_demo_summary$sd_eng_score_j, 2), ')')
+demo_table_j[5,2] <- paste0(round(Study2_demo_summary$mean_eng_speak_j, 2), ' (', round(Study2_demo_summary$sd_eng_speak_j, 2), ')')
+demo_table_j[6,2] <- paste0(round(Study2_demo_summary$mean_eng_listen_j, 2), ' (', round(Study2_demo_summary$sd_eng_listen_j, 2), ')')
+demo_table_j[7,2] <- paste0(round(Study2_demo_summary$mean_eng_read_j, 2), ' (', round(Study2_demo_summary$sd_eng_read_j, 2), ')')
+demo_table_j[8,2] <- paste0(round(Study2_demo_summary$mean_eng_write_j, 2), ' (', round(Study2_demo_summary$sd_eng_write_j, 2), ')')
 demo_table_j <- as.data.frame(demo_table_j)
 
-table3 <- flextable(demo_table_j) %>% set_caption('table3', caption=paste0('Table 3. Demographics for the Study 2 participants, N=', miho_demo_summary$N_total, ' (', miho_demo_summary$N_female_j, ' female)')) 
+table3 <- flextable(demo_table_j) %>% set_caption('table3', caption=paste0('Table 3. Demographics for the Study 2 participants, N=', Study2_demo_summary$N_total, ' (', Study2_demo_summary$N_female_j, ' female)')) 
 table3 <- autofit(table3)
 table3
 
 ```
 
 ### Language History
-Summary statistics of language history can be seen in Table 3. Age of English  acquisition ranged from 4 to 13 years. In contrast to Study 1, where there was little variation in proficiency, Study 2 included `r table(plotdata_Phon$Eng_cat)[1]` cases with basic proficiency, `r table(plotdata_Phon$Eng_cat)[2]` cases with intermediate proficiency, and `r table(plotdata_Phon$Eng_cat)[3]` cases with advanced proficiency, according to the Placement Test. 
+Summary statistics of language history can be seen in Table 3. Age of English  acquisition ranged from 0 to 13 years. In contrast to Study 1, where there was little variation in proficiency, Study 2 included `r table(plotdata_Phon$Eng_cat)[1]` cases with basic proficiency, `r table(plotdata_Phon$Eng_cat)[2]` cases with intermediate proficiency, and `r table(plotdata_Phon$Eng_cat)[3]` cases with advanced proficiency, according to the Placement Test. 
 
-The mean number of words produced per trial in the phonological conditions was `r round(mean_jwords_phon, 2)` (SD = `r round(sd_jwords_phon, 2)`) for Japanese and `r round(mean_ewords_phon, 2)` (SD = `r round(sd_ewords_phon, 2)`) for English. The mean number of words produced per trial in the semantic condition was `r round(mean_jwords_sem, 2)` (SD = `r round(sd_jwords_sem, 2)`) for Japanese and `r round(mean_ewords_sem, 2)` (SD = `r round(sd_ewords_sem, 2)`) for English. There was no significant difference between the mean number of words produced per trial for L1 and L2 in the phonological condition (t (`r round(words_produced_phon$parameter, 1)`) = `r round(words_produced_phon$statistic, 2)`, p = `r round(words_produced_phon$p.value, 3)`) or the semantic condition (t (`r round(words_produced_sem$parameter, 1)`) = `r round(words_produced_sem$statistic, 2)`, p = `r round(words_produced_sem$p.value, 3)`). 
+The mean number of words produced per trial in the phonological conditions was `r round(mean_jwords_phon, 2)` (SD = `r round(sd_jwords_phon, 2)`) for Japanese and `r round(mean_ewords_phon, 2)` (SD = `r round(sd_ewords_phon, 2)`) for English. The mean number of words produced per trial in the semantic condition was `r round(mean_jwords_sem, 2)` (SD = `r round(sd_jwords_sem, 2)`) for Japanese and `r round(mean_ewords_sem, 2)` (SD = `r round(sd_ewords_sem, 2)`) for English. There was no significant difference between the mean number of words produced per trial for L1 and L2 in the phonological condition (t (`r round(words_produced_phon$parameter, 1)`) = `r round(words_produced_phon$statistic, 2)`, p = `r round(words_produced_phon$p.value, 3)`) or the semantic condition (t (`r round(words_produced_sem$parameter, 1)`) = `r round(words_produced_sem$statistic, 2)`, p = `r round(words_produced_sem$p.value, 3)`). The data was for number of words produced in the tasks in Japanese was not available for 7 participants and the data was for number of words produced in the tasks in English was not available for 5 participants. 
 
 
 ### fTCD Data Quality and Reliability
@@ -819,6 +819,6 @@ aoa_l2_corr_sem_j <- cor.test(plotdata_Sem$aoa_L2, plotdata_Sem$L2_Sem.mean_LI, 
 
 ```
 
-Points in Figure 5 are coded to show Age of Acquisition and English proficiency on the Placement Test. We explored whether age of acquisition for English was related to strength of laterality in L2,. There was correlation between AOA and LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 5A) or for the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 5B).
+Points in Figure 5 are coded to show Age of Acquisition and English proficiency on the Placement Test. We explored whether age of acquisition for English was related to strength of laterality in L2,. There was no correlation between AOA and LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 5A) or for the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 5B).
 
 
