@@ -366,24 +366,13 @@ L2_splithalf <- cor.test(Study1_L2_data$L2.mean_odd, Study1_L2_data$L2.mean_even
 ```
 
   
-  As mentioned in the Methods, one participant was excluded from the analysis because of  insufficient number of usable trials. For the remaining participants, `r excluded_trials_L1`% of trials were excluded for L1, and `r excluded_trials_L2`% for L2.
+  As mentioned in the Methods, `r length(which(exclude!=0))` participants were excluded from the analysis because of insufficient number of usable trials. For the remaining `r length(which(exclude==0))` participants, `r excluded_trials_L1`% of trials were excluded for L1, and `r excluded_trials_L2`% for L2.
   
   Normality of the LI values was assessed using Shapiro-Wilk tests. Distributions of LI were unimodal for both L1 and L2, and for L1 the data did not significantly deviate from normality (W = `r round(L1_normality$statistic, 2)`, p = `r round(L1_normality$p.value, 3)`). Data for L2 were significantly non-normal (W = `r round(L2_normality$statistic, 2)`, p = `r round(L2_normality$p.value, 3)`), showing a rightward skew.
 
-  Split-half reliability was assessed by correlating the LI values from odd and even trials. The Spearman's correlation for the L1 data was `r round(L1_splithalf$estimate, 2)`, and for the L2 data it was `r round(L2_splithalf$estimate, 2)`, indicating medium to good within-session reliability.
+  Split-half reliability was assessed by correlating the LI values from odd and even trials. The Spearman's correlation for the L1 data was `r round(L1_splithalf$estimate, 2)`, and for the L2 data it was `r round(L2_splithalf$estimate, 2)`, indicating medium to good within-session reliability.  
   
-
-### LI Values
-
-```{r Table2, warning=FALSE,echo=FALSE, warning=FALSE,message=FALSE}
-table2 <- flextable(summary_stats) %>% set_caption(table2, caption='Table 2. Summary statistics for Study 1 laterality indices')
-table2 <- autofit(table2)
-table2
-
-```
-
-
-  Normalized Doppler velocities for the left and right hemisphere activation are presented for each task in Figure 2. Descriptive statistics for the general Doppler data are presented in Table 2.
+  Normalized Doppler velocities for the left and right hemisphere activation are presented for each task in Figure 2. 
   
 ```{r Fig2, warning=FALSE, message=FALSE, echo=FALSE}
 Fig2 <- doGrandmean(1)
@@ -395,6 +384,14 @@ _Figure 2. Left and right hemisphere activation is displayed as a function of ep
 
 
   Table 2 shows summary statistics for the LI values for L1 and L2. The percentage of participants in each group categorised as left lateralised, bilateral or right lateralised is also shown. The majority of participants were left lateralised, with only around 10% showing bilateral activation. No participants showed right lateralisation for either L1 or L2. T-tests showed that there were no significant effects of testing order on LI values, either for L1 (p = `r round(testing_ttest_L1$p.value, 3)`) or L2 (p = `r round(testing_ttest_L2$p.value, 3)`). 
+  ### LI Values
+
+```{r Table2, warning=FALSE,echo=FALSE, warning=FALSE,message=FALSE}
+table2 <- flextable(summary_stats) %>% set_caption(table2, caption='Table 2. Summary statistics for Study 1 laterality indices (N = `r length(which(exclude==0))`)')
+table2 <- autofit(table2)
+table2
+
+```
   
   As can be seen in the scatterplot in Figure 3, laterality indices for L1 and L2 were similar, with Spearman's R = `r round(L1_L2_corr$estimate, 3)`. Furthermore, the points cluster around the continuous grey line, which shows the point of equivalence between L1 and L2, and all but one point falls within the Bland-Altman bounds (dotted grey lines), as would be expected if L1 and L2 were equivalent.  
 
@@ -441,13 +438,19 @@ myt <- t.test(plotdata$L2.mean_LI~plotdata$AoA)
  One can see by inspection of Figure 3 that there is no evidence of a trend for lower LI for L2 in those with early AoA, and a t-test of differences in L2 LI for those with early and late AoA revealed no differences:  t = `r round(myt$statistic,2)`, p = `r round(myt$p.value,3)`.  For a more quantitative assessment of association, we computed Spearman's correlations between the LI values for L2 (English) and the age of acquisition of English. This was not statistically significant (r = `r round(aoa_L2_corr$estimate, 2)`, p = `r round(aoa_L2_corr$p.value, 3)`).
 
 ## Discussion
+```{r bilatcases,echo=FALSE}
+myt<-table(Study1_L1_data$L1.mean_laterality,Study1_L2_data$L2.mean_laterality)
+#2 x 2 table to check if bilateral are concordant
 
-Nearly all participants showed significant left lateralised blood-flow for both L1 and L2 during the word generation task; only four participants were classified as bilateral for one language, and for three of these it was L1 that was bilateral.
+```
+
+Nearly all participants showed significant left lateralised blood-flow for both L1 and L2 during the word generation task; only `r myt[1,2]+myt[2,1]` participants were classified as bilateral for one language, and for `r myt[2,1]` of these it was L1 that was bilateral.
 Furthermore, asymmetry indices for L1 and L2 were highly related and similar in magnitude, indicating good reliability of the measure. 
 Proficiency was generally high in this sample, so it was not possible to assess the impact of variation in proficiency on lateralisation. The sample was small, and so lacking in power to detect small effects, but there was no indication of support for the hypothesis that AoA affected either absolute levels of language lateralisation or the difference in lateralisation between the two languages.
 
 
 # Study 2: Japanese-English bilinguals with moderate-high proficiency
+Study 2 was run independently of Study 1, at a different institution by different experimenters, to address similar questions to Study 1, but with Japanese-English bilinguals. We report the two studies together here as they make it possible to test generalisability of the Study 1 findings in different languages, and with some methodological modifications. In addition, Study 2 included bilinguals with a wider range of proficiency than Study 1, making it possible to consider the effect of this variable on lateralisation.  
 
 ## Methods
 
@@ -563,7 +566,8 @@ Fig5a <- dofigure(plotdata=plotdata_Phon,
                  L1 = plotdata_Phon$L1_Phon.mean_LI,
                  L2 = plotdata_Phon$L2_Phon.mean_LI,
                  colourcol = plotdata_Phon$AoA,
-                 pchcol = plotdata_Phon$Eng_cat, #use pch of 16 for all points - this is used to code different pch by proficiency in figs 2 and 3
+                  pchcol = as.factor(rep(16,nrow(plotdata))),
+                # pchcol = plotdata_Phon$Eng_cat, #use pch of 16 for all points
                  xlab="LI for L1 (Japanese)",
                  ylab="LI for L2 (English)",
                  captiontitle1 = "Age of Acquisition",
@@ -588,7 +592,8 @@ Fig5b <- dofigure(plotdata=plotdata_Sem,
                  L1 = plotdata_Sem$L1_Sem.mean_LI,
                  L2 = plotdata_Sem$L2_Sem.mean_LI,
                  colourcol = plotdata_Sem$AoA,
-                 pchcol = plotdata_Sem$Eng_cat, #use pch of 16 for all points - this is used to code different pch by proficiency in figs 2 and 3
+                 pchcol = as.factor(rep(16,nrow(plotdata))),
+                # pchcol = plotdata_Phon$Eng_cat, #use pch of 16 for all points
                  xlab="LI for L1 (Japanese)",
                  ylab="LI for L2 (English)",
                  captiontitle1 = "Age of Acquisition",
@@ -769,6 +774,8 @@ Noramlized Doppler velocities for the left and right hemisphere activation are p
 
 Laterality indices for L1 and L2 were strongly correlated in both the phonological task (Spearman's R = `r round(L1_L2_Phon_corr$estimate, 3)`) and the semantic task (Spearman's R = `r round(L1_L2_Sem_corr$estimate, 3)`), closely replicating the results of Study 1. This is shown in the scatterplots in Figures 5a and 5b. 
 
+
+
 ```{r table4, echo=FALSE, warning=FALSE, message=FALSE}
 table4 <- flextable(summary_stats) 
 table4 <- autofit(table4)
@@ -815,10 +822,25 @@ _[NB - the coding of proficiency by shape is not satisfactory - barely visible. 
 aoa_l2_corr_phon_j <- cor.test(plotdata_Phon$aoa_L2, plotdata_Phon$L2_Phon.mean_LI, method = "spearman")
 aoa_l2_corr_sem_j <- cor.test(plotdata_Sem$aoa_L2, plotdata_Sem$L2_Sem.mean_LI, method = "spearman")
 
-#do we need any more correlations? 
+## Uncomment lines below if needed: just checking we have same subjects in same order
+#plotdata_Phon$ID
+#Study2_demographics$ID
+
+shortfile<-data.frame(cbind(Study2_demographics$ID,Study2_demographics$Eng_score,plotdata_Phon$L2_Phon.mean_LI,plotdata_Sem$L2_Sem.mean_LI))
+colnames(shortfile)<-c('ID','EngProf','PhonLI','SemLI')
+#COrrelations with proficiency in L2
+profL2_corr_phon <- cor.test(shortfile$EngProf, shortfile$PhonLI, method = "spearman",use="complete.cases")
+profL2_corr_sem <- cor.test(shortfile$EngProf, shortfile$SemLI, method = "spearman",use="complete.cases")
 
 ```
 
+<<<<<<< HEAD
+Points in Figure 5 are coded to show Age of Acquisition. We explored whether age of acquisition for English was related to strength of laterality in L2,. There was no correlation between AOA and LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 5A) or for the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 5B).
+
+Data on the Quick Placement Test, the measure of proficiency in L2, were avaiable for `r length(which(!is.na(Study2_demographics$Eng_score)))` participants. These were not correlated with the LI for either the phonological task: r = `r round (profL2_corr_phon$estimate, 2)`, p = `r round(profL2_corr_phon$p.value, 3)`, or the semantic task: r = `r round (profL2_corr_sem$estimate, 2)`, p = `r round(profL2_corr_sem$p.value, 3)`.
+=======
 Points in Figure 5 are coded to show Age of Acquisition and English proficiency on the Placement Test. We explored whether age of acquisition for English was related to strength of laterality in L2,. There was no correlation between AOA and LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 5A) or for the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 5B).
+>>>>>>> 7ea149da98eaab88f07387cfb7887f02deaa01b8
+
 
 
