@@ -834,13 +834,13 @@ profL2_corr_sem <- cor.test(shortfile$EngProf, shortfile$SemLI, method = "spearm
 
 ```
 
-<<<<<<< HEAD
+
 Points in Figure 5 are coded to show Age of Acquisition. We explored whether age of acquisition for English was related to strength of laterality in L2,. There was no correlation between AOA and LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 5A) or for the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 5B).
 
 Data on the Quick Placement Test, the measure of proficiency in L2, were avaiable for `r length(which(!is.na(Study2_demographics$Eng_score)))` participants. These were not correlated with the LI for either the phonological task: r = `r round (profL2_corr_phon$estimate, 2)`, p = `r round(profL2_corr_phon$p.value, 3)`, or the semantic task: r = `r round (profL2_corr_sem$estimate, 2)`, p = `r round(profL2_corr_sem$p.value, 3)`.
-=======
+
 Points in Figure 5 are coded to show Age of Acquisition and English proficiency on the Placement Test. We explored whether age of acquisition for English was related to strength of laterality in L2,. There was no correlation between AOA and LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 5A) or for the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 5B).
->>>>>>> 7ea149da98eaab88f07387cfb7887f02deaa01b8
+
 
 
 
