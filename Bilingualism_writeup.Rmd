@@ -494,9 +494,6 @@ Study2_demographics <- Study2_demographics_total[which(Study2_exclude==0), ]
 
 # Calculate demographics summary statistics (female = Gender 0)
 
-Study2_demographics$Eng_score <-(Study2_demographics$Eng_Speak+
-Study2_demographics$Eng_Listen+ Study2_demographics$Eng_Read+Study2_demographics$Eng_Write)/4
-
 Study2_demo_summary <- Study2_demographics %>%
   summarise(N_total = n(), N_female_j = length(which(Gender == "0")), N_male_j = length(which(Gender== "1")),
             mean_age_j = mean(Age, na.rm = TRUE), sd_age = sd(Age, na.rm = TRUE), 
@@ -566,7 +563,7 @@ Fig5a <- dofigure(plotdata=plotdata_Phon,
                  L1 = plotdata_Phon$L1_Phon.mean_LI,
                  L2 = plotdata_Phon$L2_Phon.mean_LI,
                  colourcol = plotdata_Phon$AoA,
-                  pchcol = as.factor(rep(16,nrow(plotdata))),
+                  pchcol = as.factor(rep(16,nrow(plotdata_Phon))),
                 # pchcol = plotdata_Phon$Eng_cat, #use pch of 16 for all points
                  xlab="LI for L1 (Japanese)",
                  ylab="LI for L2 (English)",
@@ -592,7 +589,7 @@ Fig5b <- dofigure(plotdata=plotdata_Sem,
                  L1 = plotdata_Sem$L1_Sem.mean_LI,
                  L2 = plotdata_Sem$L2_Sem.mean_LI,
                  colourcol = plotdata_Sem$AoA,
-                 pchcol = as.factor(rep(16,nrow(plotdata))),
+                 pchcol = as.factor(rep(16,nrow(plotdata_Sem))),
                 # pchcol = plotdata_Phon$Eng_cat, #use pch of 16 for all points
                  xlab="LI for L1 (Japanese)",
                  ylab="LI for L2 (English)",
