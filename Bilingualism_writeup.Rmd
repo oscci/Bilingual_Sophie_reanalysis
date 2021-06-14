@@ -24,6 +24,7 @@ require(ggplot2)
 require(plotrix) #for standard error function 
 require(RCurl) #for reading csv from a website
 require(httr)
+require(BayesFactor)
 ```
 
 ```{r read_data, echo=FALSE, messgae = FALSE}
@@ -157,7 +158,7 @@ whereby Q1 is the first quantile of the standard errors among all participants, 
 ### Statistical Analysis
 All analyses were conducted using the R Programming Language (R Core Team, 2020).  We first checked for a leftward bias in the overall laterality index, using a one-group t-test, and also categorised each participant as left-biased, right-biased or bilateral. The bilateral group were those whose confidence interval around the LI included zero. Split half reliability of the LI was estimated using LIs computed from odd or even trials only. Spearman correlations were computed between LIs for L1 and L2. 
 
-To test our main hypothesis, the association between strength of lateralization (LI values) for L1 and L2 was first visualized using a scatterplot, with the strength of association computed as Spearman's correlation coefficient. Following Woodhead, Rutherford, and Bishop (2020), we adopted an approach based on Bland and Altman (1986) to determine whether the LIs for L1 and L2 were equivalent. This involves specifying boundaries for the expected distribution of difference scores, which should contain 95% of bivariate points, if the two values are equivalent. The expected range can be computed from knowledge of the task reliability. We adopted the range specified by Woodhead et al (2020); they computed difference scores by LIs for odd vs even trials, and set boundaries corresponding to expected mean of zero +/-1.96 standard deviations. If the two measures are equivalent, 95% of difference scores between LIs for L1 and L2 should fall in this range (from -2.5 to 2.5).
+To test our main hypothesis, the association between strength of lateralization (LI values) for L1 and L2 was first visualized using a scatterplot, with the strength of association computed as Spearman's correlation coefficient. Following Woodhead, Rutherford, and Bishop (2020), we adopted an approach based on Bland and Altman (1986) to determine whether the individual LIs for L1 and L2 were equivalent. This involves specifying boundaries for the expected distribution of difference scores, which should contain 95% of bivariate points, if the two values are equivalent. The expected range can be computed from knowledge of the task reliability. We adopted the range specified by Woodhead et al (2020); they computed difference scores by LIs for odd vs even trials, and set boundaries corresponding to expected mean of zero +/-1.96 standard deviations. If the two measures are equivalent, 95% of difference scores between LIs for L1 and L2 should fall in this range (from -2.5 to 2.5).
 
 For our second hypothesis, that laterality for L2 would be associated with AoA, we used a t-test to compare laterality for L2 between those with early vs late AoA. A two-tailed test was used because the literature does not give clear predictions about direction of effect.
 
@@ -363,6 +364,10 @@ L2_normality <- shapiro.test(Study1_L2_data$L2.mean_LI)
 # spearman correlation test on odds and evens - means: Study1 data 
 L1_splithalf <- cor.test(Study1_L1_data$L1.mean_odd, Study1_L1_data$L1.mean_even, method = "spearman")
 L2_splithalf <- cor.test(Study1_L2_data$L2.mean_odd, Study1_L2_data$L2.mean_even, method = "spearman")  
+
+#Bayes factor for comparison of means
+bft<-ttestBF(Study1_L2_data$L2.mean_LI,Study1_L1_data$L1.mean_LI,paired=TRUE)
+bf_1<-round(as.data.frame(bft)$bf,3)
 ```
 
   
@@ -383,7 +388,12 @@ print(Fig2)
 _Figure 2. Left and right hemisphere activation is displayed as a function of epoch time in seconds for the word generation task for L1 (French or German) and L2 (English) in Study 1. Dotted lines indicate the start and end of the baseline period (from -10 to 0 seconds) and the period of interest (from 8 to 20 seconds). L1, first language; L2, second language._
 
 
-  Table 2 shows summary statistics for the LI values for L1 and L2. The percentage of participants in each group categorised as left lateralised, bilateral or right lateralised is also shown. The majority of participants were left lateralised, with only around 10% showing bilateral activation. No participants showed right lateralisation for either L1 or L2. T-tests showed that there were no significant effects of testing order on LI values, either for L1 (p = `r round(testing_ttest_L1$p.value, 3)`) or L2 (p = `r round(testing_ttest_L2$p.value, 3)`). 
+  Table 2 shows summary statistics for the LI values for L1 and L2.  The Bayes factors was computed to check the equivalence of the mean LI for the two languages using the R package 'BayesFactor' with default settings (Morey & Rouder, 2018), and gave a value of `r bf_1`, which may be interpreted as moderate evidence for the null hypothesis (Lee & Wagenmakers, 2014). The percentage of participants in each group categorised as left lateralised, bilateral or right lateralised is also shown. The majority of participants were left lateralised, with only around 10% showing bilateral activation. No participants showed right lateralisation for either L1 or L2. T-tests showed that there were no significant effects of testing order on LI values, either for L1 (p = `r round(testing_ttest_L1$p.value, 3)`) or L2 (p = `r round(testing_ttest_L2$p.value, 3)`).
+  <!---ref is Lee, M. D., & Wagenmakers, E. J. (2014). Bayesian Cognitive Modeling: A practical course. Cambridge University Press.--->
+<!---ref is  Morey, R. D. & Rouder, J. M. (2018). BayesFactor: Computation of Bayes
+  Factors for Common Designs. R package version 0.9.12-4.2.
+  https://CRAN.R-project.org/package=BayesFactor.--->
+  
 
 
 ```{r Table2, warning=FALSE,echo=FALSE, warning=FALSE,message=FALSE}
@@ -607,6 +617,11 @@ Fig5b <- dofigure(plotdata=plotdata_Sem,
                  L2se = plotdata_Sem$L2_Sem.mean_se,
                  showpch=TRUE)
 
+#Bayes factor for comparison of means
+bft<-ttestBF(Study2_L1_data$L1_Phon.mean_LI,Study2_L2_data$L2_Phon.mean_LI,paired=TRUE)
+bf_2<-round(as.data.frame(bft)$bf,3)
+bft<-ttestBF(Study2_L1_data$L1_Sem.mean_LI,Study2_L2_data$L2_Sem.mean_LI,paired=TRUE)
+bf_3<-round(as.data.frame(bft)$bf,3)
 ```
 
 
@@ -771,7 +786,7 @@ Split-half reliability was assessed by correlating the LI values from odd and ev
 
 ### LI Values
 
-Normalized Doppler velocities for the left and right hemisphere activation are presented for each language and task in Figure 4. Table 4 shows summary statistics for L1 and L2 in both phonological and semantic word generation tasks. 
+Normalized Doppler velocities for the left and right hemisphere activation are presented for each language and task in Figure 4. Table 4 shows summary statistics for L1 and L2 in both phonological and semantic word generation tasks.  Bayes factors were computed to check the equivalence of the mean LI for the two tasks in the two languages using the R package 'BayesFactor' with default settings (Morey & Rouder, 2018). This gave a value of `r bf_2` for the Phonological task, which may be interpreted as moderate evidence for the null hypothesis, and a value of `r bf_3` for the Semantic task, which corresponds to anecdoal evidence for the null hypothesis (Lee & Wagenmakers, 2014).
 
 Laterality indices for L1 and L2 were strongly correlated in both the phonological task (Spearman's R = `r round(L1_L2_Phon_corr$estimate, 3)`) and the semantic task (Spearman's R = `r round(L1_L2_Sem_corr$estimate, 3)`), closely replicating the results of Study 1. This is shown in the scatterplots in Figures 5a and 5b. 
 
