@@ -1,7 +1,7 @@
 ---
 title: "Bilingualism Results"
 author: "Sophie Harte/Zoe Woodhead/Dorothy Bishop"
-date: "30th May 2021"
+date: "22nd June 2021"
 output:
   word_document: default
   pdf_document: default
@@ -94,7 +94,7 @@ demo_summary <- Study1_demographics %>%
 
 ```
 
-Participants were recruited through the Oxford University German Society and Oxford University French Society, as well as through posters in the Experimental Psychology building. Participants were aged over 18 years and were either German-English or French-English bilinguals, with a self-reported high level of proficiency in English. All had normal or corrected to normal vision. Individuals with a diagnosis of any speech, language or learning impairment, affected by a neurological disorder or taking medication affecting brain function e.g. antidepressants, were not included in the study. 
+Participants were recruited through the Oxford University German Society and Oxford University French Society, as well as through posters in the Experimental Psychology building. Participants were aged over 18 years and were either German-English (N = `r length(which(Study1_demographics$L1==1))`) or French-English (N = `r length(which(Study1_demographics$L1==2))`) bilinguals, with a self-reported high level of proficiency in English. All had normal or corrected to normal vision. Individuals with a diagnosis of any speech, language or learning impairment, affected by a neurological disorder or taking medication affecting brain function e.g. antidepressants, were not included in the study. 
 
 A total of 40 individuals were assessed for viability as study participants. In total, 14 participants were excluded for a range of reasons, including no suitable Doppler signal, due to the inability to find a suitable temporal window in the skull, or failure to stabilize the Doppler signal for the required amount of time (11 participants), or low quality data (3 participants). Data was collected from `r nsubj_all` participants. During the analysis, `r length(which(exclude!=0))` further participants were dropped because of an insufficient number of useable trials. All further analyses are based on the final sample of `r demo_summary$N_total` participants (`r demo_summary$N_female` female; mean age = `r round(demo_summary$mean_age, 2)` years, sd = `r round(demo_summary$sd_age, 2)` years).
 
@@ -110,7 +110,7 @@ Handedness was not a selection criterion, and was assessed via the Edinburgh Han
 ### Language History
 The Language Experience and Proficiency Questionnaire (LEAP-Q; Marian et al., 2007) was used to assess language history for all participants. The LEAP-Q is a self-assessment questionnaire consisting of nine general questions and seven additional questions per language that explore acquisition history, context of acquisition, current language use, and language preference and proficiency ratings across language domains (speaking, understanding and reading) as well as accent ratings. An overall self-reported proficiency rating was calculated by taking the mean ratings for proficiency in speaking, reading and understanding English.
 
-The main variable of interest from LEAP was age of acquisition of L2 (AoA); we subdivided into early AoA (before 6 years of age) and late AoA subgroups, to test the prediction from Hull and Vaid (2007) that language is more bilaterally represented when L2 is learned in infancy. To characterise the sample, we also report the numbers of languages spoken; age of achieving fluency in English; self-reported strength of foreign accent when speaking English (on a scale from 0 [none] to 10 [pervasive]); and mean self-reported proficiency in English. 
+The main variable of interest from LEAP was age of acquisition of L2 (AoA) ), i.e. answer to the question ‘age when you began acquiring the language’; we subdivided into early AoA (before 6 years of age) and late AoA subgroups, to test the prediction from Hull and Vaid (2007) that language is more bilaterally represented when L2 is learned in early childhood. To characterise the sample, we also report the numbers of languages spoken; age of achieving fluency in English; self-reported strength of foreign accent when speaking English (on a scale from 0 [none] to 10 [pervasive]); and mean self-reported proficiency in English. 
 
 
 ### Word Generation Task
@@ -146,7 +146,7 @@ The cerebral blood flow velocity data were analysed using custom scripts in R St
 
 Participants with fewer than 15 usable trials for either language were excluded from all further analyses. For each participant that was included in the analysis, a grand mean was calculated over all of their included trials. A laterality index (LI) was calculated by taking the mean of the difference between left and right CBFVs (L-R) within a period of interest (POI) that started 8s after the ‘Clear Mind’ cue (i.e. 3s after the word generation task had begun) and ended at 20s (i.e. when the covert generation task ended). The start time of the POI was chosen to allow time for the blood flow to respond to the task; and the end time was chosen to prevent capturing the response to the overt speech generation phase.
 
-This method of calculating LI using the mean L-R difference across the whole of the POI (the ‘mean’ method) deviates from the conventional method that we had used in the first version of this paper. The original 'peak' method, popularised by Deppe, Knecht, Henningsen and Ringelstein (1997) takes the mean of a narrow time window around the peak difference within the POI. This method forces the LI to be either left or right - even if the waveform is close to zero with no clear lateralised peak, the highest absolute value in the POI will be treated as a peak. This creates a bimodal distribution of LIs. We have compared the 'peak' method with our 'mean' method, and shown that, while they give high agreement, the mean method is at least as reliable and gives  normally distributed LI values, albeit with lower values, due to averaging over the whole POI (Woodhead et al., 2020). We have therefore moved to using the mean method in our current research. Nonetheless, peak LI values were computed in case they are required for comparison with other studies, and are available on the online data repository: https://osf.io/4pm76/.
+This method of calculating LI using the mean L-R difference across the whole of the POI (the ‘mean’ method) deviates from the conventional method that we had used in the first version of this paper (https://doi.org/10.12688/wellcomeopenres.9869.1). The original 'peak' method, popularised by Deppe, Knecht, Henningsen and Ringelstein (1997) takes the mean of a narrow time window around the peak difference within the POI. This method forces the LI to be either left or right - even if the waveform is close to zero with no clear lateralised peak, the highest absolute value in the POI will be treated as a peak. This creates a bimodal distribution of LIs. We have compared the 'peak' method with our 'mean' method, and shown that, while they give high agreement, the mean method is at least as reliable and gives  normally distributed LI values, albeit with lower values, due to averaging over the whole POI (Woodhead et al., 2020). We have therefore moved to using the mean method in our current research. Nonetheless, peak LI values were computed in case they are required for comparison with other studies, and are available on the online data repository: https://osf.io/4pm76/.
 
 In a final step, to bring our methods in alignment with Woodhead et al (2019), we identified and excluded datasets with unusually high trial-by-trial variability using the Hoaglin and Iglewicz (1987) outlier detection method. For this analysis, LI was calculated for each trial, rather than just for the grand average. The standard error of these single-trial LI values was then calculated. Outliers were  defined as datasets where the standard error was above an upper threshold, calculated as:
 
@@ -158,7 +158,7 @@ whereby Q1 is the first quantile of the standard errors among all participants, 
 ### Statistical Analysis
 All analyses were conducted using the R Programming Language (R Core Team, 2020).  We first checked for a leftward bias in the overall laterality index, using a one-group t-test, and also categorised each participant as left-biased, right-biased or bilateral. The bilateral group were those whose confidence interval around the LI included zero. Split half reliability of the LI was estimated using LIs computed from odd or even trials only. Spearman correlations were computed between LIs for L1 and L2. 
 
-To test our main hypothesis, the association between strength of lateralization (LI values) for L1 and L2 was first visualized using a scatterplot, with the strength of association computed as Spearman's correlation coefficient. Following Woodhead, Rutherford, and Bishop (2020), we adopted an approach based on Bland and Altman (1986) to determine whether the individual LIs for L1 and L2 were equivalent. This involves specifying boundaries for the expected distribution of difference scores, which should contain 95% of bivariate points, if the two values are equivalent. The expected range can be computed from knowledge of the task reliability. We adopted the range specified by Woodhead et al (2020); they computed difference scores by LIs for odd vs even trials, and set boundaries corresponding to expected mean of zero +/-1.96 standard deviations. If the two measures are equivalent, 95% of difference scores between LIs for L1 and L2 should fall in this range (from -2.5 to 2.5).
+To test our main hypothesis, the association between strength of lateralization (LI values) for L1 and L2 was first visualized using a scatterplot, with the strength of association computed as Spearman's correlation coefficient. Following Woodhead, Rutherford, and Bishop (2020), we adopted an approach based on Bland and Altman (1986) to determine whether the individual LIs for L1 and L2 were equivalent. This involves specifying boundaries for the expected distribution of difference scores, which should contain 95% of bivariate points, if the two values are equivalent. The expected range can be computed from knowledge of the task reliability. We adopted the range specified by Woodhead et al (2020); they computed difference scores by LIs for odd vs even trials, and set boundaries corresponding to expected mean of zero +/-1.96 standard deviations. If the two measures are equivalent, 95% of difference scores, the repeatability coefficient, between LIs for L1 and L2 should fall in this range (from -2.5 to 2.5).
 
 For our second hypothesis, that laterality for L2 would be associated with AoA, we used a t-test to compare laterality for L2 between those with early vs late AoA. A two-tailed test was used because the literature does not give clear predictions about direction of effect.
 
@@ -316,7 +316,7 @@ testing_ttest_L2 <- t.test(testing_0$L2.mean_LI, testing_1$L2.mean_LI) # testing
 
 ### Handedness
 
-Summary statistics for the EHI handedness measure can be seen in Table 1. All participants but one had EHI values above 0, indicating right handedness. The remaining participant had an EHI of -20, indicating weak left handedness. Correlations between LI from fTCD and handedness scores on the EHI, were not statistically distinguishable from zero for either L1 (r = `r round(EHI_LI_L1_cor$estimate, 3)`) or L2 (r = `r round(EHI_LI_L2_cor$estimate, 3)`).
+Summary statistics for the EHI handedness measure can be seen in Table 1. Of 24 participants included in the data analysis, 23, had EHI values above 0, indicating right handedness. The remaining participant had an EHI of -20, indicating weak left handedness. Correlations between LI from fTCD and handedness scores on the EHI, were not statistically distinguishable from zero for either L1 (r = `r round(EHI_LI_L1_cor$estimate, 3)`) or L2 (r = `r round(EHI_LI_L2_cor$estimate, 3)`).
 
 ```{r table1, echo=FALSE, warning=FALSE,message=FALSE}
 # Make a demographics table
@@ -324,8 +324,8 @@ demo_table <- matrix(data=NA, nrow=10, ncol=2)
 colnames(demo_table) <- c('Characteristic', 'Mean (sd)')
 demo_table[,1] <- c('Age, years', 'EHI/100', 'Languages spoken',
                     'Age of English acquisition, years', 'Age of English fluency, years', 
-                    'English accent/10', 'English overall score/10',
-                    'English speaking/10', 'English listening/10', 'English reading/10')
+                    'English accent/10', 'English overall rating/10',
+                    'English speaking rating/10', 'English listening rating/10', 'English reading rating/10')
 #demo_table[1,2] <- paste0(demo_summary$N_total, ' (', demo_summary$N_male, ':', demo_summary$N_female, ')')
 demo_table[1,2] <- paste0(round(demo_summary$mean_age, 2), ' (', round(demo_summary$sd_age, 2), ')')
 demo_table[2,2] <- paste0(round(demo_summary$mean_EHI, 2), ' (', round(demo_summary$sd_EHI, 2), ')')
@@ -348,7 +348,7 @@ table1
 
 ### Language History
 
-Summary statistics for the language history questionnaire can be seen in Table 1. Self-reported proficiency in speaking, reading and understanding English were all generally high (all around 9/10), with a minimum for any individual rating of 6/10. Age of acquisition was more variable, ranging from `r min(Study1_demographics$L2_Acquisition)` to `r max(Study1_demographics$L2_Acquisition)` years. Binary categorisation of AoA, using Hull and Vaid's (2006) criteria gave `r length(which(Study1_demographics$AoA==0))` cases of early AoA (below 6 years of age), and `r length(which(Study1_demographics$AoA==1))` cases of late AoA.
+Summary statistics for the language history questionnaire can be seen in Table 1. Self-reported proficiency in speaking, reading and understanding English were all generally high (all around 9/10), with a minimum for any individual rating of 6/10. Age of acquisition, defined as age when first started acquiring the language, was more variable, ranging from `r min(Study1_demographics$L2_Acquisition)` to `r max(Study1_demographics$L2_Acquisition)` years. Binary categorisation of AoA, using Hull and Vaid's (2006) criteria gave `r length(which(Study1_demographics$AoA==0))` cases of early AoA (below 6 years of age), and `r length(which(Study1_demographics$AoA==1))` cases of late AoA.
 
 ### fTCD Data Quality and Reliability
 
@@ -373,11 +373,11 @@ bf_1<-round(as.data.frame(bft)$bf,3)
   
   As mentioned in the Methods, `r length(which(exclude!=0))` participants were excluded from the analysis because of insufficient number of usable trials. For the remaining `r length(which(exclude==0))` participants, `r excluded_trials_L1`% of trials were excluded for L1, and `r excluded_trials_L2`% for L2.
   
-  Normality of the LI values was assessed using Shapiro-Wilk tests. Distributions of LI were unimodal for both L1 and L2, and for L1 the data did not significantly deviate from normality (W = `r round(L1_normality$statistic, 2)`, p = `r round(L1_normality$p.value, 3)`). Data for L2 were significantly non-normal (W = `r round(L2_normality$statistic, 2)`, p = `r round(L2_normality$p.value, 3)`), showing a rightward skew.
+  Normality of the LI values was assessed using Shapiro-Wilk tests. Distributions of LIs were unimodal for both L1 and L2. Data for L1 did not significantly deviate from normality (W = `r round(L1_normality$statistic, 2)`, p = `r round(L1_normality$p.value, 3)`), whereas data for L2 were significantly non-normal (W = `r round(L2_normality$statistic, 2)`, p = `r round(L2_normality$p.value, 3)`), showing a rightward skew.
 
   Split-half reliability was assessed by correlating the LI values from odd and even trials. The Spearman's correlation for the L1 data was `r round(L1_splithalf$estimate, 2)`, and for the L2 data it was `r round(L2_splithalf$estimate, 2)`, indicating medium to good within-session reliability.  
   
-  Normalized Doppler velocities for the left and right hemisphere activation are presented for each task in Figure 2. 
+  Normalized blood flow velocities for the left and right middle cerebral arteries  are presented for each task in Figure 2. 
   
 ```{r Fig2, warning=FALSE, message=FALSE, echo=FALSE}
 Fig2 <- doGrandmean(1)
@@ -456,15 +456,17 @@ myt<-table(Study1_L1_data$L1.mean_laterality,Study1_L2_data$L2.mean_laterality)
 
 ```
 
-Nearly all participants showed significant left lateralised blood-flow for both L1 and L2 during the word generation task; only `r myt[1,2]+myt[2,1]` participants were classified as bilateral for one language, and for `r myt[2,1]` of these it was L1 that was bilateral.
+Nearly all participants showed significant left lateralised blood-flow for both L1 and L2 during the word generation task. Only `r myt[1,2]+myt[2,1]` participants were classified as bilateral for one language, and for `r myt[2,1]` of these it was L1 that was bilateral.
 Furthermore, asymmetry indices for L1 and L2 were highly related and similar in magnitude, indicating good reliability of the measure. 
-Proficiency was generally high in this sample, so it was not possible to assess the impact of variation in proficiency on lateralisation. The sample was small, and so lacking in power to detect small effects, but there was no indication of support for the hypothesis that AoA affected either absolute levels of language lateralisation or the difference in lateralisation between the two languages.
+Proficiency was generally high in this sample, so it was not possible to assess the impact of variation in proficiency on lateralisation. The sample was small, and so lacking in power to detect small effects, but there was no indication of support for the hypothesis that AoA affected absolute levels of language lateralisation or was related to a difference in lateralisation between the two languages.
 
 
 # Study 2: Japanese-English bilinguals with moderate-high proficiency
 In Study 1 we found no difference in laterality patterns for L1 and L2 between French-English and German-English bilinguals, but it is possible that differences might be more apparent with languages that are more different from one another, in grammatical structure, lexical items and/or phonology. These factors have been shown to influence the ease with which a second language is learned, and might plausibly affect the extent to which language representations are shared or distinct ( Schepens et al., 2016).  Study 2 provided the opportunity to assess this idea in a sample of adults whose native language was Japanese, with English as the L2.  
 
 Study 2 was run independently of Study 1, at a different institution by different experimenters, to address similar questions to Study 1, but with Japanese-English bilinguals. We report the two studies together here as they make it possible to test generalisability of the Study 1 findings in different languages, and with some methodological modifications. In addition, Study 2 included bilinguals with a wider range of proficiency than Study 1, making it possible to consider the effect of this variable on lateralisation.  
+
+An additional aim of Study 2 was to test whether a language that uses both logographic and syllabic  orthographic systems would show a more pronounced difference in laterality between phonological and semantic processing (cf, Gutierrez-Sigut, Payne & MacSweeney, 2015). Japanese kana carry phonological information, but kanji are more strongly linked to semantic information. We therefore expected that semantic fluency would be less reliant on pre-motor articulatory planning processes than phonological fluency, and may therefore be less strongly left-lateralized. 
 
 ## Methods
 
@@ -522,7 +524,7 @@ Study2_demo_summary <- Study2_demographics %>%
 
 ```
 
-Participants were native speakers of Japanese, who were advanced users of English living in the London area. All were self-reported right-handers, and none reported any reading or language difficulties. 
+Participants were native speakers of Japanese, living in the London area and using English on a daily basis. All were self-reported right-handers, and none reported any reading or language difficulties. 
 
 A total of `r Sem_nsubj` participants were included in the final analysis, after excluding `r length(which(Study2_exclude!=0))` participant due to poor quality data. All analyses are based on the final sample of `r Study2_demo_summary$N_total` participants (`r Study2_demo_summary$N_female` female, mean age = `r round(Study2_demo_summary$mean_age, 2)` years, sd = `r round(Study2_demo_summary$sd_age, 2)` years).
 
@@ -534,29 +536,26 @@ Ethical approval for the study was granted by the UCL Research Ethics Committee 
 
 Age of acquisition of English and number of years of using English were evaluated via self-report.  As with Study 1, a binary age of acquisition (AoA) variable was created by subdividing participants into early (below 6 years) and late (6 years or over) subgroups.  
 
-English language ability was measured using the Quick Placement Test (Cambridge Local Examinations Syndicate, 2001), which assesses English reading, listening, and grammar. The test is scored out of 60. Those who scored under 40 were classed as having basic level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[1])`); between 40 and 48 were classed as having intermediate level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[2])`); and above 48 were classed as having advanced level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[3])`).
+English language ability was measured using the Quick Placement Test (University of Cambridge Local Examinations Syndicate, 2001), which assesses English reading, vocabulary, and grammar. The test is scored out of 60. Those who scored under 40 were classed as having basic level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[1])`); between 40 and 48 were classed as having intermediate level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[2])`); and above 48 were classed as having advanced level proficiency (N = `r as.numeric(table(Study2_demographics$Eng_cat)[3])`). The test data was not available for one participant.
 
 ### fTCD Apparatus
 
 Blood flow velocity through the left and right MCAs was examined using a DopplerBox ultrasonography device and DiaMon headset (manufactured by DWL Elektronische Systeme, Singen, Germany). Two 2-MHz transducer monitoring probes were mounted on the headset and placed at each temporal skull window. 	
 
-### Word Generation Task
+### Word Generation Tasks
 Stimuli were presented using Cogent toolbox (http://www.vislab.ucl.ac.uk/cogent) for MATLAB (Mathworks Inc., Sherborn, MA). Triggers time locked to the onset of the stimulus were sent from the presentation PC to the Doppler Box set-up.
 
-The task was based on Gutierrez-Sigut, Payne, and MacSweeney (2015), and involved phonological and semantic word generation tasks in English and Japanese, with order counterbalanced across participants. Unlike in Study 1, there was no silent interval for covert word generation: participants spoke the words as they thought of them. Gutierrez-Sigut et al. had previously shown that LIs were similar regardless of whether overt or covert responses were given, and they noted a benefit of overt production was that the experimenter could record the participants' responses as they occurred. For each trial, participants saw "Clear Mind" presented on the screen for 3 seconds. The cue stimulus was then presented, and participants had 17 seconds to overtly generate as many words as possible. Participants were then instructed to relax for 16 seconds to restore baseline activity. Each trial lasted a total of 36 seconds.  
+The task was based on Gutierrez-Sigut, Payne, and MacSweeney (2015), and involved phonological and semantic word generation tasks in English and Japanese, with order counterbalanced across participants. Task instructions were delivered to correspond to the tested language. Unlike in Study 1, there was no silent interval for covert word generation: participants spoke the words aloud as they thought of them.  Gutierrez-Sigut et al. had previously shown that LIs were similar regardless of whether overt or covert responses were given, and they noted a benefit of overt production was that the experimenter could record the participants' responses as they occurred. For each trial, participants saw "Clear Mind" presented on the screen for 3 seconds. The cue stimulus was then presented, and participants had 17 seconds to overtly generate as many words as possible. Participants were then instructed to relax for 16 seconds to restore baseline activity. Each trial lasted a total of 36 seconds.  
 
 ### Stimuli
-#### Phonological Word Generation - Japanese
-Participants were presented with a cue in Kana, a Japanese phonological script. Following the Japanese mora frequency analysis conducted by Dan et al. (2012) based on the familiarity ratings in Amano & Kondo (1999), 10 of the 12 most frequent moras that are positioned at the beginning of words were selected. The two moras omitted were は (/ha/) and じ (/ji/). は was omitted because it would be pronounced /wa/ when it was the subject-marker and じ was omitted because it was the voiced sound of し (/shi/) that was included in the stimuli. Participants had to produce as many words as possible that began with the specified kana. Each kana was presented twice, and the 20 trials  were presented in a pseudo-randomised order to ensure all 10 cues had been presented once before a cue was repeated. 
+#### Phonological Word Generation - Japanese and English
+In Japanese, participants were presented with a cue in Hiragana, one of the Japanese phonological scripts.  Following the Japanese mora frequency analysis conducted by Dan et al. (2012) based on the familiarity ratings in Amano & Kondo (1999), 10 of the 12 most frequent moras that are positioned at the beginning of words were selected (あ/a/, い/i/, お/o/, か/ka/, き/ki/, こ/ko/, さ/sa/, し/shi/, た/ta/, ふ/hu/). The two moras omitted were は (/ha/) and じ (/ji/). は was omitted because it would be pronounced /wa/ when it was the subject-marker and じ was omitted because it was the voiced sound of し (/shi/) that was included in the stimuli. Participants had to produce as many words as possible that began with the specified Kana. Each Kana was presented twice, and the 20 trials  were presented in a pseudo-randomised order to ensure all 10 cues had been presented once before a cue was repeated. 
 
-#### Phonological Word Generation - English 
-Participants were presented with 10 alphabetic letters (A, B, C, F, H, M, O, S, T, W). Participants had to produce as many words as possible that began with the specified letter. The task consisted of 20 trials which were presented in a pseudo-randomised order to ensure all 10 cues had been presented once before a cue was repeated.
+In the English phonological word generation task, participants were presented with 10 alphabetic letters (A, B, C, F, H, M, O, S, T, W) and asked to produce as many words as possible that began with the specified letter. Trials were presented in the same manner as the Japanese task.
 
-#### Semantic Word Generation - Japanese 
-10 Japanese words representing semantic categories were presented: farm animals, zoo animals, vegetables, fruits, drinks, colours, sports, pets, tools, and transport. Participants had to report as many words that matched these categories as possible. Each category was repeated twice in the semantic fluency blocks. Categories were presented in a pseudo randomised order. 
-
-#### Semantic Word Generation - English 
-The same semantic categories were presented in English. Participants had to report as many words that matched these categories as possible. Each category was repeated twice in the semantic fluency blocks. Categories were presented in a pseudo-randomised order.  
+#### Semantic Word Generation - Japaneseand English
+10 Japanese words representing semantic categories were presented: farm animals, zoo animals, vegetables, fruits, drinks, colours, sports, pets, tools, and transport. 
+The same semantic categories were presented in English. Participants had to report as many words that matched these categories as possible. Each category was repeated twice in the semantic fluency blocks. Categories were presented in a pseudo-randomised order.  Participants had to report as many words that matched these categories as possible. Each category was repeated twice in the semantic fluency blocks. Categories were presented in a pseudo randomised order. 
 
 ### fTCD Analysis
 
@@ -750,9 +749,9 @@ table3
 
 ```
 
-### Language History
-Summary statistics of language history can be seen in Table 3. Age of English  acquisition ranged from 0 to 13 years. In contrast to Study 1, where there was little variation in proficiency, Study 2 included `r table(plotdata_Phon$Eng_cat)[1]` cases with basic proficiency, `r table(plotdata_Phon$Eng_cat)[2]` cases with intermediate proficiency, and `r table(plotdata_Phon$Eng_cat)[3]` cases with advanced proficiency, according to the Placement Test. 
-
+### Language history and task performance
+Summary statistics of language history can be seen in Table 3. Age of English  acquisition ranged from 0 to 13 years. In contrast to Study 1, where there was little variation in proficiency, Study 2 included `r table(plotdata_Phon$Eng_cat)[1]` cases with basic proficiency, `r table(plotdata_Phon$Eng_cat)[2]` cases with intermediate proficiency, and `r table(plotdata_Phon$Eng_cat)[3]` cases with advanced proficiency, according to the Quick Placement Test.  
+The usage of English was assessed using the question “how much English and Japanese (and other languages if they have) do you use in a typical week?” and the percentages of use of English out of 100% are shown in Table 3. The participants tended to use English more than Japanese.  
 The mean number of words produced per trial in the phonological conditions was `r round(mean_jwords_phon, 2)` (SD = `r round(sd_jwords_phon, 2)`) for Japanese and `r round(mean_ewords_phon, 2)` (SD = `r round(sd_ewords_phon, 2)`) for English. The mean number of words produced per trial in the semantic condition was `r round(mean_jwords_sem, 2)` (SD = `r round(sd_jwords_sem, 2)`) for Japanese and `r round(mean_ewords_sem, 2)` (SD = `r round(sd_ewords_sem, 2)`) for English. There was no significant difference between the mean number of words produced per trial for L1 and L2 in the phonological condition (t (`r round(words_produced_phon$parameter, 1)`) = `r round(words_produced_phon$statistic, 2)`, p = `r round(words_produced_phon$p.value, 3)`) or the semantic condition (t (`r round(words_produced_sem$parameter, 1)`) = `r round(words_produced_sem$statistic, 2)`, p = `r round(words_produced_sem$p.value, 3)`).
 
 
@@ -780,18 +779,18 @@ L2_Sem_splithalf <- cor.test(L2_Sem_data$L2_Sem.mean_odd, L2_Sem_data$L2_Sem.mea
 ```
 
 
-Normality of LI values was assessed using Shapiro-Wilk tests. For phonological tasks, data was normally distributed for L1 (W = `r round(L1_Phon_normality$statistic, 2)`, p = `r round(L1_Phon_normality$p.value, 3)`) and L2 (W = `r round(L2_Phon_normality$statistic, 2)`, p = `r round(L2_Phon_normality$p.value, 3)`). Data was also normally distributed for semantic tasks for L1 (W = `r round(L1_Sem_normality$statistic, 2)`, p = `r round(L1_Sem_normality$p.value, 3)`) and L2 (W = `r round(L2_Sem_normality$statistic, 2)`, p = `r round(L2_Sem_normality$p.value, 3)`). 
+Normality of LI values was assessed using Shapiro-Wilk tests. For the phonological tasks, data was normally distributed for L1 (W = `r round(L1_Phon_normality$statistic, 2)`, p = `r round(L1_Phon_normality$p.value, 3)`) and L2 (W = `r round(L2_Phon_normality$statistic, 2)`, p = `r round(L2_Phon_normality$p.value, 3)`). Data was also normally distributed for the semantic tasks for L1 (W = `r round(L1_Sem_normality$statistic, 2)`, p = `r round(L1_Sem_normality$p.value, 3)`) and L2 (W = `r round(L2_Sem_normality$statistic, 2)`, p = `r round(L2_Sem_normality$p.value, 3)`). 
 
-Split-half reliability was assessed by correlating the LI values from odd and even trials, using Spearman's correlations for consistency with Study 1. For phonological word generation, the split-half correlation was `r round(L1_Phon_splithalf$estimate, 2)` for L1 and `r round (L2_Phon_splithalf$estimate, 2)` for L2. For semantic tasks, the correlation was `r round(L1_Sem_splithalf$estimate, 2)` for L1 and `r round (L2_Sem_splithalf$estimate, 2)` for L2. This indicated moderate to good reliability for all tasks. 
+Split-half reliability was assessed by correlating the LI values from odd and even trials, using Spearman's correlations for consistency with Study 1. For phonological word generation, the split-half correlation was `r round(L1_Phon_splithalf$estimate, 2)` for L1 and `r round (L2_Phon_splithalf$estimate, 2)` for L2. For semantic word generation, the correlation was `r round(L1_Sem_splithalf$estimate, 2)` for L1 and `r round (L2_Sem_splithalf$estimate, 2)` for L2. This indicated moderate to good reliability for all tasks. 
 
 ### LI Values
 
-Normalized Doppler velocities for the left and right hemisphere activation are presented for each language and task in Figure 4. Table 4 shows summary statistics for L1 and L2 in both phonological and semantic word generation tasks.  Bayes factors were computed to check the equivalence of the mean LI for the two tasks in the two languages using the R package 'BayesFactor' with default settings (Morey & Rouder, 2018). This gave a value of `r bf_2` for the Phonological task, which may be interpreted as moderate evidence for the null hypothesis, and a value of `r bf_3` for the Semantic task, which corresponds to anecdoal evidence for the null hypothesis (Lee & Wagenmakers, 2014).
+Normalized blood flow velocities for the left and right middle cerebral arteries are presented for each language and task in Figure 4. Table 4 shows summary statistics for L1 and L2 in both phonological and semantic word generation tasks.  Bayes factors were computed to check the equivalence of the mean LI for the two tasks in the two languages using the R package 'BayesFactor' with default settings (Morey & Rouder, 2018). This gave a value of `r bf_2` for the Phonological task, which may be interpreted as moderate evidence for the null hypothesis, and a value of `r bf_3` for the Semantic task, which corresponds to anecdoal evidence for the null hypothesis (Lee & Wagenmakers, 2014).
 
 Laterality indices for L1 and L2 were strongly correlated in both the phonological task (Spearman's R = `r round(L1_L2_Phon_corr$estimate, 3)`) and the semantic task (Spearman's R = `r round(L1_L2_Sem_corr$estimate, 3)`), closely replicating the results of Study 1. This is shown in the scatterplots in Figures 5a and 5b. 
 
 
-```
+
 
 ```{r doFig4, warning=FALSE, message=FALSE, echo=FALSE}
 Fig4a <- doGrandmean(2, 'Phon')
@@ -802,6 +801,7 @@ Fig4b <- doGrandmean(2, 'Sem')
 Fig4b <- Fig4b + ggtitle('B. Semantic')
 print(Fig4b)
 ```
+
   
 _Figure 4. Left and right hemisphere activation is displayed as a function of epoch time in seconds for word generation for L1 (Japanese) and L2 (English) in Study 2. Plot 4a shows the phonological word generation task, and 4b shows the semantic word generation task. Dotted lines indicate the start and end of the baseline period (from -10 to 0 seconds) and the period of interest (from 6 to 20 seconds). L1, first language; L2, second language._  
 
@@ -850,7 +850,7 @@ profL2_corr_sem <- cor.test(shortfile$EngProf, shortfile$SemLI, method = "spearm
 ```
 
 
-Points in Figure 5 are coded to show AoA. There was no significant correlation between AOA and LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 5A) or for the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 5B).
+Points in Figure 5 are coded to show Age of Acquisition. We explored whether age of acquisition for English was related to strength of laterality in L2. There was no significant correlation between AOA and LI for the phonological task (r = `r round (aoa_l2_corr_phon_j$estimate, 2)`, p = `r round(aoa_l2_corr_phon_j$p.value, 3)`; Figure 5A) or for the semantic task (r = `r round (aoa_l2_corr_sem_j$estimate, 2)`, p = `r round(aoa_l2_corr_sem_j$p.value, 3)`; Figure 5B).
 
 Data on the Quick Placement Test, the measure of proficiency in L2, were available for `r length(which(!is.na(Study2_demographics$Eng_score)))` participants. These were not correlated with the LI for either the phonological task: r = `r round (profL2_corr_phon$estimate, 2)`, p = `r round(profL2_corr_phon$p.value, 3)`, or the semantic task: r = `r round (profL2_corr_sem$estimate, 2)`, p = `r round(profL2_corr_sem$p.value, 3)`.
 
