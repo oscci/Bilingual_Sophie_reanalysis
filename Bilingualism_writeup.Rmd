@@ -54,7 +54,8 @@ Study2_demographics_total$ID <- as.numeric(gsub("BL", replacement = "", Study2_d
 
 ```
 
-# Study 1: Highly proficient French-English or German-English bilinguals
+# Study 1: Highly proficient French-English or German-English bilinguals  
+In Study 1, we used the cued word generation task, which is a well validated and commonly used productive language task ( Knecht et al., 1998a; Knecht et al., 1998b), to test whether language lateralisation is equivalent for first and second languages in bilinguals. A secondary aim was to consider whether there is any impact of AoA. Participants were highly proficient bilinguals, all with English as a second language, who were working or studying in Oxford, UK at an advanced level.  We predicted that the extent of left lateralisation of bilingual speakers would relate to their AoA of L2. On the basis of Hull and Vaid's (2007) behavioural meta-analysis we might expect to see weaker lateralisation for L2 in bilinguals with an early AoA.  On the other hand, the convergence hypothesis (Green, 2003) predicts that as proficiency increases, the neural substrate of L1 and L2 become more similar. Green's hypothesis did not focus on lateralisation, but it might nevertheless be taken to suggest the opposite pattern to that predicted by Hull and Vaid, i.e., greater similarity in the neural basis of L1 and L2 in those with the longest experience of L2, i.e. those with early AoA.  
 
 ## Methods
 
