@@ -555,8 +555,7 @@ In Japanese, participants were presented with a cue in Hiragana, one of the Japa
 In the English phonological word generation task, participants were presented with 10 alphabetic letters (A, B, C, F, H, M, O, S, T, W) and asked to produce as many words as possible that began with the specified letter. Trials were presented in the same manner as the Japanese task.
 
 #### Semantic Word Generation - Japaneseand English
-10 Japanese words representing semantic categories were presented: farm animals, zoo animals, vegetables, fruits, drinks, colours, sports, pets, tools, and transport. 
-The same semantic categories were presented in English. Participants had to report as many words that matched these categories as possible. Each category was repeated twice in the semantic fluency blocks. Categories were presented in a pseudo-randomised order.  Participants had to report as many words that matched these categories as possible. Each category was repeated twice in the semantic fluency blocks. Categories were presented in a pseudo randomised order. 
+Ten Japanese words representing semantic categories were presented in the standard written form, i.e. the mixture of Kanji and Kana: 家畜 farm animals, 動物園の動物 zoo animals, 野菜 vegetables, 果物 fruits, 飲み物 drinks, 色 colours, スポーツ sports, ペット pets, 道具 tools, and 乗り物 transport. The same semantic categories were presented in English. Participants had to report as many words that matched these categories as possible. Each category was repeated twice in the semantic fluency blocks. Categories were presented in a pseudo randomised order.
 
 ### fTCD Analysis
 
