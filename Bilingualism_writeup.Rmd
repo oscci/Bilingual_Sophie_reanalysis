@@ -525,9 +525,7 @@ Study2_demo_summary <- Study2_demographics %>%
 
 ```
 
-Participants were native speakers of Japanese, living in the London area and using English on a daily basis. All were self-reported right-handers, and none reported any reading or language difficulties. 
-
-A total of `r Sem_nsubj` participants were included in the final analysis, after excluding `r length(which(Study2_exclude!=0))` participant due to poor quality data. All analyses are based on the final sample of `r Study2_demo_summary$N_total` participants (`r Study2_demo_summary$N_female` female, mean age = `r round(Study2_demo_summary$mean_age, 2)` years, sd = `r round(Study2_demo_summary$sd_age, 2)` years).
+We recruited participants through UCL psychology participant pool, research posters around the University, and through email communication to contacts within Japanese communities in London. We initially recruited 33 adult native speakers of Japanese, who reported using English on a daily basis. None of the participants had a history of reading or language difficulties. All had normal or corrected to normal vision. Seven participants were excluded from the study. This was due to inability to find a suitable temporal window (6 participants),  or an insufficient number of usable trials after preprocessing (`r length(which(Study2_exclude!=0))` participant). All analyses are based on the final sample of `r Study2_demo_summary$N_total` participants (`r Study2_demo_summary$N_female` female, mean age = `r round(Study2_demo_summary$mean_age, 2)` years, sd = `r round(Study2_demo_summary$sd_age, 2)` years).
 
 ### Ethics Statement
 
