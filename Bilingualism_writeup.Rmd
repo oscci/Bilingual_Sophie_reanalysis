@@ -27,29 +27,39 @@ require(httr)
 require(BayesFactor)
 ```
 
-```{r read_data, echo=FALSE, messgae = FALSE}
-# read data in from github if it doesn't already exist in working directory
-pull_files <- c('Study1_resultsL1.csv', 'Study1_resultsL2.csv', 'Study1_demographics.csv',
-                'Study2_resultsL1.csv', 'Study2_resultsL2.csv', 'Study2_demographics.csv')
-download <- array(data=NA, dim = length(pull_files))
-for (f in 1:length(pull_files)){
-  if (!file.exists(pull_files[f])){  
-    url <- paste0("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/", pull_files[f])
-    GET(url, write_disk(pull_files[f]))
-  }
-}
+```{r read_data, echo=FALSE, message = FALSE}
+#modified to read from OSF
 
-Study1_L1_data <- read.csv(pull_files[1])
-Study1_L2_data <- read.csv(pull_files[2])
-Study1_demographics_total <- read.csv(pull_files[3],stringsAsFactors=F)
+# read data in from github if it doesn't already exist in working directory
+# pull_files <- c('Study1_resultsL1.csv', 'Study1_resultsL2.csv', 'Study1_demographics.csv',
+#                 'Study2_resultsL1.csv', 'Study2_resultsL2.csv', 'Study2_demographics.csv')
+# download <- array(data=NA, dim = length(pull_files))
+# for (f in 1:length(pull_files)){
+#   if (!file.exists(pull_files[f])){  
+#     url <- paste0("https://raw.githubusercontent.com/oscci/Bilingual_Sophie_reanalysis/main/", pull_files[f])
+#     GET(url, write_disk(pull_files[f]))
+#   }
+# }
+
+Study1_L1_data <- read.csv('https://osf.io/aevus/download',stringsAsFactors = F)
+Study1_L2_data <- read.csv('https://osf.io/dx2t9/download',stringsAsFactors = F)
+
+Study1_demographics_total <-  read.csv('https://osf.io/wq5tz/download',stringsAsFactors = F)
 colnames(Study1_demographics_total)[1] <- 'ID'
 
 # read Japanese data in 
-Study2_L1_data <- read.csv(pull_files[4])
-Study2_L2_data <- read.csv(pull_files[5])
-Study2_demographics_total <- read.csv(pull_files[6],stringsAsFactors=F)
+Study2_L1_data <- read.csv('https://osf.io/5kx7c/download',stringsAsFactors = F)
+Study2_L2_data <- read.csv('https://osf.io/t7rfm/download',stringsAsFactors = F)
 
+Study2_demographics_total <-  read.csv('https://osf.io/pbmf8/download',stringsAsFactors = F)
 colnames(Study2_demographics_total)[1] <- 'ID'
+
+
+# Study2_L1_data <- read.csv(pull_files[4])
+# Study2_L2_data <- read.csv(pull_files[5])
+# Study2_demographics_total <- read.csv(pull_files[6],stringsAsFactors=F)
+# 
+# colnames(Study2_demographics_total)[1] <- 'ID'
 Study2_demographics_total$ID <- as.numeric(gsub("BL", replacement = "", Study2_demographics_total$ID))
 
 ```
@@ -525,7 +535,7 @@ Study2_demo_summary <- Study2_demographics %>%
 
 ```
 
-We recruited participants through UCL psychology participant pool, research posters around the University, and through email communication to contacts within Japanese communities in London. We initially recruited 33 adult native speakers of Japanese, who reported using English on a daily basis. None of the participants had a history of reading or language difficulties. All had normal or corrected to normal vision. Seven participants were excluded from the study. This was due to inability to find a suitable temporal window (6 participants),  or an insufficient number of usable trials after preprocessing (`r length(which(Study2_exclude!=0))` participant). All analyses are based on the final sample of `r Study2_demo_summary$N_total` participants (`r Study2_demo_summary$N_female` female, mean age = `r round(Study2_demo_summary$mean_age, 2)` years, sd = `r round(Study2_demo_summary$sd_age, 2)` years).
+We recruited participants through UCL psychology participant pool, research posters around the University, and through email communication to contacts within Japanese communities in London. We initially recruited 32 adult native speakers of Japanese, who reported using English on a daily basis. None of the participants had a history of reading or language difficulties. All had normal or corrected to normal vision. Seven participants were excluded from the study. This was due to inability to find a suitable temporal window (6 participants),  or an insufficient number of usable trials after preprocessing (`r length(which(Study2_exclude!=0))` participant). All analyses are based on the final sample of `r Study2_demo_summary$N_total` participants (`r Study2_demo_summary$N_female` female, mean age = `r round(Study2_demo_summary$mean_age, 2)` years, sd = `r round(Study2_demo_summary$sd_age, 2)` years).
 
 ### Ethics Statement
 
